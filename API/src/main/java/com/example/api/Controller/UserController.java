@@ -5,9 +5,7 @@ import com.example.api.Service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 public class UserController {
@@ -20,12 +18,12 @@ public class UserController {
         return "Hello World!";
     }
 
-    @GetMapping("/user/{userAccount}/general")
-    public ResponseEntity<User> getGeneralUser(@PathVariable String userAccount) {
-        System.out.println("UserController: getGeneralUser >> "+userAccount);
+    @GetMapping("/user/{userAccount}")
+    public ResponseEntity<User> getGeneralUser(@PathVariable String userAccount, @RequestParam String role) {
+        System.out.println("UserController: getGeneralUser >> "+userAccount + " / role = " + role);
         User user = userService.getBriefUserByAccount(userAccount);
 
-        if(user == null) {
+        if(user == null || !role.equals("GENERAL")) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }else{
             return ResponseEntity.status(HttpStatus.OK).body(user);

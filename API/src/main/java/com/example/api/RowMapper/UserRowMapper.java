@@ -1,5 +1,6 @@
 package com.example.api.RowMapper;
 
+import com.example.api.Model.Role;
 import com.example.api.Model.User;
 import org.springframework.jdbc.core.RowMapper;
 
@@ -19,6 +20,7 @@ public class UserRowMapper implements RowMapper<User> {
         user.setBackground(rs.getString("background"));
         user.setFollowers(rs.getInt("followers"));
         user.setFollowing(rs.getInt("following"));
+        user.setRole(Role.valueOf(rs.getString("role")));
         return user;
     }
 }

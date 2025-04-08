@@ -19,7 +19,7 @@ public class UserDao {
 
     public User getBriefUserByAccount(String account){
         System.out.println("UserDao: getBriefUserByAccount >> "+account);
-        String sql = "SELECT name, userAccount, avatar, bio, background, followers, following FROM user WHERE userAccount = :account";
+        String sql = "SELECT name, userAccount, avatar, bio, background, followers, following, role FROM user WHERE userAccount = :account";
 
         Map<String, Object> map = new HashMap<>();
         map.put("account", account);
