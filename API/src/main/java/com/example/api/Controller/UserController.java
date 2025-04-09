@@ -1,7 +1,7 @@
 package com.example.api.Controller;
 
+import com.example.api.DTO.UserOverviewDTO;
 import com.example.api.DTO.UserDetailDTO;
-import com.example.api.Model.User;
 import com.example.api.Service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -15,8 +15,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-@Tag(name = "一般使用者相關", description = "CRUD")
-@RequestMapping("/user/general")
+@Tag(name = "使用者相關", description = "CRUD")
+@RequestMapping("/user")
 @RestController
 public class UserController {
     @Autowired
@@ -26,7 +26,7 @@ public class UserController {
             summary = "獲取使用者資訊(詳細)",
             description = "使用於人檔案頁面。" +
                     "取得 1.使用者名稱 2.使用者帳號 3.頭像URL 4.個人簡介 5.背景圖片URL 6.追蹤者 7.追蹤中" +
-                    "8.顯示追蹤者 9.顯示追蹤中 10.顯示參與紀錄 11.顯示進行中的持有展會 12.顯示進行中的持有攤位"
+                    "8.顯示追蹤者 9.顯示追蹤中 10.顯示參與紀錄 11.顯示進行中的持有展會 12.顯示進行中的持有攤位 13.身分"
     )
     @ApiResponses(value = {
             @ApiResponse(
@@ -46,13 +46,51 @@ public class UserController {
                     description = "伺服器錯誤"
             )
     })
-    @GetMapping("/{userAccount}")
+    @GetMapping("/{userAccount}/detail")
     public ResponseEntity<UserDetailDTO> getUserDetail(
             @Parameter(description = "使用者帳號", required = true)
             @PathVariable String userAccount
     ) {
         System.out.println("UserController: getUserDetail >> "+userAccount);
-        UserDetailDTO user = userService.getDetailUserByAccount(userAccount);
+        UserDetailDTO user = userService.getUserDetailByAccount(userAccount);
+
+        if(user == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }else{
+            return ResponseEntity.status(HttpStatus.OK).body(user);
+        }
+    }
+
+    @Operation(
+            summary = "獲取使用者資訊(概略)",
+            description = "使用於展會中。" +
+                    "取得 1.使用者名稱 2.使用者帳號 3.頭像 4.身分"
+    )
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "成功取得使用者資訊(概略)",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = UserOverviewDTO.class)
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = "404",
+                    description = "找不到使用者"
+            ),
+            @ApiResponse(
+                    responseCode = "500",
+                    description = "伺服器錯誤"
+            )
+    })
+    @GetMapping("/{userAccount}/overview")
+    public ResponseEntity<UserOverviewDTO> getUserOverview(
+            @Parameter(description = "使用者帳號", required = true)
+            @PathVariable String userAccount
+    ){
+        System.out.println("UserController: getUserOverview >> "+userAccount);
+        UserOverviewDTO user = userService.getUserOverviewByAccount(userAccount);
 
         if(user == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();

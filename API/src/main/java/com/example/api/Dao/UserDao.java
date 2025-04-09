@@ -1,8 +1,9 @@
 package com.example.api.Dao;
 
 import com.example.api.DTO.UserDetailDTO;
-import com.example.api.Model.User;
-import com.example.api.RowMapper.UserRowMapper;
+import com.example.api.DTO.UserOverviewDTO;
+import com.example.api.RowMapper.UserDetailRowMapper;
+import com.example.api.RowMapper.UserOverviewRowMapper;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Component;
 
@@ -18,8 +19,8 @@ public class UserDao {
         this.namedParameterJdbcTemplate = namedParameterJdbcTemplate;
     }
 
-    public UserDetailDTO getDetailUserByAccount(String account){
-        System.out.println("UserDao: getDetailUserByAccount >> "+account);
+    public UserDetailDTO getUserDetailByAccount(String account){
+        System.out.println("UserDao: getUserDetailByAccount >> "+account);
         String sql = "SELECT name, userAccount, avatar, bio, background, followers," +
                 "following, showFollowers, showFollowing, showHistory, showCurrentExpo, showCurrentBooth, role " +
                 "FROM user " +
@@ -28,7 +29,21 @@ public class UserDao {
         Map<String, Object> map = new HashMap<>();
         map.put("account", account);
 
-        List<UserDetailDTO> userList = namedParameterJdbcTemplate.query(sql, map, new UserRowMapper());
+        List<UserDetailDTO> userList = namedParameterJdbcTemplate.query(sql, map, new UserDetailRowMapper());
+
+        if(!userList.isEmpty()) {
+            return userList.get(0);
+        } else return null;
+    }
+
+    public UserOverviewDTO getUserOverviewByAccount(String account){
+        System.out.println("UserDao: getUserOverviewByAccount >> "+account);
+        String sql = "SELECT name, userAccount, avatar, role FROM user WHERE userAccount = :account";
+
+        Map<String, Object> map = new HashMap<>();
+        map.put("account", account);
+
+        List<UserOverviewDTO> userList = namedParameterJdbcTemplate.query(sql, map, new UserOverviewRowMapper());
 
         if(!userList.isEmpty()) {
             return userList.get(0);

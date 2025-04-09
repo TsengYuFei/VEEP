@@ -2,13 +2,12 @@ package com.example.api.RowMapper;
 
 import com.example.api.DTO.UserDetailDTO;
 import com.example.api.Model.Role;
-import com.example.api.Model.User;
 import org.springframework.jdbc.core.RowMapper;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-public class UserRowMapper implements RowMapper<UserDetailDTO> {
+public class UserDetailRowMapper implements RowMapper<UserDetailDTO> {
 
     @Override
     public UserDetailDTO mapRow(ResultSet rs, int rowNum) throws SQLException {
