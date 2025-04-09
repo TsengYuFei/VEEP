@@ -1,29 +1,60 @@
 package com.example.api.Controller;
 
+import com.example.api.DTO.UserDetailDTO;
 import com.example.api.Model.User;
 import com.example.api.Service.UserService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+@Tag(name = "一般使用者相關", description = "CRUD")
+@RequestMapping("/user/general")
 @RestController
 public class UserController {
     @Autowired
     private UserService userService;
 
-    @GetMapping("/hello")
-    public String hello() {
-        System.out.println("Hello World!");
-        return "Hello World!";
-    }
+    @Operation(
+            summary = "獲取使用者資訊(詳細)",
+            description = "使用於人檔案頁面。" +
+                    "取得 1.使用者名稱 2.使用者帳號 3.頭像URL 4.個人簡介 5.背景圖片URL 6.追蹤者 7.追蹤中" +
+                    "8.顯示追蹤者 9.顯示追蹤中 10.顯示參與紀錄 11.顯示進行中的持有展會 12.顯示進行中的持有攤位"
+    )
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "成功取得使用者資訊(詳細)",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = UserDetailDTO.class)
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = "404",
+                    description = "找不到使用者"
+            ),
+            @ApiResponse(
+                    responseCode = "500",
+                    description = "伺服器錯誤"
+            )
+    })
+    @GetMapping("/{userAccount}")
+    public ResponseEntity<UserDetailDTO> getUserDetail(
+            @Parameter(description = "使用者帳號", required = true)
+            @PathVariable String userAccount
+    ) {
+        System.out.println("UserController: getUserDetail >> "+userAccount);
+        UserDetailDTO user = userService.getDetailUserByAccount(userAccount);
 
-    @GetMapping("/user/{userAccount}")
-    public ResponseEntity<User> getGeneralUser(@PathVariable String userAccount, @RequestParam String role) {
-        System.out.println("UserController: getGeneralUser >> "+userAccount + " / role = " + role);
-        User user = userService.getBriefUserByAccount(userAccount);
-
-        if(user == null || !role.equals("GENERAL")) {
+        if(user == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }else{
             return ResponseEntity.status(HttpStatus.OK).body(user);

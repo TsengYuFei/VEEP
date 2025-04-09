@@ -1,5 +1,6 @@
 package com.example.api.Dao;
 
+import com.example.api.DTO.UserDetailDTO;
 import com.example.api.Model.User;
 import com.example.api.RowMapper.UserRowMapper;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
@@ -17,14 +18,17 @@ public class UserDao {
         this.namedParameterJdbcTemplate = namedParameterJdbcTemplate;
     }
 
-    public User getBriefUserByAccount(String account){
-        System.out.println("UserDao: getBriefUserByAccount >> "+account);
-        String sql = "SELECT name, userAccount, avatar, bio, background, followers, following, role FROM user WHERE userAccount = :account";
+    public UserDetailDTO getDetailUserByAccount(String account){
+        System.out.println("UserDao: getDetailUserByAccount >> "+account);
+        String sql = "SELECT name, userAccount, avatar, bio, background, followers," +
+                "following, showFollowers, showFollowing, showHistory, showCurrentExpo, showCurrentBooth, role " +
+                "FROM user " +
+                "WHERE userAccount = :account";
 
         Map<String, Object> map = new HashMap<>();
         map.put("account", account);
 
-        List<User> userList = namedParameterJdbcTemplate.query(sql, map, new UserRowMapper());
+        List<UserDetailDTO> userList = namedParameterJdbcTemplate.query(sql, map, new UserRowMapper());
 
         if(!userList.isEmpty()) {
             return userList.get(0);
