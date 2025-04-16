@@ -21,8 +21,8 @@ public class UserDao {
 
     public UserDetailDTO getUserDetailByAccount(String account){
         System.out.println("UserDao: getUserDetailByAccount >> "+account);
-        String sql = "SELECT name, userAccount, avatar, bio, background, followers," +
-                "following, showFollowers, showFollowing, showHistory, showCurrentExpo, showCurrentBooth, role " +
+        String sql = "SELECT name, userAccount, avatar, bio, background," +
+                "showFollowers, showFollowing, showHistory, showCurrentExpo, showCurrentBooth, role " +
                 "FROM user " +
                 "WHERE userAccount = :account";
 

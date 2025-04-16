@@ -19,8 +19,6 @@ public class UserDetailRowMapper implements RowMapper<UserDetailDTO> {
         user.setAvatar(rs.getString("avatar"));
         user.setBio(rs.getString("bio"));
         user.setBackground(rs.getString("background"));
-        user.setFollowers(rs.getInt("followers"));
-        user.setFollowing(rs.getInt("following"));
         user.setShowFollowers(rs.getBoolean("showFollowers"));
         user.setShowFollowing(rs.getBoolean("showFollowing"));
         user.setShowHistory(rs.getBoolean("showHistory"));
