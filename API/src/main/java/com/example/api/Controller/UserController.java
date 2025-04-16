@@ -2,6 +2,7 @@ package com.example.api.Controller;
 
 import com.example.api.DTO.UserOverviewDTO;
 import com.example.api.DTO.UserDetailDTO;
+import com.example.api.Exception.NotFoundException;
 import com.example.api.Service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -53,12 +54,8 @@ public class UserController {
     ) {
         System.out.println("UserController: getUserDetail >> "+userAccount);
         UserDetailDTO user = userService.getUserDetailByAccount(userAccount);
+        return ResponseEntity.status(HttpStatus.OK).body(user);
 
-        if(user == null) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-        }else{
-            return ResponseEntity.status(HttpStatus.OK).body(user);
-        }
     }
 
     @Operation(
@@ -91,11 +88,6 @@ public class UserController {
     ){
         System.out.println("UserController: getUserOverview >> "+userAccount);
         UserOverviewDTO user = userService.getUserOverviewByAccount(userAccount);
-
-        if(user == null) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-        }else{
-            return ResponseEntity.status(HttpStatus.OK).body(user);
-        }
+        return ResponseEntity.status(HttpStatus.OK).body(user);
     }
 }
