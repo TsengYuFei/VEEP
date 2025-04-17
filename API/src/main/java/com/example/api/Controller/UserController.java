@@ -2,8 +2,8 @@ package com.example.api.Controller;
 
 import com.example.api.DTO.UserOverviewDTO;
 import com.example.api.DTO.UserDetailDTO;
-import com.example.api.Exception.NotFoundException;
-import com.example.api.Request.UserRequest;
+import com.example.api.Request.UserCreateRequest;
+import com.example.api.Request.UserUpdateRequest;
 import com.example.api.Service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -18,7 +18,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-@Tag(name = "使用者相關", description = "CRUD")
+@Tag(name = "單一使用者相關", description = "CRUD")
 @RequestMapping("/user")
 @RestController
 public class UserController {
@@ -97,7 +97,7 @@ public class UserController {
 
     @Operation(
             summary = "新增使用者",
-            description = ""
+            description = "可輸入欄位 1.使用者名稱 2.使用者帳號 3.密碼 4.電話 5.電子郵箱 6.頭像URL 7.生日(yyyy-MM-dd格式)"
     )
     @ApiResponses(value = {
             @ApiResponse(
@@ -118,10 +118,45 @@ public class UserController {
             )
     })
     @PostMapping("")
-    public ResponseEntity<UserOverviewDTO> createUser(@Valid @RequestBody UserRequest userRequest){
+    public ResponseEntity<UserOverviewDTO> createUser(@Valid @RequestBody UserCreateRequest userRequest){
         System.out.println("UserController: createUser");
         String userAccount = userService.createUser(userRequest);
         UserOverviewDTO user = userService.getUserOverviewByAccount(userAccount);
         return ResponseEntity.status(HttpStatus.CREATED).body(user);
+    }
+
+
+    @Operation(
+            summary = "更新使用者",
+            description = ""
+    )
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "成功更新使用者資訊",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = UserDetailDTO.class)
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = "404",
+                    description = "找不到使用者"
+            ),
+            @ApiResponse(
+                    responseCode = "500",
+                    description = "伺服器錯誤"
+            )
+    })
+    @PutMapping("/{userAccount}")
+    public ResponseEntity<UserDetailDTO> updateUser(
+            @Parameter(description = "使用者帳號", required = true)
+            @PathVariable String userAccount,
+            @Valid @RequestBody UserUpdateRequest userRequest
+    ){
+        System.out.println("UserController: updateUser >> "+userRequest);
+        userService.updateUser(userAccount, userRequest);
+        UserDetailDTO user = userService.getUserDetailByAccount(userAccount);
+        return ResponseEntity.status(HttpStatus.OK).body(user);
     }
 }

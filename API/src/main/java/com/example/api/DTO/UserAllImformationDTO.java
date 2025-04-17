@@ -1,20 +1,19 @@
 package com.example.api.DTO;
 
 import com.example.api.Model.Role;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.PositiveOrZero;
-import jakarta.validation.constraints.Size;
 import lombok.Data;
-import org.hibernate.validator.constraints.URL;
 import org.springframework.stereotype.Component;
+
+import java.time.LocalDate;
 
 @Data
 @Component
-public class UserDetailDTO {
+public class UserAllImformationDTO {
     private String name;
-    private String userAccount;
+    private String tel;
+    private String mail;
     private String avatar;
+    private LocalDate birthday;
     private String bio;
     private String background;
     private boolean showFollowers;

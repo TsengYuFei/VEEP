@@ -2,7 +2,9 @@ package com.example.api.Dao;
 
 import com.example.api.DTO.UserDetailDTO;
 import com.example.api.DTO.UserOverviewDTO;
-import com.example.api.Request.UserRequest;
+import com.example.api.Model.Role;
+import com.example.api.Request.UserCreateRequest;
+import com.example.api.Request.UserUpdateRequest;
 import com.example.api.RowMapper.UserDetailRowMapper;
 import com.example.api.RowMapper.UserOverviewRowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
@@ -54,22 +56,55 @@ public class UserDao {
         } else return null;
     }
 
-    public String createUser(UserRequest userRequest){
+    public String createUser(UserCreateRequest request){
         System.out.println("UserDao: createUser");
         String sql = "INSERT INTO user (name, userAccount, password, tel, mail, avatar, birthday) " +
                 "VALUES (:name, :userAccount, :password, :tel, :mail, :avatar, :birthday)";
 
         Map<String, Object> map = new HashMap<>();
-        map.put("name", userRequest.getName());
-        map.put("userAccount", userRequest.getUserAccount());
-        map.put("password", userRequest.getPassword());
-        map.put("tel", userRequest.getTel());
-        map.put("mail", userRequest.getMail());
-        map.put("avatar", userRequest.getAvatar());
-        map.put("birthday", userRequest.getBirthday());
+        map.put("name", request.getName());
+        map.put("userAccount", request.getUserAccount());
+        map.put("password", request.getPassword());
+        map.put("tel", request.getTel());
+        map.put("mail", request.getMail());
+        map.put("avatar", request.getAvatar());
+        map.put("birthday", request.getBirthday());
 
         namedParameterJdbcTemplate.update(sql, new MapSqlParameterSource(map));
 
         return map.get("userAccount").toString();
+    }
+
+
+    public void updateUser(String account, UserUpdateRequest request){
+        System.out.println("UserDao: updateUser >> "+account);
+        String sql = "UPDATE user SET name = :name, tel = :tel, mail = :mail, avatar = :avatar," +
+                " birthday = :birthday, bio = :bio, background = :background, showFollowers = :showFollowers," +
+                " showFollowing = :showFollowing, showHistory = :showHistory," +
+                " showCurrentExpo = :showCurrentExpo, showCurrentBooth = :showCurrentBooth, role = :role" +
+                " WHERE userAccount = :account";
+
+        Map<String, Object> map = new HashMap<>();
+
+        if(request.getAvatar().isBlank()) map.put("avatar", null);
+        else map.put("avatar", request.getAvatar());
+
+        if(request.getBackground().isBlank()) map.put("background", null);
+        else map.put("background", request.getBackground());
+
+        map.put("name", request.getName());
+        map.put("tel", request.getTel());
+        map.put("mail", request.getMail());
+        map.put("birthday", request.getBirthday());
+        map.put("bio", request.getBio());
+        map.put("showFollowers", request.isShowFollowers());
+        map.put("showFollowing", request.isShowFollowing());
+        map.put("showHistory", request.isShowHistory());
+        map.put("showCurrentExpo", request.isShowCurrentExpo());
+        map.put("showCurrentBooth", request.isShowCurrentExpo());
+        map.put("role", request.getRole().toString());
+        map.put("account", account);
+
+        namedParameterJdbcTemplate.update(sql, map);
     }
 }
