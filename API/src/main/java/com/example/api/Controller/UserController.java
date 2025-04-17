@@ -3,6 +3,7 @@ package com.example.api.Controller;
 import com.example.api.DTO.UserOverviewDTO;
 import com.example.api.DTO.UserDetailDTO;
 import com.example.api.Exception.NotFoundException;
+import com.example.api.Request.UserRequest;
 import com.example.api.Service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -11,6 +12,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -58,6 +60,7 @@ public class UserController {
 
     }
 
+
     @Operation(
             summary = "獲取使用者資訊(概略)",
             description = "使用於展會中。" +
@@ -89,5 +92,36 @@ public class UserController {
         System.out.println("UserController: getUserOverview >> "+userAccount);
         UserOverviewDTO user = userService.getUserOverviewByAccount(userAccount);
         return ResponseEntity.status(HttpStatus.OK).body(user);
+    }
+
+
+    @Operation(
+            summary = "新增使用者",
+            description = ""
+    )
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "201",
+                    description = "成功新增使用者",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = UserOverviewDTO.class)
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = "409",
+                    description = "使用者帳號已存在"
+            ),
+            @ApiResponse(
+                    responseCode = "500",
+                    description = "伺服器錯誤"
+            )
+    })
+    @PostMapping("")
+    public ResponseEntity<UserOverviewDTO> createUser(@Valid @RequestBody UserRequest userRequest){
+        System.out.println("UserController: createUser");
+        String userAccount = userService.createUser(userRequest);
+        UserOverviewDTO user = userService.getUserOverviewByAccount(userAccount);
+        return ResponseEntity.status(HttpStatus.CREATED).body(user);
     }
 }
