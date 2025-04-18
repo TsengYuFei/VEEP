@@ -48,10 +48,18 @@ public class UserService {
     }
 
 
-    public void updateUser(String account, UserUpdateRequest request){
-        System.out.println("UserService: updateUser >> "+account);
+    public void updateUserByAccount(String account, UserUpdateRequest request){
+        System.out.println("UserService: updateUserByAccount >> "+account);
         UserDetailDTO user = userDao.getUserDetailByAccount(account);
         if(user == null) throw new NotFoundException("Can't find a user with the user account < "+account+" >");
-        userDao.updateUser(account, request);
+        userDao.updateUserByAccount(account, request);
+    }
+
+
+    public void deleteUserByAccount(String account){
+        System.out.println("UserService: deleteUserByAccount >> "+account);
+        UserDetailDTO user = userDao.getUserDetailByAccount(account);
+        if(user == null) throw new NotFoundException("Can't find a user with the user account < "+account+" >");
+        userDao.deleteUserByAccount(account);
     }
 }

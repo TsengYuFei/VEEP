@@ -3,7 +3,6 @@ package com.example.api.Dao;
 import com.example.api.DTO.UserAllInformationDTO;
 import com.example.api.DTO.UserDetailDTO;
 import com.example.api.DTO.UserOverviewDTO;
-import com.example.api.Model.Role;
 import com.example.api.Request.UserCreateRequest;
 import com.example.api.Request.UserUpdateRequest;
 import com.example.api.RowMapper.UserAllInformationRowMapper;
@@ -94,8 +93,8 @@ public class UserDao {
     }
 
 
-    public void updateUser(String account, UserUpdateRequest request){
-        System.out.println("UserDao: updateUser >> "+account);
+    public void updateUserByAccount(String account, UserUpdateRequest request){
+        System.out.println("UserDao: updateUserByAccount >> "+account);
         String sql = "UPDATE user SET name = :name, tel = :tel, mail = :mail, avatar = :avatar," +
                 " birthday = :birthday, bio = :bio, background = :background, showFollowers = :showFollowers," +
                 " showFollowing = :showFollowing, showHistory = :showHistory," +
@@ -121,6 +120,17 @@ public class UserDao {
         map.put("showCurrentExpo", request.isShowCurrentExpo());
         map.put("showCurrentBooth", request.isShowCurrentExpo());
         map.put("role", request.getRole().toString());
+        map.put("account", account);
+
+        namedParameterJdbcTemplate.update(sql, map);
+    }
+
+
+    public void deleteUserByAccount(String account){
+        System.out.println("UserDao: updateUser >> "+account);
+        String sql = "DELETE FROM user WHERE userAccount = :account";
+
+        Map<String, Object> map = new HashMap<>();
         map.put("account", account);
 
         namedParameterJdbcTemplate.update(sql, map);

@@ -194,8 +194,34 @@ public class UserController {
             @Valid @RequestBody UserUpdateRequest userRequest
     ){
         System.out.println("UserController: updateUser >> "+userRequest);
-        userService.updateUser(userAccount, userRequest);
+        userService.updateUserByAccount(userAccount, userRequest);
         UserDetailDTO user = userService.getUserDetailByAccount(userAccount);
         return ResponseEntity.status(HttpStatus.OK).body(user);
+    }
+    
+
+    @Operation(summary = "刪除使用者")
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "204",
+                    description = "成功刪除使用者"
+            ),
+            @ApiResponse(
+                    responseCode = "404",
+                    description = "找不到使用者"
+            ),
+            @ApiResponse(
+                    responseCode = "500",
+                    description = "伺服器錯誤"
+            )
+    })
+    @DeleteMapping("/{userAccount}")
+    public ResponseEntity<?> deleteUser(
+            @Parameter(description = "使用者帳號", required = true)
+            @PathVariable String userAccount
+    ){
+        System.out.println("UserController: deleteUser >> "+userAccount);
+        userService.deleteUserByAccount(userAccount);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 }
