@@ -1,5 +1,6 @@
 package com.example.api.Service;
 
+import com.example.api.DTO.UserAllInformationDTO;
 import com.example.api.DTO.UserDetailDTO;
 import com.example.api.DTO.UserOverviewDTO;
 import com.example.api.Dao.UserDao;
@@ -26,6 +27,14 @@ public class UserService {
     public UserOverviewDTO getUserOverviewByAccount(String account){
         System.out.println("UserService: getUserOverviewByAccount >> "+account);
         UserOverviewDTO user = userDao.getUserOverviewByAccount(account);
+        if(user == null) throw new NotFoundException("Can't find a user with the user account < "+account+" >");
+        return user;
+    }
+
+
+    public UserAllInformationDTO getUserAllInformationByAccount(String account){
+        System.out.println("UserService: getUserAllInformationByAccount >> "+account);
+        UserAllInformationDTO user = userDao.getUserAllInformationByAccount(account);
         if(user == null) throw new NotFoundException("Can't find a user with the user account < "+account+" >");
         return user;
     }

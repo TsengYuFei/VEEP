@@ -8,7 +8,7 @@ import java.time.LocalDate;
 
 @Data
 @Component
-public class UserAllImformationDTO {
+public class UserAllInformationDTO {
     private String name;
     private String tel;
     private String mail;

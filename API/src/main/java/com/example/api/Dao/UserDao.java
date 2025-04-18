@@ -1,10 +1,12 @@
 package com.example.api.Dao;
 
+import com.example.api.DTO.UserAllInformationDTO;
 import com.example.api.DTO.UserDetailDTO;
 import com.example.api.DTO.UserOverviewDTO;
 import com.example.api.Model.Role;
 import com.example.api.Request.UserCreateRequest;
 import com.example.api.Request.UserUpdateRequest;
+import com.example.api.RowMapper.UserAllInformationRowMapper;
 import com.example.api.RowMapper.UserDetailRowMapper;
 import com.example.api.RowMapper.UserOverviewRowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
@@ -36,9 +38,8 @@ public class UserDao {
 
         List<UserDetailDTO> userList = namedParameterJdbcTemplate.query(sql, map, new UserDetailRowMapper());
 
-        if(!userList.isEmpty()) {
-            return userList.get(0);
-        } else return null;
+        if(!userList.isEmpty()) return userList.get(0);
+        else return null;
     }
 
 
@@ -51,10 +52,27 @@ public class UserDao {
 
         List<UserOverviewDTO> userList = namedParameterJdbcTemplate.query(sql, map, new UserOverviewRowMapper());
 
-        if(!userList.isEmpty()) {
-            return userList.get(0);
-        } else return null;
+        if(!userList.isEmpty()) return userList.get(0);
+        else return null;
     }
+
+
+    public UserAllInformationDTO getUserAllInformationByAccount(String account){
+        System.out.println("UserDao: getUserAllInformationByAccount >> "+account);
+        String sql = "SELECT name, tel, mail, avatar, birthday, bio, background," +
+                "showFollowers, showFollowing, showHistory, showCurrentExpo, showCurrentBooth, role " +
+                "FROM user " +
+                "WHERE userAccount = :account";
+
+        Map<String, Object> map = new HashMap<>();
+        map.put("account", account);
+
+        List<UserAllInformationDTO> userList = namedParameterJdbcTemplate.query(sql, map, new UserAllInformationRowMapper());
+
+        if(!userList.isEmpty()) return userList.get(0);
+        else return null;
+    }
+
 
     public String createUser(UserCreateRequest request){
         System.out.println("UserDao: createUser");

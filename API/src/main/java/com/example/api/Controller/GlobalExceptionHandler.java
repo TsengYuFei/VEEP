@@ -4,6 +4,7 @@ import com.example.api.DTO.ErrorResponseDTO;
 import com.example.api.Exception.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
@@ -43,6 +44,12 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ErrorResponseDTO> handleUnprocessableEntityException(UnprocessableEntityException exception) {
         ErrorResponseDTO error = new ErrorResponseDTO("Unprocessable Entity", exception.getMessage());
         return new ResponseEntity<>(error, HttpStatus.UNPROCESSABLE_ENTITY);
+    }
+
+    @ExceptionHandler(HttpMessageNotReadableException.class)
+    public ResponseEntity<ErrorResponseDTO> handleHttpMessageNotReadableException(HttpMessageNotReadableException ex) {
+        String message = "請確認傳入的資料格式是否正確（可能為 enum 或日期）";
+        return new ResponseEntity<>(new ErrorResponseDTO("格式錯誤", message), HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(Exception.class)

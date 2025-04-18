@@ -1,5 +1,6 @@
 package com.example.api.Controller;
 
+import com.example.api.DTO.UserAllInformationDTO;
 import com.example.api.DTO.UserOverviewDTO;
 import com.example.api.DTO.UserDetailDTO;
 import com.example.api.Request.UserCreateRequest;
@@ -27,7 +28,7 @@ public class UserController {
 
     @Operation(
             summary = "獲取使用者資訊(詳細)",
-            description = "使用於人檔案頁面。" +
+            description = "使用於個人檔案頁面。" +
                     "取得 1.使用者名稱 2.使用者帳號 3.頭像URL 4.個人簡介 5.背景圖片URL" +
                     " 7.顯示追蹤者 8.顯示追蹤中 9.顯示參與紀錄 10.顯示進行中的持有展會 11.顯示進行中的持有攤位 12.身分"
     )
@@ -96,6 +97,40 @@ public class UserController {
 
 
     @Operation(
+            summary = "獲取使用者資訊(全部)",
+            description = "用於個人資料更新頁面。可獲取除了userAccount及password外之所有欄位"
+    )
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "成功取得使用者資訊(全部)",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = UserAllInformationDTO.class)
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = "404",
+                    description = "找不到使用者"
+            ),
+            @ApiResponse(
+                    responseCode = "500",
+                    description = "伺服器錯誤"
+            )
+    })
+    @GetMapping("/{userAccount}/allInformation")
+    public ResponseEntity<UserAllInformationDTO> getUserAllInformation(
+            @Parameter(description = "使用者帳號", required = true)
+            @PathVariable String userAccount
+    ) {
+        System.out.println("UserController: getUserAllInformation >> "+userAccount);
+        UserAllInformationDTO user = userService.getUserAllInformationByAccount(userAccount);
+        return ResponseEntity.status(HttpStatus.OK).body(user);
+
+    }
+
+
+    @Operation(
             summary = "新增使用者",
             description = "可輸入欄位 1.使用者名稱 2.使用者帳號 3.密碼 4.電話 5.電子郵箱 6.頭像URL 7.生日(yyyy-MM-dd格式)"
     )
@@ -128,7 +163,7 @@ public class UserController {
 
     @Operation(
             summary = "更新使用者",
-            description = ""
+            description = "用於個人資料更新頁面。可更新除了userAccount及password外之所有欄位"
     )
     @ApiResponses(value = {
             @ApiResponse(
@@ -138,6 +173,10 @@ public class UserController {
                             mediaType = "application/json",
                             schema = @Schema(implementation = UserDetailDTO.class)
                     )
+            ),
+            @ApiResponse(
+                    responseCode = "400",
+                    description = "輸入格式錯誤"
             ),
             @ApiResponse(
                     responseCode = "404",
