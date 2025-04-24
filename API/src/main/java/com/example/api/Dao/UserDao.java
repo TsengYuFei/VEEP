@@ -111,11 +111,11 @@ public class UserDao {
         map.put("birthday", request.getBirthday());
         map.put("bio", request.getBio());
         map.put("background", request.getBackground());
-        map.put("showFollowers", request.isShowFollowers());
-        map.put("showFollowing", request.isShowFollowing());
-        map.put("showHistory", request.isShowHistory());
-        map.put("showCurrentExpo", request.isShowCurrentExpo());
-        map.put("showCurrentBooth", request.isShowCurrentExpo());
+        map.put("showFollowers", request.getShowFollowers());
+        map.put("showFollowing", request.getShowFollowing());
+        map.put("showHistory", request.getShowHistory());
+        map.put("showCurrentExpo", request.getShowCurrentExpo());
+        map.put("showCurrentBooth", request.getShowCurrentBooth());
         map.put("role", request.getRole().toString());
         map.put("account", account);
 
