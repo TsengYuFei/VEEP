@@ -1,7 +1,8 @@
 package com.example.api.Controller;
 
 import com.example.api.DTO.ExpoEditDTO;
-import com.example.api.Request.ExpoCreateRequest;
+import com.example.api.DTO.UserDetailDTO;
+import com.example.api.Request.ExpoRequest;
 import com.example.api.Service.ExpoService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -48,7 +49,7 @@ public class ExpoController {
     @GetMapping("/edit/{expoID}")
     public ResponseEntity<ExpoEditDTO> getExpoEdit(
             @Parameter(description = "展會ID", required = true)
-            @PathVariable int expoID
+            @PathVariable Integer expoID
     ){
         System.out.println("ExpoController: getExpoEdit >> "+expoID);
         ExpoEditDTO expo = expoService.getExpoEditByID(expoID);
@@ -74,11 +75,50 @@ public class ExpoController {
             )
     })
     @PostMapping("")
-    public ResponseEntity<ExpoEditDTO> createExpo(@Valid @RequestBody ExpoCreateRequest expoRequest){
+    public ResponseEntity<ExpoEditDTO> createExpo(@Valid @RequestBody ExpoRequest expoRequest){
         System.out.println("ExpoController: createExpo");
         System.out.println(expoRequest);
-        int expoID = expoService.createExpo(expoRequest);
+        Integer expoID = expoService.createExpo(expoRequest);
         ExpoEditDTO expo = expoService.getExpoEditByID(expoID);
         return ResponseEntity.status(HttpStatus.CREATED).body(expo);
+    }
+
+
+    @Operation(
+            summary = "更新展會",
+            description = "用於展會資料更新頁面。可更新除了expoID外之所有欄位"
+    )
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "成功更新展會資訊",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = ExpoEditDTO.class)
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = "400",
+                    description = "輸入格式錯誤"
+            ),
+            @ApiResponse(
+                    responseCode = "404",
+                    description = "找不到展會"
+            ),
+            @ApiResponse(
+                    responseCode = "500",
+                    description = "伺服器錯誤"
+            )
+    })
+    @PutMapping("/{expoID}")
+    public ResponseEntity<ExpoEditDTO> updateExpoByID(
+            @Parameter(description = "展會ID", required = true)
+            @PathVariable Integer expoID,
+            @Valid @RequestBody ExpoRequest expoRequest
+    ){
+        System.out.println("ExpoController: updateExpoByID >> "+expoID);
+        expoService.updateExpoByID(expoID, expoRequest);
+        ExpoEditDTO expo = expoService.getExpoEditByID(expoID);
+        return ResponseEntity.status(HttpStatus.OK).body(expo);
     }
 }

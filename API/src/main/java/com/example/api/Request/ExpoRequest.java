@@ -9,13 +9,9 @@ import org.hibernate.validator.constraints.URL;
 import java.time.LocalDateTime;
 
 @Data
-public class ExpoCreateRequest {
-    public ExpoCreateRequest() {
-        System.out.println("ExpoCreateRequest is called");
-    }
-
-        @NotBlank(message = "展會名稱不可為空")
-    @Size(min = 1, max = 20, message = "展會名稱長度應在1~20字元之間")
+public class ExpoRequest {
+    @NotBlank(message = "展會名稱不可為空")
+    @Size(min = 1, max = 30, message = "展會名稱長度應在1~30字元之間")
     private String name;
 
     @URL(message = "展會圖像不是正確的圖片路徑")

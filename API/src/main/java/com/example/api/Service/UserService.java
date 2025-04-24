@@ -55,8 +55,10 @@ public class UserService {
         UserDetailDTO user = userDao.getUserDetailByAccount(account);
         if(user == null) throw new NotFoundException("Can't find a user with the user account < "+account+" >");
 
-        if(request.getAvatar().isBlank()) request.setAvatar(null);
-        if(request.getBackground().isBlank()) request.setBackground(null);
+        String avatar = request.getAvatar();
+        String background = request.getBackground();
+        if(avatar != null && avatar.isBlank()) request.setAvatar(null);
+        if(background != null && background.isBlank()) request.setBackground(null);
         userDao.updateUserByAccount(account, request);
     }
 

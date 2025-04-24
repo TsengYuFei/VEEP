@@ -1,7 +1,7 @@
 package com.example.api.Dao;
 
 import com.example.api.DTO.ExpoEditDTO;
-import com.example.api.Request.ExpoCreateRequest;
+import com.example.api.Request.ExpoRequest;
 import com.example.api.RowMapper.ExpoEditRowMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
@@ -24,7 +24,7 @@ public class ExpoDao {
     }
 
 
-    public ExpoEditDTO getExpoEditByID(int expoID) {
+    public ExpoEditDTO getExpoEditByID(Integer expoID) {
         System.out.println("ExpoDao: getExpoEditByAccount >> "+expoID);
         String sql = "SELECT name, avatar, price, introduction, openMode, openStatus, " +
                 "openStart, openEnd, accessCode, maxParticipants, display " +
@@ -41,7 +41,7 @@ public class ExpoDao {
     }
 
 
-    public int createExpo (ExpoCreateRequest request){
+    public Integer createExpo (ExpoRequest request){
         System.out.println("ExpoDao: createExpo");
         String sql = "INSERT INTO expo (name, avatar, price, introduction, openMode, " +
                 "openStatus, openStart, openEnd, accessCode, maxParticipants, display)" +
@@ -65,8 +65,34 @@ public class ExpoDao {
 
         namedParameterJdbcTemplate.update(sql, new MapSqlParameterSource(map), keyHolder);
 
-        int expoID = keyHolder.getKey().intValue();
+        Integer expoID = keyHolder.getKey().intValue();
 
         return expoID;
+    }
+
+
+    public void updateExpoByID(Integer expoID, ExpoRequest request){
+        System.out.println("ExpoDao: updateExpoByID  >> "+expoID);
+        String sql = "UPDATE expo SET name = :name, avatar = :avatar, price = :price, " +
+                "introduction = :introduction, openMode = :openMode, openStatus = :openStatus, " +
+                "openStart = :openStart, openEnd = :openEnd, accessCode = :accessCode, " +
+                "maxParticipants = :maxParticipants, display = :display " +
+                "WHERE expoID = :expoID";
+
+        Map<String, Object> map = new HashMap<>();
+        map.put("name", request.getName());
+        map.put("avatar", request.getAvatar());
+        map.put("price", request.getPrice());
+        map.put("introduction", request.getIntroduction());
+        map.put("openMode", request.getOpenMode().toString());
+        map.put("openStatus", request.getOpenStatus());
+        map.put("openStart", request.getOpenStart());
+        map.put("openEnd", request.getOpenEnd());
+        map.put("accessCode", request.getAccessCode());
+        map.put("maxParticipants", request.getMaxParticipants());
+        map.put("display", request.getDisplay());
+        map.put("expoID", expoID);
+
+        namedParameterJdbcTemplate.update(sql, map);
     }
 }
