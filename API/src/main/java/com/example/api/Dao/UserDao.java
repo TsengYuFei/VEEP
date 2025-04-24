@@ -104,18 +104,13 @@ public class UserDao {
                 " WHERE userAccount = :account";
 
         Map<String, Object> map = new HashMap<>();
-
-        if(request.getAvatar().isBlank()) map.put("avatar", null);
-        else map.put("avatar", request.getAvatar());
-
-        if(request.getBackground().isBlank()) map.put("background", null);
-        else map.put("background", request.getBackground());
-
         map.put("name", request.getName());
         map.put("tel", request.getTel());
         map.put("mail", request.getMail());
+        map.put("avatar", request.getAvatar());
         map.put("birthday", request.getBirthday());
         map.put("bio", request.getBio());
+        map.put("background", request.getBackground());
         map.put("showFollowers", request.isShowFollowers());
         map.put("showFollowing", request.isShowFollowing());
         map.put("showHistory", request.isShowHistory());

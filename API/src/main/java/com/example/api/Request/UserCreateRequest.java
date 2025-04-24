@@ -5,13 +5,12 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.validation.constraints.*;
 import lombok.Data;
 import org.hibernate.validator.constraints.URL;
-
 import java.time.LocalDate;
 
 @Data
 public class UserCreateRequest {
     @NotBlank(message = "使用者名稱不可為空")
-    @Size(min = 1, max = 20, message = "使用者名稱長度應該在1~10字元之間")
+    @Size(min = 1, max = 20, message = "使用者名稱長度應該在1~20字元之間")
     private String name;
 
     @NotBlank(message = "使用者帳號不可為空")
@@ -31,7 +30,7 @@ public class UserCreateRequest {
     @Email(message = "請輸入正確的電子郵箱地址")
     private String mail;
 
-    @URL(message = "不是正確的圖片路徑")
+    @URL(message = "使用者頭像不是正確的圖片路徑")
     private String avatar;
 
     @Past(message = "生日必須為過去的日期")

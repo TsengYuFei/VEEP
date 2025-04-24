@@ -3,7 +3,6 @@ package com.example.api.DTO;
 import com.example.api.Model.OpenMode;
 import lombok.Data;
 import org.springframework.stereotype.Component;
-
 import java.time.LocalDateTime;
 
 @Data
@@ -19,5 +18,5 @@ public class ExpoEditDTO {
     private LocalDateTime openEnd;
     private String accessCode;
     private int maxParticipants;
-    private boolean isShow;
+    private boolean display;
 }

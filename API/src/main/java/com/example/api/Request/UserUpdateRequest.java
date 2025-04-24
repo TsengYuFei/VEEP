@@ -22,7 +22,7 @@ public class UserUpdateRequest {
     @Email(message = "請輸入正確的電子郵箱地址")
     private String mail;
 
-    @URL(message = "不是正確的圖片路徑")
+    @URL(message = "使用者頭像不是正確的圖片路徑")
     private String avatar;
 
     @Past(message = "生日必須為過去的日期")
@@ -31,24 +31,24 @@ public class UserUpdateRequest {
 
     private String bio;
 
-    @URL(message = "不是正確的圖片路徑")
+    @URL(message = "使用者背景圖片不是正確的圖片路徑")
     private String background;
 
     @NotNull(message = "顯示追蹤者不可為空")
-    private boolean showFollowers;
+    private Boolean showFollowers;
 
     @NotNull(message = "顯示追蹤中不可為空")
-    private boolean showFollowing;
+    private Boolean showFollowing;
 
     @NotNull(message = "顯示參與紀錄不可為空")
-    private boolean showHistory;
+    private Boolean showHistory;
 
     @NotNull(message = "顯示進行中的持有展會不可為空")
-    private boolean showCurrentExpo;
+    private Boolean showCurrentExpo;
 
     @NotNull(message = "顯示進行中的持有攤位不可為空")
-    private boolean showCurrentBooth;
+    private Boolean showCurrentBooth;
 
-    @NotNull(message = "身分不可為空")
+    @NotNull(message = "使用者身分不可為空")
     private Role role;
 }

@@ -44,6 +44,8 @@ public class UserService {
         System.out.println("UserService: createUser");
         UserOverviewDTO user = userDao.getUserOverviewByAccount(request.getUserAccount());
         if(user != null) throw new ConflictException("User account < "+user.getUserAccount()+" > is already exist.");
+
+        if(request.getAvatar().isBlank()) request.setAvatar(null);
         return userDao.createUser(request);
     }
 
@@ -52,6 +54,9 @@ public class UserService {
         System.out.println("UserService: updateUserByAccount >> "+account);
         UserDetailDTO user = userDao.getUserDetailByAccount(account);
         if(user == null) throw new NotFoundException("Can't find a user with the user account < "+account+" >");
+
+        if(request.getAvatar().isBlank()) request.setAvatar(null);
+        if(request.getBackground().isBlank()) request.setBackground(null);
         userDao.updateUserByAccount(account, request);
     }
 

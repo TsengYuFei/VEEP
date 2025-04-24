@@ -50,7 +50,7 @@ public class UserController {
                     description = "伺服器錯誤"
             )
     })
-    @GetMapping("/{userAccount}/detail")
+    @GetMapping("/detail/{userAccount}")
     public ResponseEntity<UserDetailDTO> getUserDetail(
             @Parameter(description = "使用者帳號", required = true)
             @PathVariable String userAccount
@@ -85,7 +85,7 @@ public class UserController {
                     description = "伺服器錯誤"
             )
     })
-    @GetMapping("/{userAccount}/overview")
+    @GetMapping("/overview/{userAccount}")
     public ResponseEntity<UserOverviewDTO> getUserOverview(
             @Parameter(description = "使用者帳號", required = true)
             @PathVariable String userAccount
@@ -118,7 +118,7 @@ public class UserController {
                     description = "伺服器錯誤"
             )
     })
-    @GetMapping("/{userAccount}/edit")
+    @GetMapping("/edit/{userAccount}")
     public ResponseEntity<UserEditDTO> getUserEdit(
             @Parameter(description = "使用者帳號", required = true)
             @PathVariable String userAccount

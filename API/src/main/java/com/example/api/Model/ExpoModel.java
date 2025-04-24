@@ -19,6 +19,5 @@ public class ExpoModel {
     private LocalDateTime openEnd;
     private String accessCode;
     private int maxParticipants;
-    private boolean isShow;
-    private String link;
+    private boolean display;
 }

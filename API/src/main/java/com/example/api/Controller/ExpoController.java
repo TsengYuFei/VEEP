@@ -1,6 +1,7 @@
 package com.example.api.Controller;
 
 import com.example.api.DTO.ExpoEditDTO;
+import com.example.api.Request.ExpoCreateRequest;
 import com.example.api.Service.ExpoService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -9,13 +10,11 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @Tag(name = "單一展會相關", description = "")
 @RequestMapping("/expo")
@@ -26,7 +25,7 @@ public class ExpoController {
 
     @Operation(
             summary = "獲取展會資訊(編輯用)",
-            description = "用於展會編輯頁面。可獲取除了expoID及link外之所有欄位"
+            description = "用於展會編輯頁面。可獲取除了expoID外之所有欄位"
     )
     @ApiResponses(value = {
             @ApiResponse(
@@ -46,7 +45,7 @@ public class ExpoController {
                     description = "伺服器錯誤"
             )
     })
-    @GetMapping("/{expoID}/edit")
+    @GetMapping("/edit/{expoID}")
     public ResponseEntity<ExpoEditDTO> getExpoEdit(
             @Parameter(description = "展會ID", required = true)
             @PathVariable int expoID
@@ -54,5 +53,32 @@ public class ExpoController {
         System.out.println("ExpoController: getExpoEdit >> "+expoID);
         ExpoEditDTO expo = expoService.getExpoEditByID(expoID);
         return ResponseEntity.status(HttpStatus.OK).body(expo);
+    }
+
+    @Operation(
+            summary = "新增展會",
+            description = "可輸入欄位 1.展會名稱 2.圖像URL 3.價錢 4.介紹 5.開放模式 6.開放狀態 7.開始時間 8.結束時間 9.驗證碼 10.同時間最大參與人數 11.是否顯示於展會總覽頁面"
+    )
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "201",
+                    description = "成功新增展會",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = ExpoEditDTO.class)
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = "500",
+                    description = "伺服器錯誤"
+            )
+    })
+    @PostMapping("")
+    public ResponseEntity<ExpoEditDTO> createExpo(@Valid @RequestBody ExpoCreateRequest expoRequest){
+        System.out.println("ExpoController: createExpo");
+        System.out.println(expoRequest);
+        int expoID = expoService.createExpo(expoRequest);
+        ExpoEditDTO expo = expoService.getExpoEditByID(expoID);
+        return ResponseEntity.status(HttpStatus.CREATED).body(expo);
     }
 }
