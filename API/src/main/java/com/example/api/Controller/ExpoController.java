@@ -121,4 +121,30 @@ public class ExpoController {
         ExpoEditDTO expo = expoService.getExpoEditByID(expoID);
         return ResponseEntity.status(HttpStatus.OK).body(expo);
     }
+
+
+    @Operation(summary = "刪除展會")
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "204",
+                    description = "成功刪除展會"
+            ),
+            @ApiResponse(
+                    responseCode = "404",
+                    description = "找不到展會"
+            ),
+            @ApiResponse(
+                    responseCode = "500",
+                    description = "伺服器錯誤"
+            )
+    })
+    @DeleteMapping("/{expoID}")
+    public ResponseEntity<?> deleteExpo(
+            @Parameter(description = "展會ID", required = true)
+            @PathVariable Integer expoID
+    ){
+        System.out.println("ExpoController: deleteExpo >> "+expoID);
+        expoService.deleteExpoByID(expoID);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+    }
 }

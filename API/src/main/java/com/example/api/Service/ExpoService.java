@@ -2,6 +2,7 @@ package com.example.api.Service;
 
 import com.example.api.DTO.ExpoEditDTO;
 import com.example.api.Dao.ExpoDao;
+import com.example.api.Dao.UserDao;
 import com.example.api.Exception.NotFoundException;
 import com.example.api.Exception.UnprocessableEntityException;
 import com.example.api.Model.OpenMode;
@@ -59,5 +60,13 @@ public class ExpoService {
         }
 
         expoDao.updateExpoByID(expoID, request);
+    }
+
+
+    public void deleteExpoByID(Integer expoID){
+        System.out.println("ExpoService: deleteExpoByID >> "+expoID);
+        ExpoEditDTO expo = expoDao.getExpoEditByID(expoID);
+        if(expo == null) throw new NotFoundException("Can't find an expo with ID < \"+expoID+\" >\")");
+        expoDao.deleteExpoByID(expoID);
     }
 }

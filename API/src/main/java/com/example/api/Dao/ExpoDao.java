@@ -95,4 +95,15 @@ public class ExpoDao {
 
         namedParameterJdbcTemplate.update(sql, map);
     }
+
+
+    public void deleteExpoByID(Integer expoID){
+        System.out.println("ExpoDao: deleteExpoByID  >> "+expoID);
+        String sql = "DELETE FROM expo WHERE expoID = :expoID";
+
+        Map<String, Object> map = new HashMap<>();
+        map.put("expoID", expoID);
+
+        namedParameterJdbcTemplate.update(sql, map);
+    }
 }
