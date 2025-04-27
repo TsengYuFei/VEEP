@@ -41,6 +41,7 @@ public class ExpoService {
         return expoDao.createExpo(request);
     }
 
+
     public void updateExpoByID(Integer expoID, ExpoRequest request){
         System.out.println("ExpoService: updateExpoByID >> "+expoID);
         ExpoEditDTO expo = expoDao.getExpoEditByID(expoID);

@@ -2,7 +2,6 @@ package com.example.api.RowMapper;
 
 import com.example.api.DTO.ExpoEditDTO;
 import com.example.api.Model.OpenMode;
-import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.jdbc.core.RowMapper;
 
 import java.sql.ResultSet;
