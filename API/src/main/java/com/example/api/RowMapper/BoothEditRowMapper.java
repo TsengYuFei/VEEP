@@ -13,10 +13,10 @@ public class BoothEditRowMapper implements RowMapper<BoothEditDTO> {
     @Override
     public BoothEditDTO mapRow(ResultSet rs, int rowNum) throws SQLException {
         BoothEditDTO booth = new BoothEditDTO();
-        OpenMode openMode = OpenMode.valueOf(rs.getString("mode"));
+        OpenMode openMode = OpenMode.valueOf(rs.getString("openMode"));
 
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-        String start = rs.getString("openStrat");
+        String start = rs.getString("openStart");
         String end = rs.getString("openEnd");
         LocalDateTime startTime = null;
         LocalDateTime endTime = null;

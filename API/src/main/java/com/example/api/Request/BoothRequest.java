@@ -21,7 +21,8 @@ public class BoothRequest {
 
     @NotNull(message = "攤位開放模式不可為空")
     private OpenMode openMode;
-    private boolean openStatus;
+
+    private Boolean openStatus;
 
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime openStart;
@@ -31,8 +32,8 @@ public class BoothRequest {
 
     @NotNull(message = "攤位同時間最大參與人數不可為空")
     @Min(value = 1, message = "攤位同時間最大參與人數至少需一人")
-    @Max(value = 1500, message = "攤位同時間最大參與人數至多1500人")
-    private int maxParticipants;
+    @Max(value = 500, message = "攤位同時間最大參與人數至多500人")
+    private Integer maxParticipants;
 
-    private boolean display;
+    private Boolean display;
 }
