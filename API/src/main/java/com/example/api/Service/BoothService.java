@@ -22,6 +22,7 @@ public class BoothService {
         return booth;
     }
 
+
     public Integer createBooth(BoothRequest request){
         System.out.println("BoothService: createBooth");
         String avatar = request.getAvatar();
@@ -36,5 +37,25 @@ public class BoothService {
         }
 
         return boothDao.createBooth(request);
+    }
+
+
+    public void updateBoothByID(Integer boothID, BoothRequest request){
+        System.out.println("BoothService: updateBoothByID >> "+boothID);
+        BoothEditDTO booth = boothDao.getBoothByID(boothID);
+        if(booth == null) throw new NotFoundException("Can't find an expo with ID < "+boothID+" >");
+
+        String avatar = request.getAvatar();
+        if(avatar != null && avatar.isBlank()) request.setAvatar(null);
+
+        Boolean status = request.getOpenStatus();
+        OpenMode mode = request.getOpenMode();
+        if(mode == OpenMode.MANUAL && status == null){
+            throw new UnprocessableEntityException("Can't update booth without status");
+        }else if (mode == OpenMode.AUTO && (request.getOpenStart() == null || request.getOpenEnd() == null)) {
+            throw new UnprocessableEntityException("Can't update booth without open start/end");
+        }
+
+        boothDao.updateBoothByID(boothID, request);
     }
 }

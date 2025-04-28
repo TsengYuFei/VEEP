@@ -53,7 +53,7 @@ public class BoothController {
             @Parameter(description = "攤位ID", required = true)
             @PathVariable Integer boothID
     ){
-        System.out.println("BoothController: getExpoEdit >> "+boothID);
+        System.out.println("BoothController: getBoothEdit >> "+boothID);
         BoothEditDTO booth = boothService.getBoothByID(boothID);
         return ResponseEntity.status(HttpStatus.OK).body(booth);
     }
@@ -86,4 +86,41 @@ public class BoothController {
         return ResponseEntity.status(HttpStatus.CREATED).body(booth);
     }
 
+    @Operation(
+            summary = "更新攤位",
+            description = "用於攤位資料更新頁面。可更新除了boothID外之所有欄位"
+    )
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "成功更新攤位資訊",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = BoothEditDTO.class)
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = "400",
+                    description = "輸入格式錯誤"
+            ),
+            @ApiResponse(
+                    responseCode = "404",
+                    description = "找不到攤位"
+            ),
+            @ApiResponse(
+                    responseCode = "500",
+                    description = "伺服器錯誤"
+            )
+    })
+    @PutMapping("/{boothID}")
+    public ResponseEntity<BoothEditDTO> updateBoothByID(
+            @Parameter(description = "攤位ID", required = true)
+            @PathVariable Integer boothID,
+            @Valid @RequestBody BoothRequest boothRequest
+    ){
+        System.out.println("BoothController: updateBoothByID >> "+boothID);
+        boothService.updateBoothByID(boothID, boothRequest);
+        BoothEditDTO booth = boothService.getBoothByID(boothID);
+        return ResponseEntity.status(HttpStatus.OK).body(booth);
+    }
 }

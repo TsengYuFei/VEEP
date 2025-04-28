@@ -45,7 +45,7 @@ public class ExpoService {
     public void updateExpoByID(Integer expoID, ExpoRequest request){
         System.out.println("ExpoService: updateExpoByID >> "+expoID);
         ExpoEditDTO expo = expoDao.getExpoEditByID(expoID);
-        if(expo == null) throw new NotFoundException("Can't find an expo with ID < \"+expoID+\" >\")");
+        if(expo == null) throw new NotFoundException("Can't find an expo with ID < "+expoID+" >");
 
         String avatar = request.getAvatar();
         String code = request.getAccessCode();
@@ -55,9 +55,9 @@ public class ExpoService {
         Boolean status = request.getOpenStatus();
         OpenMode mode = request.getOpenMode();
         if(mode == OpenMode.MANUAL && status == null){
-            throw new UnprocessableEntityException("Can't create expo without status");
+            throw new UnprocessableEntityException("Can't update expo without status");
         }else if (mode == OpenMode.AUTO && (request.getOpenStart() == null || request.getOpenEnd() == null)) {
-            throw new UnprocessableEntityException("Can't create expo without open start/end");
+            throw new UnprocessableEntityException("Can't update expo without open start/end");
         }
 
         expoDao.updateExpoByID(expoID, request);

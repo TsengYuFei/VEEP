@@ -67,4 +67,27 @@ public class BoothDao {
 
         return keyHolder.getKey().intValue();
     }
+
+
+    public void updateBoothByID(Integer boothID, BoothRequest request){
+        System.out.println("BoothDao: updateBoothByID >> "+boothID);
+        String sql = "UPDATE booth SET name = :name, avatar = :avatar, introduction = :introduction, " +
+                "openMode = :openMode, openStatus = :openStatus, openStart = :openStart, openEnd = :openEnd, " +
+                "maxParticipants = :maxParticipants, display = :display " +
+                "WHERE boothID = :boothID";
+
+        Map<String, Object> map = new HashMap<>();
+        map.put("name", request.getName());
+        map.put("avatar", request.getAvatar());
+        map.put("introduction", request.getIntroduction());
+        map.put("openMode", request.getOpenMode().toString());
+        map.put("openStatus", request.getOpenStatus());
+        map.put("openStart", request.getOpenStart());
+        map.put("openEnd", request.getOpenEnd());
+        map.put("maxParticipants", request.getMaxParticipants());
+        map.put("display", request.getDisplay());
+        map.put("boothID", boothID);
+
+        namedParameterJdbcTemplate.update(sql, map);
+    }
 }
