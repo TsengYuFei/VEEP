@@ -43,7 +43,7 @@ public class BoothService {
     public void updateBoothByID(Integer boothID, BoothRequest request){
         System.out.println("BoothService: updateBoothByID >> "+boothID);
         BoothEditDTO booth = boothDao.getBoothByID(boothID);
-        if(booth == null) throw new NotFoundException("Can't find an expo with ID < "+boothID+" >");
+        if(booth == null) throw new NotFoundException("Can't find an booth with ID < "+boothID+" >");
 
         String avatar = request.getAvatar();
         if(avatar != null && avatar.isBlank()) request.setAvatar(null);
@@ -57,5 +57,14 @@ public class BoothService {
         }
 
         boothDao.updateBoothByID(boothID, request);
+    }
+
+
+    public void deleteBoothByID(Integer boothID){
+        System.out.println("BoothService: deleteBoothByID >> "+boothID);
+        BoothEditDTO booth = boothDao.getBoothByID(boothID);
+        if(booth == null) throw new NotFoundException("Can't find an booth with ID < "+boothID+" >");
+
+        boothDao.deleteBoothByID(boothID);
     }
 }

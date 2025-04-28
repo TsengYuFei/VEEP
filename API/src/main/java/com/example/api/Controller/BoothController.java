@@ -86,6 +86,7 @@ public class BoothController {
         return ResponseEntity.status(HttpStatus.CREATED).body(booth);
     }
 
+
     @Operation(
             summary = "更新攤位",
             description = "用於攤位資料更新頁面。可更新除了boothID外之所有欄位"
@@ -122,5 +123,31 @@ public class BoothController {
         boothService.updateBoothByID(boothID, boothRequest);
         BoothEditDTO booth = boothService.getBoothByID(boothID);
         return ResponseEntity.status(HttpStatus.OK).body(booth);
+    }
+
+
+    @Operation(summary = "刪除攤位")
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "204",
+                    description = "成功刪除攤位"
+            ),
+            @ApiResponse(
+                    responseCode = "404",
+                    description = "找不到攤位"
+            ),
+            @ApiResponse(
+                    responseCode = "500",
+                    description = "伺服器錯誤"
+            )
+    })
+    @DeleteMapping("/{boothID}")
+    public ResponseEntity<?> deleteBoothByID(
+            @Parameter(description = "攤位ID", required = true)
+            @PathVariable Integer boothID
+    ){
+        System.out.println("BoothController: deleteBoothByID >> "+boothID);
+        boothService.deleteBoothByID(boothID);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 }

@@ -51,7 +51,7 @@ public class UserController {
             )
     })
     @GetMapping("/detail/{userAccount}")
-    public ResponseEntity<UserDetailDTO> getUserDetail(
+    public ResponseEntity<UserDetailDTO> getUserDetailByAccount(
             @Parameter(description = "使用者帳號", required = true)
             @PathVariable String userAccount
     ) {
@@ -86,7 +86,7 @@ public class UserController {
             )
     })
     @GetMapping("/overview/{userAccount}")
-    public ResponseEntity<UserOverviewDTO> getUserOverview(
+    public ResponseEntity<UserOverviewDTO> getUserOverviewByAccount(
             @Parameter(description = "使用者帳號", required = true)
             @PathVariable String userAccount
     ){
@@ -119,7 +119,7 @@ public class UserController {
             )
     })
     @GetMapping("/edit/{userAccount}")
-    public ResponseEntity<UserEditDTO> getUserEdit(
+    public ResponseEntity<UserEditDTO> getUserEditByAccount(
             @Parameter(description = "使用者帳號", required = true)
             @PathVariable String userAccount
     ) {
@@ -188,7 +188,7 @@ public class UserController {
             )
     })
     @PutMapping("/{userAccount}")
-    public ResponseEntity<UserDetailDTO> updateUser(
+    public ResponseEntity<UserDetailDTO> updateUserByAccount(
             @Parameter(description = "使用者帳號", required = true)
             @PathVariable String userAccount,
             @Valid @RequestBody UserUpdateRequest userRequest
@@ -216,7 +216,7 @@ public class UserController {
             )
     })
     @DeleteMapping("/{userAccount}")
-    public ResponseEntity<?> deleteUser(
+    public ResponseEntity<?> deleteUserByAccount(
             @Parameter(description = "使用者帳號", required = true)
             @PathVariable String userAccount
     ){

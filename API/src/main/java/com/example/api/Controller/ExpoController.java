@@ -1,7 +1,6 @@
 package com.example.api.Controller;
 
 import com.example.api.DTO.ExpoEditDTO;
-import com.example.api.DTO.UserDetailDTO;
 import com.example.api.Request.ExpoRequest;
 import com.example.api.Service.ExpoService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -47,7 +46,7 @@ public class ExpoController {
             )
     })
     @GetMapping("/edit/{expoID}")
-    public ResponseEntity<ExpoEditDTO> getExpoEdit(
+    public ResponseEntity<ExpoEditDTO> getExpoEditByID(
             @Parameter(description = "展會ID", required = true)
             @PathVariable Integer expoID
     ){
@@ -139,7 +138,7 @@ public class ExpoController {
             )
     })
     @DeleteMapping("/{expoID}")
-    public ResponseEntity<?> deleteExpo(
+    public ResponseEntity<?> deleteExpoByID(
             @Parameter(description = "展會ID", required = true)
             @PathVariable Integer expoID
     ){

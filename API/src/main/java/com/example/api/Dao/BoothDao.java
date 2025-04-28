@@ -90,4 +90,15 @@ public class BoothDao {
 
         namedParameterJdbcTemplate.update(sql, map);
     }
+
+
+    public void deleteBoothByID(Integer boothID){
+        System.out.println("BoothDao: deleteBoothByID >> "+boothID);
+        String sql = "DELETE FROM booth WHERE boothID = :boothID";
+
+        Map<String, Object> map = new HashMap<>();
+        map.put("boothID", boothID);
+
+        namedParameterJdbcTemplate.update(sql, map);
+    }
 }
