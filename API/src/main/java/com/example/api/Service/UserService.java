@@ -25,7 +25,7 @@ public class UserService {
         UserDetailResponse user = userRepository.getUserDetailByAccount(account);
         if(user == null) throw new NotFoundException("Can't find a user with the user account < "+account+" >");
         return user;
-    }
+    }   
 
 
     public UserOverviewResponse getUserOverviewByAccount(String account){
