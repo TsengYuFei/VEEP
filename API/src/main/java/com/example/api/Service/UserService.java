@@ -1,40 +1,44 @@
 package com.example.api.Service;
 
-import com.example.api.DTO.UserEditDTO;
-import com.example.api.DTO.UserDetailDTO;
-import com.example.api.DTO.UserOverviewDTO;
-import com.example.api.Dao.UserDao;
+import com.example.api.DTO.Response.UserEditResponse;
+import com.example.api.DTO.Response.UserDetailResponse;
+import com.example.api.DTO.Response.UserOverviewResponse;
+import com.example.api.Repository.UserRepository;
 import com.example.api.Exception.ConflictException;
 import com.example.api.Exception.NotFoundException;
-import com.example.api.Request.UserCreateRequest;
-import com.example.api.Request.UserUpdateRequest;
+import com.example.api.DTO.Request.UserCreateRequest;
+import com.example.api.DTO.Request.UserUpdateRequest;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
-@Component
+@Service
 public class UserService {
     @Autowired
-    private UserDao userDao;
+    private final UserRepository userRepository;
 
-    public UserDetailDTO getUserDetailByAccount(String account){
+    public UserService(UserRepository userRepository) {
+        this.userRepository = userRepository;
+    }
+
+    public UserDetailResponse getUserDetailByAccount(String account){
         System.out.println("UserService: getUserDetailByAccount >> "+account);
-        UserDetailDTO user = userDao.getUserDetailByAccount(account);
+        UserDetailResponse user = userRepository.getUserDetailByAccount(account);
         if(user == null) throw new NotFoundException("Can't find a user with the user account < "+account+" >");
         return user;
     }
 
 
-    public UserOverviewDTO getUserOverviewByAccount(String account){
+    public UserOverviewResponse getUserOverviewByAccount(String account){
         System.out.println("UserService: getUserOverviewByAccount >> "+account);
-        UserOverviewDTO user = userDao.getUserOverviewByAccount(account);
+        UserOverviewResponse user = userRepository.getUserOverviewByAccount(account);
         if(user == null) throw new NotFoundException("Can't find a user with the user account < "+account+" >");
         return user;
     }
 
 
-    public UserEditDTO getUserEditByAccount(String account){
+    public UserEditResponse getUserEditByAccount(String account){
         System.out.println("UserService: getUserEditByAccount >> "+account);
-        UserEditDTO user = userDao.getUserEditByAccount(account);
+        UserEditResponse user = userRepository.getUserEditByAccount(account);
         if(user == null) throw new NotFoundException("Can't find a user with the user account < "+account+" >");
         return user;
     }
@@ -42,31 +46,31 @@ public class UserService {
 
     public String createUser(UserCreateRequest request){
         System.out.println("UserService: createUser");
-        UserOverviewDTO user = userDao.getUserOverviewByAccount(request.getUserAccount());
+        UserOverviewResponse user = userRepository.getUserOverviewByAccount(request.getUserAccount());
         if(user != null) throw new ConflictException("User account < "+user.getUserAccount()+" > is already exist.");
 
         if(request.getAvatar().isBlank()) request.setAvatar(null);
-        return userDao.createUser(request);
+        return userRepository.createUser(request);
     }
 
 
     public void updateUserByAccount(String account, UserUpdateRequest request){
         System.out.println("UserService: updateUserByAccount >> "+account);
-        UserDetailDTO user = userDao.getUserDetailByAccount(account);
+        UserDetailResponse user = userRepository.getUserDetailByAccount(account);
         if(user == null) throw new NotFoundException("Can't find a user with the user account < "+account+" >");
 
         String avatar = request.getAvatar();
         String background = request.getBackground();
         if(avatar != null && avatar.isBlank()) request.setAvatar(null);
         if(background != null && background.isBlank()) request.setBackground(null);
-        userDao.updateUserByAccount(account, request);
+        userRepository.updateUserByAccount(account, request);
     }
 
 
     public void deleteUserByAccount(String account){
         System.out.println("UserService: deleteUserByAccount >> "+account);
-        UserDetailDTO user = userDao.getUserDetailByAccount(account);
+        UserDetailResponse user = userRepository.getUserDetailByAccount(account);
         if(user == null) throw new NotFoundException("Can't find a user with the user account < "+account+" >");
-        userDao.deleteUserByAccount(account);
+        userRepository.deleteUserByAccount(account);
     }
 }

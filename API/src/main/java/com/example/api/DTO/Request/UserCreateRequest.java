@@ -1,6 +1,6 @@
-package com.example.api.Request;
+package com.example.api.DTO.Request;
 
-import com.example.api.Model.Role;
+import com.example.api.Entity.Role;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.validation.constraints.*;
 import lombok.Data;

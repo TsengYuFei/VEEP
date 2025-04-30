@@ -1,7 +1,7 @@
 package com.example.api.RowMapper;
 
-import com.example.api.DTO.BoothEditDTO;
-import com.example.api.Model.OpenMode;
+import com.example.api.DTO.Response.BoothEditResponse;
+import com.example.api.Entity.OpenMode;
 import org.springframework.jdbc.core.RowMapper;
 
 import java.sql.ResultSet;
@@ -9,10 +9,10 @@ import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
-public class BoothEditRowMapper implements RowMapper<BoothEditDTO> {
+public class BoothEditRowMapper implements RowMapper<BoothEditResponse> {
     @Override
-    public BoothEditDTO mapRow(ResultSet rs, int rowNum) throws SQLException {
-        BoothEditDTO booth = new BoothEditDTO();
+    public BoothEditResponse mapRow(ResultSet rs, int rowNum) throws SQLException {
+        BoothEditResponse booth = new BoothEditResponse();
         OpenMode openMode = OpenMode.valueOf(rs.getString("openMode"));
 
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");

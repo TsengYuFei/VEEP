@@ -1,30 +1,31 @@
-package com.example.api.Dao;
+package com.example.api.Repository;
 
-import com.example.api.DTO.ExpoEditDTO;
-import com.example.api.Request.ExpoRequest;
+import com.example.api.DTO.Response.ExpoEditResponse;
+import com.example.api.DTO.Request.ExpoRequest;
 import com.example.api.RowMapper.ExpoEditRowMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Repository;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
-@Component
-public class ExpoDao {
+@Repository
+public class ExpoRepository {
     @Autowired
     private final NamedParameterJdbcTemplate namedParameterJdbcTemplate;
 
-    public ExpoDao(NamedParameterJdbcTemplate namedParameterJdbcTemplate) {
+    public ExpoRepository(NamedParameterJdbcTemplate namedParameterJdbcTemplate) {
         this.namedParameterJdbcTemplate = namedParameterJdbcTemplate;
     }
 
 
-    public ExpoEditDTO getExpoEditByID(Integer expoID) {
+    public ExpoEditResponse getExpoEditByID(Integer expoID) {
         System.out.println("ExpoDao: getExpoEditByAccount >> "+expoID);
         String sql = "SELECT name, avatar, price, introduction, openMode, openStatus, " +
                 "openStart, openEnd, accessCode, maxParticipants, display " +
@@ -34,7 +35,7 @@ public class ExpoDao {
         Map<String, Object> map = new HashMap<>();
         map.put("expoID", expoID);
 
-        List<ExpoEditDTO> expoList = namedParameterJdbcTemplate.query(sql, map, new ExpoEditRowMapper());
+        List<ExpoEditResponse> expoList = namedParameterJdbcTemplate.query(sql, map, new ExpoEditRowMapper());
 
         if(!expoList.isEmpty()) return expoList.get(0);
         else return null;
@@ -65,9 +66,7 @@ public class ExpoDao {
 
         namedParameterJdbcTemplate.update(sql, new MapSqlParameterSource(map), keyHolder);
 
-        Integer expoID = keyHolder.getKey().intValue();
-
-        return expoID;
+        return Objects.requireNonNull(keyHolder.getKey()).intValue();
     }
 
 

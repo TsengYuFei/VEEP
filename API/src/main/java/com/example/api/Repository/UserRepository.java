@@ -1,33 +1,33 @@
-package com.example.api.Dao;
+package com.example.api.Repository;
 
-import com.example.api.DTO.UserEditDTO;
-import com.example.api.DTO.UserDetailDTO;
-import com.example.api.DTO.UserOverviewDTO;
-import com.example.api.Request.UserCreateRequest;
-import com.example.api.Request.UserUpdateRequest;
+import com.example.api.DTO.Response.UserEditResponse;
+import com.example.api.DTO.Response.UserDetailResponse;
+import com.example.api.DTO.Response.UserOverviewResponse;
+import com.example.api.DTO.Request.UserCreateRequest;
+import com.example.api.DTO.Request.UserUpdateRequest;
 import com.example.api.RowMapper.UserEditRowMapper;
 import com.example.api.RowMapper.UserDetailRowMapper;
 import com.example.api.RowMapper.UserOverviewRowMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Repository;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-@Component
-public class UserDao {
+@Repository
+public class UserRepository {
     @Autowired
     private final NamedParameterJdbcTemplate namedParameterJdbcTemplate;
 
-    public UserDao(NamedParameterJdbcTemplate namedParameterJdbcTemplate) {
+    public UserRepository(NamedParameterJdbcTemplate namedParameterJdbcTemplate) {
         this.namedParameterJdbcTemplate = namedParameterJdbcTemplate;
     }
 
 
-    public UserDetailDTO getUserDetailByAccount(String account){
+    public UserDetailResponse getUserDetailByAccount(String account){
         System.out.println("UserDao: getUserDetailByAccount >> "+account);
         String sql = "SELECT name, userAccount, avatar, bio, background," +
                 "showFollowers, showFollowing, showHistory, showCurrentExpo, showCurrentBooth, role " +
@@ -37,28 +37,28 @@ public class UserDao {
         Map<String, Object> map = new HashMap<>();
         map.put("account", account);
 
-        List<UserDetailDTO> userList = namedParameterJdbcTemplate.query(sql, map, new UserDetailRowMapper());
+        List<UserDetailResponse> userList = namedParameterJdbcTemplate.query(sql, map, new UserDetailRowMapper());
 
         if(!userList.isEmpty()) return userList.get(0);
         else return null;
     }
 
 
-    public UserOverviewDTO getUserOverviewByAccount(String account){
+    public UserOverviewResponse getUserOverviewByAccount(String account){
         System.out.println("UserDao: getUserOverviewByAccount >> "+account);
         String sql = "SELECT name, userAccount, avatar, role FROM user WHERE userAccount = :account";
 
         Map<String, Object> map = new HashMap<>();
         map.put("account", account);
 
-        List<UserOverviewDTO> userList = namedParameterJdbcTemplate.query(sql, map, new UserOverviewRowMapper());
+        List<UserOverviewResponse> userList = namedParameterJdbcTemplate.query(sql, map, new UserOverviewRowMapper());
 
         if(!userList.isEmpty()) return userList.get(0);
         else return null;
     }
 
 
-    public UserEditDTO getUserEditByAccount(String account){
+    public UserEditResponse getUserEditByAccount(String account){
         System.out.println("UserDao: getUserEditByAccount >> "+account);
         String sql = "SELECT name, tel, mail, avatar, birthday, bio, background," +
                 "showFollowers, showFollowing, showHistory, showCurrentExpo, showCurrentBooth, role " +
@@ -68,7 +68,7 @@ public class UserDao {
         Map<String, Object> map = new HashMap<>();
         map.put("account", account);
 
-        List<UserEditDTO> userList = namedParameterJdbcTemplate.query(sql, map, new UserEditRowMapper());
+        List<UserEditResponse> userList = namedParameterJdbcTemplate.query(sql, map, new UserEditRowMapper());
 
         if(!userList.isEmpty()) return userList.get(0);
         else return null;

@@ -1,7 +1,7 @@
 package com.example.api.Controller;
 
-import com.example.api.DTO.ExpoEditDTO;
-import com.example.api.Request.ExpoRequest;
+import com.example.api.DTO.Response.ExpoEditResponse;
+import com.example.api.DTO.Request.ExpoRequest;
 import com.example.api.Service.ExpoService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -21,7 +21,11 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 public class ExpoController {
     @Autowired
-    private ExpoService expoService;
+    private final ExpoService expoService;
+
+    public ExpoController(ExpoService expoService) {
+        this.expoService = expoService;
+    }
 
     @Operation(
             summary = "獲取展會資訊(編輯用)",
@@ -33,7 +37,7 @@ public class ExpoController {
                     description = "成功取得展會資訊(編輯用)",
                     content = @Content(
                             mediaType = "application/json",
-                            schema = @Schema(implementation = ExpoEditDTO.class)
+                            schema = @Schema(implementation = ExpoEditResponse.class)
                     )
             ),
             @ApiResponse(
@@ -46,12 +50,12 @@ public class ExpoController {
             )
     })
     @GetMapping("/edit/{expoID}")
-    public ResponseEntity<ExpoEditDTO> getExpoEditByID(
+    public ResponseEntity<ExpoEditResponse> getExpoEditByID(
             @Parameter(description = "展會ID", required = true)
             @PathVariable Integer expoID
     ){
         System.out.println("ExpoController: getExpoEdit >> "+expoID);
-        ExpoEditDTO expo = expoService.getExpoEditByID(expoID);
+        ExpoEditResponse expo = expoService.getExpoEditByID(expoID);
         return ResponseEntity.status(HttpStatus.OK).body(expo);
     }
 
@@ -65,7 +69,7 @@ public class ExpoController {
                     description = "成功新增展會",
                     content = @Content(
                             mediaType = "application/json",
-                            schema = @Schema(implementation = ExpoEditDTO.class)
+                            schema = @Schema(implementation = ExpoEditResponse.class)
                     )
             ),
             @ApiResponse(
@@ -74,11 +78,11 @@ public class ExpoController {
             )
     })
     @PostMapping("")
-    public ResponseEntity<ExpoEditDTO> createExpo(@Valid @RequestBody ExpoRequest expoRequest){
+    public ResponseEntity<ExpoEditResponse> createExpo(@Valid @RequestBody ExpoRequest expoRequest){
         System.out.println("ExpoController: createExpo");
         System.out.println(expoRequest);
         Integer expoID = expoService.createExpo(expoRequest);
-        ExpoEditDTO expo = expoService.getExpoEditByID(expoID);
+        ExpoEditResponse expo = expoService.getExpoEditByID(expoID);
         return ResponseEntity.status(HttpStatus.CREATED).body(expo);
     }
 
@@ -93,7 +97,7 @@ public class ExpoController {
                     description = "成功更新展會資訊",
                     content = @Content(
                             mediaType = "application/json",
-                            schema = @Schema(implementation = ExpoEditDTO.class)
+                            schema = @Schema(implementation = ExpoEditResponse.class)
                     )
             ),
             @ApiResponse(
@@ -110,14 +114,14 @@ public class ExpoController {
             )
     })
     @PutMapping("/{expoID}")
-    public ResponseEntity<ExpoEditDTO> updateExpoByID(
+    public ResponseEntity<ExpoEditResponse> updateExpoByID(
             @Parameter(description = "展會ID", required = true)
             @PathVariable Integer expoID,
             @Valid @RequestBody ExpoRequest expoRequest
     ){
         System.out.println("ExpoController: updateExpoByID >> "+expoID);
         expoService.updateExpoByID(expoID, expoRequest);
-        ExpoEditDTO expo = expoService.getExpoEditByID(expoID);
+        ExpoEditResponse expo = expoService.getExpoEditByID(expoID);
         return ResponseEntity.status(HttpStatus.OK).body(expo);
     }
 

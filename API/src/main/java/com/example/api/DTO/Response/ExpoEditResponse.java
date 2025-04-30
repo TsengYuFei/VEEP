@@ -1,13 +1,13 @@
-package com.example.api.DTO;
+package com.example.api.DTO.Response;
 
-import com.example.api.Model.OpenMode;
+import com.example.api.Entity.OpenMode;
 import lombok.Data;
 import org.springframework.stereotype.Component;
 import java.time.LocalDateTime;
 
 @Data
 @Component
-public class ExpoEditDTO {
+public class ExpoEditResponse {
     private String name;
     private String avatar;
     private int price;

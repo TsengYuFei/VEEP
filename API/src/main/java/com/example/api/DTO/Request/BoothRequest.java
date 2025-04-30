@@ -1,6 +1,6 @@
-package com.example.api.Request;
+package com.example.api.DTO.Request;
 
-import com.example.api.Model.OpenMode;
+import com.example.api.Entity.OpenMode;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.validation.constraints.*;
 import lombok.Data;

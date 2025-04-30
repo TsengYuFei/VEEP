@@ -1,10 +1,10 @@
 package com.example.api.Controller;
 
-import com.example.api.DTO.UserEditDTO;
-import com.example.api.DTO.UserOverviewDTO;
-import com.example.api.DTO.UserDetailDTO;
-import com.example.api.Request.UserCreateRequest;
-import com.example.api.Request.UserUpdateRequest;
+import com.example.api.DTO.Response.UserEditResponse;
+import com.example.api.DTO.Response.UserOverviewResponse;
+import com.example.api.DTO.Response.UserDetailResponse;
+import com.example.api.DTO.Request.UserCreateRequest;
+import com.example.api.DTO.Request.UserUpdateRequest;
 import com.example.api.Service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -24,7 +24,11 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 public class UserController {
     @Autowired
-    private UserService userService;
+    private final UserService userService;
+
+    public UserController(UserService userService) {
+        this.userService = userService;
+    }
 
     @Operation(
             summary = "獲取使用者資訊(詳細)",
@@ -38,7 +42,7 @@ public class UserController {
                     description = "成功取得使用者資訊(詳細)",
                     content = @Content(
                             mediaType = "application/json",
-                            schema = @Schema(implementation = UserDetailDTO.class)
+                            schema = @Schema(implementation = UserDetailResponse.class)
                     )
             ),
             @ApiResponse(
@@ -51,12 +55,12 @@ public class UserController {
             )
     })
     @GetMapping("/detail/{userAccount}")
-    public ResponseEntity<UserDetailDTO> getUserDetailByAccount(
+    public ResponseEntity<UserDetailResponse> getUserDetailByAccount(
             @Parameter(description = "使用者帳號", required = true)
             @PathVariable String userAccount
     ) {
         System.out.println("UserController: getUserDetail >> "+userAccount);
-        UserDetailDTO user = userService.getUserDetailByAccount(userAccount);
+        UserDetailResponse user = userService.getUserDetailByAccount(userAccount);
         return ResponseEntity.status(HttpStatus.OK).body(user);
 
     }
@@ -73,7 +77,7 @@ public class UserController {
                     description = "成功取得使用者資訊(概略)",
                     content = @Content(
                             mediaType = "application/json",
-                            schema = @Schema(implementation = UserOverviewDTO.class)
+                            schema = @Schema(implementation = UserOverviewResponse.class)
                     )
             ),
             @ApiResponse(
@@ -86,12 +90,12 @@ public class UserController {
             )
     })
     @GetMapping("/overview/{userAccount}")
-    public ResponseEntity<UserOverviewDTO> getUserOverviewByAccount(
+    public ResponseEntity<UserOverviewResponse> getUserOverviewByAccount(
             @Parameter(description = "使用者帳號", required = true)
             @PathVariable String userAccount
     ){
         System.out.println("UserController: getUserOverview >> "+userAccount);
-        UserOverviewDTO user = userService.getUserOverviewByAccount(userAccount);
+        UserOverviewResponse user = userService.getUserOverviewByAccount(userAccount);
         return ResponseEntity.status(HttpStatus.OK).body(user);
     }
 
@@ -106,7 +110,7 @@ public class UserController {
                     description = "成功取得使用者資訊(編輯用)",
                     content = @Content(
                             mediaType = "application/json",
-                            schema = @Schema(implementation = UserEditDTO.class)
+                            schema = @Schema(implementation = UserEditResponse.class)
                     )
             ),
             @ApiResponse(
@@ -119,12 +123,12 @@ public class UserController {
             )
     })
     @GetMapping("/edit/{userAccount}")
-    public ResponseEntity<UserEditDTO> getUserEditByAccount(
+    public ResponseEntity<UserEditResponse> getUserEditByAccount(
             @Parameter(description = "使用者帳號", required = true)
             @PathVariable String userAccount
     ) {
         System.out.println("UserController: getUserEdit >> "+userAccount);
-        UserEditDTO user = userService.getUserEditByAccount(userAccount);
+        UserEditResponse user = userService.getUserEditByAccount(userAccount);
         return ResponseEntity.status(HttpStatus.OK).body(user);
 
     }
@@ -140,7 +144,7 @@ public class UserController {
                     description = "成功新增使用者",
                     content = @Content(
                             mediaType = "application/json",
-                            schema = @Schema(implementation = UserOverviewDTO.class)
+                            schema = @Schema(implementation = UserOverviewResponse.class)
                     )
             ),
             @ApiResponse(
@@ -153,10 +157,10 @@ public class UserController {
             )
     })
     @PostMapping("")
-    public ResponseEntity<UserOverviewDTO> createUser(@Valid @RequestBody UserCreateRequest userRequest){
+    public ResponseEntity<UserOverviewResponse> createUser(@Valid @RequestBody UserCreateRequest userRequest){
         System.out.println("UserController: createUser");
         String userAccount = userService.createUser(userRequest);
-        UserOverviewDTO user = userService.getUserOverviewByAccount(userAccount);
+        UserOverviewResponse user = userService.getUserOverviewByAccount(userAccount);
         return ResponseEntity.status(HttpStatus.CREATED).body(user);
     }
 
@@ -171,7 +175,7 @@ public class UserController {
                     description = "成功更新使用者資訊",
                     content = @Content(
                             mediaType = "application/json",
-                            schema = @Schema(implementation = UserDetailDTO.class)
+                            schema = @Schema(implementation = UserDetailResponse.class)
                     )
             ),
             @ApiResponse(
@@ -188,14 +192,14 @@ public class UserController {
             )
     })
     @PutMapping("/{userAccount}")
-    public ResponseEntity<UserDetailDTO> updateUserByAccount(
+    public ResponseEntity<UserDetailResponse> updateUserByAccount(
             @Parameter(description = "使用者帳號", required = true)
             @PathVariable String userAccount,
             @Valid @RequestBody UserUpdateRequest userRequest
     ){
         System.out.println("UserController: updateUser >> "+userRequest);
         userService.updateUserByAccount(userAccount, userRequest);
-        UserDetailDTO user = userService.getUserDetailByAccount(userAccount);
+        UserDetailResponse user = userService.getUserDetailByAccount(userAccount);
         return ResponseEntity.status(HttpStatus.OK).body(user);
     }
 

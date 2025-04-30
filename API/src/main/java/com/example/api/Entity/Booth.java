@@ -1,13 +1,14 @@
-package com.example.api.DTO;
+package com.example.api.Entity;
 
-import com.example.api.Model.OpenMode;
 import lombok.Data;
 import org.springframework.stereotype.Component;
+
 import java.time.LocalDateTime;
 
 @Data
 @Component
-public class BoothEditDTO {
+public class Booth {
+    private int boothID;
     private String name;
     private String avatar;
     private String introduction;

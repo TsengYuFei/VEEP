@@ -1,6 +1,5 @@
-package com.example.api.DTO;
+package com.example.api.Entity;
 
-import com.example.api.Model.Role;
 import lombok.Data;
 import org.springframework.stereotype.Component;
 
@@ -8,14 +7,18 @@ import java.time.LocalDate;
 
 @Data
 @Component
-public class UserEditDTO {
+public class User {
     private String name;
+    private String userAccount;
+    private String password;
     private String tel;
     private String mail;
     private String avatar;
     private LocalDate birthday;
     private String bio;
     private String background;
+    private Integer followers;
+    private Integer following;
     private boolean showFollowers;
     private boolean showFollowing;
     private boolean showHistory;

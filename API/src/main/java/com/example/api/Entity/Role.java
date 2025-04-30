@@ -1,4 +1,4 @@
-package com.example.api.Model;
+package com.example.api.Entity;
 
 public enum Role {
     GENERAL,

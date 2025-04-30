@@ -1,23 +1,26 @@
 package com.example.api.Service;
 
-import com.example.api.DTO.ExpoEditDTO;
-import com.example.api.Dao.ExpoDao;
-import com.example.api.Dao.UserDao;
+import com.example.api.DTO.Response.ExpoEditResponse;
+import com.example.api.Repository.ExpoRepository;
 import com.example.api.Exception.NotFoundException;
 import com.example.api.Exception.UnprocessableEntityException;
-import com.example.api.Model.OpenMode;
-import com.example.api.Request.ExpoRequest;
+import com.example.api.Entity.OpenMode;
+import com.example.api.DTO.Request.ExpoRequest;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
-@Component
+@Service
 public class ExpoService {
     @Autowired
-    private ExpoDao expoDao;
+    private final ExpoRepository expoRepository;
 
-    public ExpoEditDTO getExpoEditByID(Integer expoID){
+    public ExpoService(ExpoRepository expoRepository) {
+        this.expoRepository = expoRepository;
+    }
+
+    public ExpoEditResponse getExpoEditByID(Integer expoID){
         System.out.println("ExpoService: getExpoEditByID >> "+expoID);
-        ExpoEditDTO expo = expoDao.getExpoEditByID(expoID);
+        ExpoEditResponse expo = expoRepository.getExpoEditByID(expoID);
         if(expo == null) throw new NotFoundException("Can't find expo with expo ID < "+expoID+" >");
         return expo;
     }
@@ -38,13 +41,13 @@ public class ExpoService {
             throw new UnprocessableEntityException("Can't create expo without open start/end");
         }
 
-        return expoDao.createExpo(request);
+        return expoRepository.createExpo(request);
     }
 
 
     public void updateExpoByID(Integer expoID, ExpoRequest request){
         System.out.println("ExpoService: updateExpoByID >> "+expoID);
-        ExpoEditDTO expo = expoDao.getExpoEditByID(expoID);
+        ExpoEditResponse expo = expoRepository.getExpoEditByID(expoID);
         if(expo == null) throw new NotFoundException("Can't find an expo with ID < "+expoID+" >");
 
         String avatar = request.getAvatar();
@@ -60,14 +63,14 @@ public class ExpoService {
             throw new UnprocessableEntityException("Can't update expo without open start/end");
         }
 
-        expoDao.updateExpoByID(expoID, request);
+        expoRepository.updateExpoByID(expoID, request);
     }
 
 
     public void deleteExpoByID(Integer expoID){
         System.out.println("ExpoService: deleteExpoByID >> "+expoID);
-        ExpoEditDTO expo = expoDao.getExpoEditByID(expoID);
+        ExpoEditResponse expo = expoRepository.getExpoEditByID(expoID);
         if(expo == null) throw new NotFoundException("Can't find an expo with ID < \"+expoID+\" >\")");
-        expoDao.deleteExpoByID(expoID);
+        expoRepository.deleteExpoByID(expoID);
     }
 }

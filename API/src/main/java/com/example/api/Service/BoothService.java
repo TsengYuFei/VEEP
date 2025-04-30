@@ -1,23 +1,27 @@
 package com.example.api.Service;
 
-import com.example.api.DTO.BoothEditDTO;
-import com.example.api.Dao.BoothDao;
+import com.example.api.DTO.Response.BoothEditResponse;
+import com.example.api.Repository.BoothRepository;
 import com.example.api.Exception.NotFoundException;
 import com.example.api.Exception.UnprocessableEntityException;
-import com.example.api.Model.OpenMode;
-import com.example.api.Request.BoothRequest;
+import com.example.api.Entity.OpenMode;
+import com.example.api.DTO.Request.BoothRequest;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
-@Component
+@Service
 public class BoothService {
     @Autowired
-    private BoothDao boothDao;
+    private final BoothRepository boothRepository;
 
-    public BoothEditDTO getBoothByID(Integer boothID){
+    public BoothService(BoothRepository boothRepository) {
+        this.boothRepository = boothRepository;
+    }
+
+    public BoothEditResponse getBoothByID(Integer boothID){
         System.out.println("BoothService: getBoothByID >> "+boothID);
 
-        BoothEditDTO booth = boothDao.getBoothByID(boothID);
+        BoothEditResponse booth = boothRepository.getBoothByID(boothID);
         if(booth == null) throw new NotFoundException("Can't find booth with booth ID < "+boothID+" >");
         return booth;
     }
@@ -36,13 +40,13 @@ public class BoothService {
             throw new UnprocessableEntityException("Can't create booth without open start/end");
         }
 
-        return boothDao.createBooth(request);
+        return boothRepository.createBooth(request);
     }
 
 
     public void updateBoothByID(Integer boothID, BoothRequest request){
         System.out.println("BoothService: updateBoothByID >> "+boothID);
-        BoothEditDTO booth = boothDao.getBoothByID(boothID);
+        BoothEditResponse booth = boothRepository.getBoothByID(boothID);
         if(booth == null) throw new NotFoundException("Can't find an booth with ID < "+boothID+" >");
 
         String avatar = request.getAvatar();
@@ -56,15 +60,15 @@ public class BoothService {
             throw new UnprocessableEntityException("Can't update booth without open start/end");
         }
 
-        boothDao.updateBoothByID(boothID, request);
+        boothRepository.updateBoothByID(boothID, request);
     }
 
 
     public void deleteBoothByID(Integer boothID){
         System.out.println("BoothService: deleteBoothByID >> "+boothID);
-        BoothEditDTO booth = boothDao.getBoothByID(boothID);
+        BoothEditResponse booth = boothRepository.getBoothByID(boothID);
         if(booth == null) throw new NotFoundException("Can't find an booth with ID < "+boothID+" >");
 
-        boothDao.deleteBoothByID(boothID);
+        boothRepository.deleteBoothByID(boothID);
     }
 }

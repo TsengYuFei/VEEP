@@ -1,10 +1,7 @@
 package com.example.api.Controller;
 
-import com.example.api.DTO.BoothEditDTO;
-import com.example.api.DTO.ExpoEditDTO;
-import com.example.api.Dao.BoothDao;
-import com.example.api.Request.BoothRequest;
-import com.example.api.Request.ExpoRequest;
+import com.example.api.DTO.Response.BoothEditResponse;
+import com.example.api.DTO.Request.BoothRequest;
 import com.example.api.Service.BoothService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -24,7 +21,11 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 public class BoothController {
     @Autowired
-    private BoothService boothService;
+    private final BoothService boothService;
+
+    public BoothController(BoothService boothService) {
+        this.boothService = boothService;
+    }
 
     @Operation(
             summary = "獲取攤位資訊(編輯用)",
@@ -36,7 +37,7 @@ public class BoothController {
                     description = "成功取得攤位資訊(編輯用)",
                     content = @Content(
                             mediaType = "application/json",
-                            schema = @Schema(implementation = BoothEditDTO.class)
+                            schema = @Schema(implementation = BoothEditResponse.class)
                     )
             ),
             @ApiResponse(
@@ -49,12 +50,12 @@ public class BoothController {
             )
     })
     @GetMapping("/edit/{boothID}")
-    public ResponseEntity<BoothEditDTO> getBoothEdit(
+    public ResponseEntity<BoothEditResponse> getBoothEdit(
             @Parameter(description = "攤位ID", required = true)
             @PathVariable Integer boothID
     ){
         System.out.println("BoothController: getBoothEdit >> "+boothID);
-        BoothEditDTO booth = boothService.getBoothByID(boothID);
+        BoothEditResponse booth = boothService.getBoothByID(boothID);
         return ResponseEntity.status(HttpStatus.OK).body(booth);
     }
 
@@ -69,7 +70,7 @@ public class BoothController {
                     description = "成功新增攤位",
                     content = @Content(
                             mediaType = "application/json",
-                            schema = @Schema(implementation = BoothEditDTO.class)
+                            schema = @Schema(implementation = BoothEditResponse.class)
                     )
             ),
             @ApiResponse(
@@ -78,11 +79,11 @@ public class BoothController {
             )
     })
     @PostMapping("")
-    public ResponseEntity<BoothEditDTO> createBooth(@Valid @RequestBody BoothRequest boothRequest){
+    public ResponseEntity<BoothEditResponse> createBooth(@Valid @RequestBody BoothRequest boothRequest){
         System.out.println("BoothController: createBooth");
         System.out.println(boothRequest);
         Integer boothID = boothService.createBooth(boothRequest);
-        BoothEditDTO booth = boothService.getBoothByID(boothID);
+        BoothEditResponse booth = boothService.getBoothByID(boothID);
         return ResponseEntity.status(HttpStatus.CREATED).body(booth);
     }
 
@@ -97,7 +98,7 @@ public class BoothController {
                     description = "成功更新攤位資訊",
                     content = @Content(
                             mediaType = "application/json",
-                            schema = @Schema(implementation = BoothEditDTO.class)
+                            schema = @Schema(implementation = BoothEditResponse.class)
                     )
             ),
             @ApiResponse(
@@ -114,14 +115,14 @@ public class BoothController {
             )
     })
     @PutMapping("/{boothID}")
-    public ResponseEntity<BoothEditDTO> updateBoothByID(
+    public ResponseEntity<BoothEditResponse> updateBoothByID(
             @Parameter(description = "攤位ID", required = true)
             @PathVariable Integer boothID,
             @Valid @RequestBody BoothRequest boothRequest
     ){
         System.out.println("BoothController: updateBoothByID >> "+boothID);
         boothService.updateBoothByID(boothID, boothRequest);
-        BoothEditDTO booth = boothService.getBoothByID(boothID);
+        BoothEditResponse booth = boothService.getBoothByID(boothID);
         return ResponseEntity.status(HttpStatus.OK).body(booth);
     }
 

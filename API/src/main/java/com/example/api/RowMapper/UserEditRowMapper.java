@@ -1,18 +1,18 @@
 package com.example.api.RowMapper;
 
-import com.example.api.DTO.UserEditDTO;
-import com.example.api.Model.Role;
+import com.example.api.DTO.Response.UserEditResponse;
+import com.example.api.Entity.Role;
 import org.springframework.jdbc.core.RowMapper;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDate;
 
-public class UserEditRowMapper implements RowMapper<UserEditDTO> {
+public class UserEditRowMapper implements RowMapper<UserEditResponse> {
 
     @Override
-    public UserEditDTO mapRow(ResultSet rs, int rowNum) throws SQLException {
-        UserEditDTO user = new UserEditDTO();
+    public UserEditResponse mapRow(ResultSet rs, int rowNum) throws SQLException {
+        UserEditResponse user = new UserEditResponse();
         LocalDate day = LocalDate.parse(rs.getString("birthday"));
         Role role = Role.valueOf(rs.getString("role"));
 
