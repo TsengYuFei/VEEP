@@ -3,7 +3,7 @@ package com.example.api.Controller;
 import com.example.api.DTO.Request.ExpoUpdateRequest;
 import com.example.api.DTO.Response.ExpoEditResponse;
 import com.example.api.DTO.Request.ExpoCreateRequest;
-import com.example.api.Service.ExpoServiceNew;
+import com.example.api.Service.ExpoService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -22,9 +22,9 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 public class ExpoController {
     @Autowired
-    private final ExpoServiceNew expoService;
+    private final ExpoService expoService;
 
-    public ExpoController(ExpoServiceNew expoService) {
+    public ExpoController(ExpoService expoService) {
         this.expoService = expoService;
     }
 
