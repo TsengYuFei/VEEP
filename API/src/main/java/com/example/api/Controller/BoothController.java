@@ -60,7 +60,7 @@ public class BoothController {
         return ResponseEntity.status(HttpStatus.OK).body(booth);
     }
 
-/*
+
     @Operation(
             summary = "新增攤位",
             description = "可輸入欄位 1.攤位名稱 2.圖像URL 3.介紹 4.開放模式 5.開放狀態 6.開始時間 7.結束時間 8.同時間最大參與人數 9.是否顯示於攤位總覽頁面"
@@ -80,15 +80,14 @@ public class BoothController {
             )
     })
     @PostMapping("")
-    public ResponseEntity<BoothEditResponse> createBooth(@Valid @RequestBody BoothCreateRequest boothCreateRequest){
+    public ResponseEntity<BoothEditResponse> createBooth(@Valid @RequestBody BoothCreateRequest boothRequest){
         System.out.println("BoothController: createBooth");
-        System.out.println(boothCreateRequest);
-        Integer boothID = boothService.createBooth(boothCreateRequest);
-        BoothEditResponse booth = boothService.getBoothByID(boothID);
+        Integer boothID = boothService.createBooth(boothRequest);
+        BoothEditResponse booth = boothService.getBoothEditByID(boothID);
         return ResponseEntity.status(HttpStatus.CREATED).body(booth);
     }
 
-
+/*
     @Operation(
             summary = "更新攤位",
             description = "用於攤位資料更新頁面。可更新除了boothID外之所有欄位"

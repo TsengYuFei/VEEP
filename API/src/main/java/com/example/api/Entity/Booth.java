@@ -32,10 +32,10 @@ public class Booth {
 
     @Enumerated(EnumType.STRING)
     @Column(name = "openMode", nullable = false)
-    private OpenMode openMode;
+    private OpenMode openMode = OpenMode.MANUAL;
 
     @Column(name = "openStatus")
-    private Boolean openStatus;
+    private Boolean openStatus = false;
 
     @Column(name = "openStart")
     private LocalDateTime openStart;
@@ -44,8 +44,8 @@ public class Booth {
     private LocalDateTime openEnd;
 
     @Column(name = "maxParticipants", nullable = false)
-    private Integer maxParticipants;
+    private Integer maxParticipants = 1;
 
     @Column(name = "display", nullable = false)
-    private Boolean display;
+    private Boolean display = true;
 }
