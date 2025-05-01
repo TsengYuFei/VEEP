@@ -10,7 +10,6 @@ import java.time.LocalDateTime;
 
 @Data
 public class ExpoCreateRequest {
-    @NotBlank(message = "展會名稱不可為空")
     @Size(min = 1, max = 30, message = "展會名稱長度應在1~30字元之間")
     private String name;
 

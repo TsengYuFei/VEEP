@@ -1,21 +1,51 @@
 package com.example.api.Entity;
 
+import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
 
 @Data
-@Component
+@Entity
+@AllArgsConstructor
+@NoArgsConstructor
+@Table(name = "booth")
 public class Booth {
-    private int boothID;
-    private String name;
+
+    @Id
+    @Column(name = "boothID", nullable = false)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer boothID;
+
+    @Column(name = "name", length = 30)
+    private String name = "Booth";
+
+    @Column(name = "avatar")
     private String avatar;
+
+    @Lob
+    @Column(name = "introduction")
     private String introduction;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "openMode", nullable = false)
     private OpenMode openMode;
-    private boolean openStatus;
+
+    @Column(name = "openStatus")
+    private Boolean openStatus;
+
+    @Column(name = "openStart")
     private LocalDateTime openStart;
+
+    @Column(name = "openEnd")
     private LocalDateTime openEnd;
-    private int maxParticipants;
-    private boolean display;
+
+    @Column(name = "maxParticipants", nullable = false)
+    private Integer maxParticipants;
+
+    @Column(name = "display", nullable = false)
+    private Boolean display;
 }
