@@ -5,6 +5,7 @@ import com.example.api.DTO.Request.ExpoUpdateRequest;
 import com.example.api.DTO.Response.ExpoEditResponse;
 import com.example.api.Entity.Expo;
 import com.example.api.Entity.OpenMode;
+import com.example.api.Entity.User;
 import com.example.api.Exception.NotFoundException;
 import com.example.api.Exception.UnprocessableEntityException;
 import com.example.api.Repository.ExpoRepositoryNew;
@@ -82,5 +83,12 @@ public class ExpoServiceNew {
         expo.setDisplay(updateIfNotNull(expo.getDisplay(), request.getDisplay()));
 
         expoRepository.save(expo);
+    }
+
+
+    public void deleteExpoByID(Integer expoID){
+        System.out.println("ExpoServiceNew: deleteExpoByID >> "+expoID);
+        Expo expo = getExpoByID(expoID);
+        expoRepository.delete(expo);
     }
 }

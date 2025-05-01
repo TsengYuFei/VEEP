@@ -120,13 +120,13 @@ public class ExpoController {
             @PathVariable Integer expoID,
             @Valid @RequestBody ExpoUpdateRequest expoRequest
     ){
-        System.out.println("ExpoControllerNew: updateExpoByID >> "+expoID);
+        System.out.println("ExpoController: updateExpoByID >> "+expoID);
         expoService.updateExpoByID(expoID, expoRequest);
         ExpoEditResponse expo = expoService.getExpoEditByID(expoID);
         return ResponseEntity.status(HttpStatus.OK).body(expo);
     }
 
-/*
+
     @Operation(summary = "刪除展會")
     @ApiResponses(value = {
             @ApiResponse(
@@ -147,8 +147,8 @@ public class ExpoController {
             @Parameter(description = "展會ID", required = true)
             @PathVariable Integer expoID
     ){
-        System.out.println("ExpoController: deleteExpo >> "+expoID);
+        System.out.println("ExpoController: deleteExpoByID >> "+expoID);
         expoService.deleteExpoByID(expoID);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
-    }*/
+    }
 }
