@@ -1,5 +1,6 @@
 package com.example.api.Controller;
 
+import com.example.api.DTO.Request.BoothUpdateRequest;
 import com.example.api.DTO.Response.BoothEditResponse;
 import com.example.api.DTO.Request.BoothCreateRequest;
 import com.example.api.Service.BoothService;
@@ -87,7 +88,7 @@ public class BoothController {
         return ResponseEntity.status(HttpStatus.CREATED).body(booth);
     }
 
-/*
+
     @Operation(
             summary = "更新攤位",
             description = "用於攤位資料更新頁面。可更新除了boothID外之所有欄位"
@@ -118,15 +119,15 @@ public class BoothController {
     public ResponseEntity<BoothEditResponse> updateBoothByID(
             @Parameter(description = "攤位ID", required = true)
             @PathVariable Integer boothID,
-            @Valid @RequestBody BoothCreateRequest boothCreateRequest
+            @Valid @RequestBody BoothUpdateRequest boothRequest
     ){
         System.out.println("BoothController: updateBoothByID >> "+boothID);
-        boothService.updateBoothByID(boothID, boothCreateRequest);
-        BoothEditResponse booth = boothService.getBoothByID(boothID);
+        boothService.updateBoothByID(boothID, boothRequest);
+        BoothEditResponse booth = boothService.getBoothEditByID(boothID);
         return ResponseEntity.status(HttpStatus.OK).body(booth);
     }
 
-
+/*
     @Operation(summary = "刪除攤位")
     @ApiResponses(value = {
             @ApiResponse(
