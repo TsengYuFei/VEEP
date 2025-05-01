@@ -84,4 +84,11 @@ public class UserServiceNew {
 
         userRepository.save(user);
     }
+
+
+    public void deleteUserByAccount(String account){
+        System.out.println("UserServiceNew: deleteUserByAccount >> "+account);
+        User user = getUserByAccount(account);
+        userRepository.delete(user);
+    }
 }

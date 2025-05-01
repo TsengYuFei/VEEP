@@ -96,7 +96,7 @@ public class UserControllerNew {
 
     @Operation(
             summary = "更新使用者",
-            description = "用於個人資料更新頁面。可更新除了userAccount及password外之所有欄位"
+            description = "用於個人資料更新頁面。可更新除了userAccount、password及role外之所有欄位"
     )
     @ApiResponses(value = {
             @ApiResponse(
@@ -130,5 +130,31 @@ public class UserControllerNew {
         userService.updateUserByAccount(userAccount, userRequest);
         UserDetailResponse user = userService.getUserDetailByAccount(userAccount);
         return ResponseEntity.status(HttpStatus.OK).body(user);
+    }
+
+
+    @Operation(summary = "刪除使用者")
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "204",
+                    description = "成功刪除使用者"
+            ),
+            @ApiResponse(
+                    responseCode = "404",
+                    description = "找不到使用者"
+            ),
+            @ApiResponse(
+                    responseCode = "500",
+                    description = "伺服器錯誤"
+            )
+    })
+    @DeleteMapping("/{userAccount}")
+    public ResponseEntity<?> deleteUserByAccount(
+            @Parameter(description = "使用者帳號", required = true)
+            @PathVariable String userAccount
+    ){
+        System.out.println("UserControllerNew: deleteUserByAccount >> "+userAccount);
+        userService.deleteUserByAccount(userAccount);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 }
