@@ -1,5 +1,6 @@
 package com.example.api.Controller;
 
+import com.example.api.DTO.Request.ExpoUpdateRequest;
 import com.example.api.DTO.Response.ExpoEditResponse;
 import com.example.api.DTO.Request.ExpoCreateRequest;
 import com.example.api.Service.ExpoServiceNew;
@@ -86,7 +87,7 @@ public class ExpoController {
         return ResponseEntity.status(HttpStatus.CREATED).body(expo);
     }
 
-/*
+
     @Operation(
             summary = "更新展會",
             description = "用於展會資料更新頁面。可更新除了expoID外之所有欄位"
@@ -117,15 +118,15 @@ public class ExpoController {
     public ResponseEntity<ExpoEditResponse> updateExpoByID(
             @Parameter(description = "展會ID", required = true)
             @PathVariable Integer expoID,
-            @Valid @RequestBody ExpoRequest expoRequest
+            @Valid @RequestBody ExpoUpdateRequest expoRequest
     ){
-        System.out.println("ExpoController: updateExpoByID >> "+expoID);
+        System.out.println("ExpoControllerNew: updateExpoByID >> "+expoID);
         expoService.updateExpoByID(expoID, expoRequest);
         ExpoEditResponse expo = expoService.getExpoEditByID(expoID);
         return ResponseEntity.status(HttpStatus.OK).body(expo);
     }
 
-
+/*
     @Operation(summary = "刪除展會")
     @ApiResponses(value = {
             @ApiResponse(

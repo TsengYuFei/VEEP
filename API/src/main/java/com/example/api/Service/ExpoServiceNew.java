@@ -1,6 +1,7 @@
 package com.example.api.Service;
 
 import com.example.api.DTO.Request.ExpoCreateRequest;
+import com.example.api.DTO.Request.ExpoUpdateRequest;
 import com.example.api.DTO.Response.ExpoEditResponse;
 import com.example.api.Entity.Expo;
 import com.example.api.Entity.OpenMode;
@@ -12,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import static com.example.api.Other.UpdateTool.updateIfNotBlank;
+import static com.example.api.Other.UpdateTool.updateIfNotNull;
 
 @Service
 public class ExpoServiceNew {
@@ -26,6 +28,13 @@ public class ExpoServiceNew {
         this.modelMapper = modelMapper;
     }
 
+
+
+    private Expo getExpoByID(Integer expoID){
+        System.out.println("ExpoServiceNew: getExpoByID >> "+expoID);
+        return expoRepository.findById(expoID)
+                .orElseThrow(() -> new NotFoundException("找不到展會ID為 < "+ expoID+" > 的展會"));
+    }
 
 
     public ExpoEditResponse getExpoEditByID(Integer expoID) {
@@ -53,5 +62,25 @@ public class ExpoServiceNew {
         Expo expo = modelMapper.map(request, Expo.class);
         expoRepository.save(expo);
         return expo.getExpoID();
+    }
+
+
+    public void updateExpoByID(Integer expoID, ExpoUpdateRequest request){
+        System.out.println("ExpoServiceNew: updateExpoByID >> "+expoID);
+        Expo expo = getExpoByID(expoID);
+
+        expo.setName(updateIfNotBlank(expo.getName(), request.getName()));
+        expo.setAvatar(updateIfNotBlank(expo.getAvatar(), request.getAvatar()));
+        expo.setPrice(updateIfNotNull(expo.getPrice(), request.getPrice()));
+        expo.setIntroduction(updateIfNotBlank(expo.getIntroduction(), request.getIntroduction()));
+        expo.setOpenMode(updateIfNotNull(expo.getOpenMode(), request.getOpenMode()));
+        expo.setOpenStatus(updateIfNotNull(expo.getOpenStatus(), request.getOpenStatus()));
+        expo.setOpenStart(updateIfNotNull(expo.getOpenStart(), request.getOpenStart()));
+        expo.setOpenEnd(updateIfNotNull(expo.getOpenEnd(), request.getOpenEnd()));
+        expo.setAccessCode(updateIfNotBlank(expo.getAccessCode(), request.getAccessCode()));
+        expo.setMaxParticipants(updateIfNotNull(expo.getMaxParticipants(), request.getMaxParticipants()));
+        expo.setDisplay(updateIfNotNull(expo.getDisplay(), request.getDisplay()));
+
+        expoRepository.save(expo);
     }
 }
