@@ -1,8 +1,8 @@
 package com.example.api.Controller;
 
 import com.example.api.DTO.Request.UserCreateRequest;
+import com.example.api.DTO.Request.UserUpdateRequest;
 import com.example.api.DTO.Response.UserDetailResponse;
-import com.example.api.DTO.Response.UserOverviewResponse;
 import com.example.api.Service.UserServiceNew;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -58,7 +58,7 @@ public class UserControllerNew {
             @PathVariable String userAccount
     ){
         System.out.println("UserControllerNew: getUsrDetailByAccount >> "+userAccount);
-        UserDetailResponse user = userService.getUserByAccount(userAccount);
+        UserDetailResponse user = userService.getUserDetailByAccount(userAccount);
         return ResponseEntity.status(HttpStatus.OK).body(user);
     }
 
@@ -89,7 +89,46 @@ public class UserControllerNew {
     public ResponseEntity<UserDetailResponse> createUser(@Valid @RequestBody UserCreateRequest userRequest){
         System.out.println("UserControllerNew: createUser");
         String userAccount = userService.createUser(userRequest);
-        UserDetailResponse user = userService.getUserByAccount(userAccount);
+        UserDetailResponse user = userService.getUserDetailByAccount(userAccount);
         return ResponseEntity.status(HttpStatus.CREATED).body(user);
+    }
+
+
+    @Operation(
+            summary = "更新使用者",
+            description = "用於個人資料更新頁面。可更新除了userAccount及password外之所有欄位"
+    )
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "成功更新使用者資訊",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = UserDetailResponse.class)
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = "400",
+                    description = "輸入格式錯誤"
+            ),
+            @ApiResponse(
+                    responseCode = "404",
+                    description = "找不到使用者"
+            ),
+            @ApiResponse(
+                    responseCode = "500",
+                    description = "伺服器錯誤"
+            )
+    })
+    @PutMapping("/{userAccount}")
+    public ResponseEntity<UserDetailResponse> updateUserByAccount(
+            @Parameter(description = "使用者帳號", required = true)
+            @PathVariable String userAccount,
+            @Valid @RequestBody UserUpdateRequest userRequest
+    ){
+        System.out.println("UserControllerNew: updateUser >> "+userAccount);
+        userService.updateUserByAccount(userAccount, userRequest);
+        UserDetailResponse user = userService.getUserDetailByAccount(userAccount);
+        return ResponseEntity.status(HttpStatus.OK).body(user);
     }
 }

@@ -1,6 +1,7 @@
 package com.example.api.Service;
 
 import com.example.api.DTO.Request.UserCreateRequest;
+import com.example.api.DTO.Request.UserUpdateRequest;
 import com.example.api.DTO.Response.UserDetailResponse;
 import com.example.api.Entity.User;
 import com.example.api.Exception.NotFoundException;
@@ -9,6 +10,11 @@ import com.mysql.cj.exceptions.ClosedOnExpiredPasswordException;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.time.LocalDate;
+
+import static com.example.api.Other.UpdateTool.updateIfNotBlank;
+import static com.example.api.Other.UpdateTool.updateIfNotNull;
 
 @Service
 public class UserServiceNew {
@@ -24,7 +30,16 @@ public class UserServiceNew {
     }
 
 
-    public UserDetailResponse getUserByAccount(String account){
+    private void testUserExists(String account) {
+        UserDetailResponse user = null;
+
+        try {
+            user = getUserDetailByAccount(account);
+        }catch (NotFoundException ignored){}
+        if(user != null) throw new ClosedOnExpiredPasswordException("已存在使用者帳號為 < "+ account+" > 的使用者");
+    }
+
+    public UserDetailResponse getUserDetailByAccount(String account){
         System.out.println("UserServiceNew: getUserByAccount >> "+account);
         User user = userRepository.findById(account)
                 .orElseThrow(() -> new NotFoundException("找不到使用者帳號為 < "+ account+" > 的使用者"));
@@ -32,18 +47,41 @@ public class UserServiceNew {
     }
 
 
+    private User getUserByAccount(String account){
+        System.out.println("UserServiceNew: getUserByAccount >> "+account);
+        return userRepository.findById(account)
+                .orElseThrow(() -> new NotFoundException("找不到使用者帳號為 < "+ account+" > 的使用者"));
+    }
+
+
     public String createUser(UserCreateRequest request){
         System.out.println("UserServiceNew: createUser");
-        String account = request.getUserAccount();
-        UserDetailResponse user = null;
-        try {
-            user = getUserByAccount(account);
-        }catch (NotFoundException ignored){}
-        if(user != null) throw new ClosedOnExpiredPasswordException("已存在使用者帳號為 < "+ account+" > 的使用者");
+        testUserExists(request.getUserAccount());
 
         User newUser = modelMapper.map(request, User.class);
-
         userRepository.save(newUser);
+
         return newUser.getUserAccount();
+    }
+
+
+    public void updateUserByAccount(String account, UserUpdateRequest request){
+        System.out.println("UserServiceNew: updateUserByAccount >> "+account);
+        User user = getUserByAccount(account);
+
+        user.setName(updateIfNotBlank(user.getName(), request.getName()));
+        user.setTel(updateIfNotBlank(user.getTel(), request.getTel()));
+        user.setMail(updateIfNotBlank(user.getMail(), request.getMail()));
+        user.setAvatar(updateIfNotBlank(user.getAvatar(), request.getAvatar()));
+        user.setBirthday(updateIfNotNull(user.getBirthday(), request.getBirthday()));
+        user.setBio(updateIfNotBlank(user.getBio(), request.getBio()));
+        user.setBackground(updateIfNotBlank(user.getBackground(), request.getBackground()));
+        user.setShowFollowers(updateIfNotNull(user.getShowFollowers(), request.getShowFollowers()));
+        user.setShowFollowing(updateIfNotNull(user.getShowFollowing(), request.getShowFollowers()));
+        user.setShowHistory(updateIfNotNull(user.getShowHistory(), request.getShowHistory()));
+        user.setShowCurrentExpo(updateIfNotNull(user.getShowCurrentExpo(), request.getShowCurrentExpo()));
+        user.setShowCurrentBooth(updateIfNotNull(user.getShowCurrentBooth(), request.getShowCurrentBooth()));
+
+        userRepository.save(user);
     }
 }

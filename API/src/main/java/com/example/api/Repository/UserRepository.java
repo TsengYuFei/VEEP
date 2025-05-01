@@ -116,7 +116,6 @@ public class UserRepository {
         map.put("showHistory", request.getShowHistory());
         map.put("showCurrentExpo", request.getShowCurrentExpo());
         map.put("showCurrentBooth", request.getShowCurrentBooth());
-        map.put("role", request.getRole().toString());
         map.put("account", account);
 
         namedParameterJdbcTemplate.update(sql, map);

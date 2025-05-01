@@ -45,19 +45,19 @@ public class User{
     private String background;
 
     @Column(name = "showFollowers", nullable = false)
-    private boolean showFollowers = true;
+    private Boolean showFollowers = true;
 
     @Column(name = "showFollowing", nullable = false)
-    private boolean showFollowing = true;
+    private Boolean showFollowing = true;
 
     @Column(name = "showHistory", nullable = false)
-    private boolean showHistory = false;
+    private Boolean showHistory = false;
 
     @Column(name = "showCurrentExpo", nullable = false)
-    private boolean showCurrentExpo = true;
+    private Boolean showCurrentExpo = true;
 
     @Column(name = "showCurrentBooth", nullable = false)
-    private boolean showCurrentBooth = true;
+    private Boolean showCurrentBooth = true;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "role", nullable = false)
