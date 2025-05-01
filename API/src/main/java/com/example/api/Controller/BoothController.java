@@ -4,7 +4,6 @@ import com.example.api.DTO.Request.BoothUpdateRequest;
 import com.example.api.DTO.Response.BoothEditResponse;
 import com.example.api.DTO.Request.BoothCreateRequest;
 import com.example.api.Service.BoothService;
-import com.example.api.Service.BoothServiceNew;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -23,9 +22,9 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 public class BoothController {
     @Autowired
-    private final BoothServiceNew boothService;
+    private final BoothService boothService;
 
-    public BoothController(BoothServiceNew boothService) {
+    public BoothController(BoothService boothService) {
         this.boothService = boothService;
     }
 

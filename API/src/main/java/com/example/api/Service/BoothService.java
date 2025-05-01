@@ -1,74 +1,90 @@
 package com.example.api.Service;
 
+import com.example.api.DTO.Request.BoothCreateRequest;
+import com.example.api.DTO.Request.BoothUpdateRequest;
 import com.example.api.DTO.Response.BoothEditResponse;
-import com.example.api.Repository.BoothRepository;
+import com.example.api.Entity.Booth;
+import com.example.api.Entity.OpenMode;
 import com.example.api.Exception.NotFoundException;
 import com.example.api.Exception.UnprocessableEntityException;
-import com.example.api.Entity.OpenMode;
-import com.example.api.DTO.Request.BoothCreateRequest;
+import com.example.api.Repository.BoothRepository;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import static com.example.api.Other.UpdateTool.updateIfNotBlank;
+import static com.example.api.Other.UpdateTool.updateIfNotNull;
 
 @Service
 public class BoothService {
     @Autowired
     private final BoothRepository boothRepository;
 
-    public BoothService(BoothRepository boothRepository) {
+    @Autowired
+    private final ModelMapper modelMapper;
+
+    public BoothService(BoothRepository boothRepository, ModelMapper modelMapper) {
         this.boothRepository = boothRepository;
+        this.modelMapper = modelMapper;
     }
 
-    public BoothEditResponse getBoothByID(Integer boothID){
+
+
+    private Booth getBoothByID(Integer boothID) {
         System.out.println("BoothService: getBoothByID >> "+boothID);
-
-        BoothEditResponse booth = boothRepository.getBoothByID(boothID);
-        if(booth == null) throw new NotFoundException("Can't find booth with booth ID < "+boothID+" >");
-        return booth;
+        return boothRepository.findById(boothID)
+                .orElseThrow(() -> new NotFoundException("找不到攤位ID為 < "+ boothID+" > 的攤位"));
     }
 
 
-    public Integer createBooth(BoothCreateRequest request){
+    public BoothEditResponse getBoothEditByID(Integer boothID) {
+        System.out.println("BoothService: getBoothEditByID >> "+boothID);
+        Booth booth = boothRepository.findById(boothID)
+                .orElseThrow(() -> new NotFoundException("找不到攤位ID為 < "+ boothID+" > 的攤位"));
+        return modelMapper.map(booth, BoothEditResponse.class);
+    }
+
+
+    public Integer createBooth(BoothCreateRequest request) {
         System.out.println("BoothService: createBooth");
-        String avatar = request.getAvatar();
-        if(avatar != null && avatar.isBlank()) request.setAvatar(null);
+        request.setAvatar(updateIfNotBlank(null, request.getAvatar()));
+        request.setIntroduction(updateIfNotBlank(null, request.getIntroduction()));
 
         Boolean status = request.getOpenStatus();
         OpenMode mode = request.getOpenMode();
         if(mode == OpenMode.MANUAL && status == null){
-            throw new UnprocessableEntityException("Can't create booth without status");
+            throw new UnprocessableEntityException("Open mode 為 MANUAL 時，open status 不可為空");
         }else if (mode == OpenMode.AUTO && (request.getOpenStart() == null || request.getOpenEnd() == null)) {
-            throw new UnprocessableEntityException("Can't create booth without open start/end");
+            throw new UnprocessableEntityException("Open mode 為 MANUAL 時，open start/end 不可為空");
         }
 
-        return boothRepository.createBooth(request);
+        Booth booth = modelMapper.map(request, Booth.class);
+        boothRepository.save(booth);
+        return booth.getBoothID();
     }
 
 
-    public void updateBoothByID(Integer boothID, BoothCreateRequest request){
+    public void updateBoothByID(Integer boothID, BoothUpdateRequest request){
         System.out.println("BoothService: updateBoothByID >> "+boothID);
-        BoothEditResponse booth = boothRepository.getBoothByID(boothID);
-        if(booth == null) throw new NotFoundException("Can't find an booth with ID < "+boothID+" >");
+        Booth booth = getBoothByID(boothID);
 
-        String avatar = request.getAvatar();
-        if(avatar != null && avatar.isBlank()) request.setAvatar(null);
+        booth.setName(updateIfNotBlank(booth.getName(), request.getName()));
+        booth.setAvatar(updateIfNotBlank(booth.getAvatar(), request.getAvatar()));
+        booth.setIntroduction(updateIfNotBlank(booth.getIntroduction(), request.getIntroduction()));
+        booth.setOpenMode(updateIfNotNull(booth.getOpenMode(), request.getOpenMode()));
+        booth.setOpenStatus(updateIfNotNull(booth.getOpenStatus(), request.getOpenStatus()));
+        booth.setOpenStart(updateIfNotNull(booth.getOpenStart(), request.getOpenStart()));
+        booth.setOpenEnd(updateIfNotNull(booth.getOpenEnd(), request.getOpenEnd()));
+        booth.setMaxParticipants(updateIfNotNull(booth.getMaxParticipants(), request.getMaxParticipants()));
+        booth.setDisplay(updateIfNotNull(booth.getDisplay(), request.getDisplay()));
 
-        Boolean status = request.getOpenStatus();
-        OpenMode mode = request.getOpenMode();
-        if(mode == OpenMode.MANUAL && status == null){
-            throw new UnprocessableEntityException("Can't update booth without status");
-        }else if (mode == OpenMode.AUTO && (request.getOpenStart() == null || request.getOpenEnd() == null)) {
-            throw new UnprocessableEntityException("Can't update booth without open start/end");
-        }
-
-        boothRepository.updateBoothByID(boothID, request);
+        boothRepository.save(booth);
     }
 
 
     public void deleteBoothByID(Integer boothID){
         System.out.println("BoothService: deleteBoothByID >> "+boothID);
-        BoothEditResponse booth = boothRepository.getBoothByID(boothID);
-        if(booth == null) throw new NotFoundException("Can't find an booth with ID < "+boothID+" >");
-
-        boothRepository.deleteBoothByID(boothID);
+        Booth booth = getBoothByID(boothID);
+        boothRepository.delete(booth);
     }
 }
