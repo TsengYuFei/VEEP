@@ -1,8 +1,7 @@
 package com.example.api.Controller;
 
 import com.example.api.DTO.Response.ExpoEditResponse;
-import com.example.api.DTO.Request.ExpoRequest;
-import com.example.api.Service.ExpoService;
+import com.example.api.DTO.Request.ExpoCreateRequest;
 import com.example.api.Service.ExpoServiceNew;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -59,8 +58,8 @@ public class ExpoController {
         ExpoEditResponse expo = expoService.getExpoEditByID(expoID);
         return ResponseEntity.status(HttpStatus.OK).body(expo);
     }
-    
-/*
+
+
     @Operation(
             summary = "新增展會",
             description = "可輸入欄位 1.展會名稱 2.圖像URL 3.價錢 4.介紹 5.開放模式 6.開放狀態 7.開始時間 8.結束時間 9.驗證碼 10.同時間最大參與人數 11.是否顯示於展會總覽頁面"
@@ -80,15 +79,14 @@ public class ExpoController {
             )
     })
     @PostMapping("")
-    public ResponseEntity<ExpoEditResponse> createExpo(@Valid @RequestBody ExpoRequest expoRequest){
+    public ResponseEntity<ExpoEditResponse> createExpo(@Valid @RequestBody ExpoCreateRequest expoCreateRequest){
         System.out.println("ExpoController: createExpo");
-        System.out.println(expoRequest);
-        Integer expoID = expoService.createExpo(expoRequest);
+        Integer expoID = expoService.createExpo(expoCreateRequest);
         ExpoEditResponse expo = expoService.getExpoEditByID(expoID);
         return ResponseEntity.status(HttpStatus.CREATED).body(expo);
     }
 
-
+/*
     @Operation(
             summary = "更新展會",
             description = "用於展會資料更新頁面。可更新除了expoID外之所有欄位"

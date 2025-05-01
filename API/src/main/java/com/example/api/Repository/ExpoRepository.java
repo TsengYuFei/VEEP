@@ -1,7 +1,7 @@
 package com.example.api.Repository;
 
 import com.example.api.DTO.Response.ExpoEditResponse;
-import com.example.api.DTO.Request.ExpoRequest;
+import com.example.api.DTO.Request.ExpoCreateRequest;
 import com.example.api.RowMapper.ExpoEditRowMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
@@ -42,7 +42,7 @@ public class ExpoRepository {
     }
 
 
-    public Integer createExpo (ExpoRequest request){
+    public Integer createExpo (ExpoCreateRequest request){
         System.out.println("ExpoDao: createExpo");
         String sql = "INSERT INTO expo (name, avatar, price, introduction, openMode, " +
                 "openStatus, openStart, openEnd, accessCode, maxParticipants, display)" +
@@ -70,7 +70,7 @@ public class ExpoRepository {
     }
 
 
-    public void updateExpoByID(Integer expoID, ExpoRequest request){
+    public void updateExpoByID(Integer expoID, ExpoCreateRequest request){
         System.out.println("ExpoDao: updateExpoByID  >> "+expoID);
         String sql = "UPDATE expo SET name = :name, avatar = :avatar, price = :price, " +
                 "introduction = :introduction, openMode = :openMode, openStatus = :openStatus, " +

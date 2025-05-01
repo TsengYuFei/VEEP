@@ -64,10 +64,11 @@ public class UserService {
 
     public String createUser(UserCreateRequest request){
         System.out.println("UserService: createUser");
-        UserDetailResponse user = null;
+        request.setAvatar(updateIfNotBlank(null, request.getAvatar()));
+        UserOverviewResponse user = null;
 
         try {
-            user = getUserDetailByAccount(request.getUserAccount());
+            user = getUserOverviewByAccount(request.getUserAccount());
         }catch (NotFoundException ignored){}
         if(user != null) throw new ClosedOnExpiredPasswordException("已存在使用者帳號為 < "+ request.getUserAccount()+" > 的使用者");
 

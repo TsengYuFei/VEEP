@@ -20,7 +20,7 @@ public class Expo {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer expoID;
 
-    @Column(name = "name", length = 30)
+    @Column(name = "name", nullable = false, length = 30)
     private String name = "Exhibition";
 
     @Column(name = "avatar")

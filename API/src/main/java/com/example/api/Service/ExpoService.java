@@ -5,7 +5,7 @@ import com.example.api.Repository.ExpoRepository;
 import com.example.api.Exception.NotFoundException;
 import com.example.api.Exception.UnprocessableEntityException;
 import com.example.api.Entity.OpenMode;
-import com.example.api.DTO.Request.ExpoRequest;
+import com.example.api.DTO.Request.ExpoCreateRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -26,7 +26,7 @@ public class ExpoService {
     }
 
 
-    public Integer createExpo(ExpoRequest request){
+    public Integer createExpo(ExpoCreateRequest request){
         System.out.println("ExpoService: createExpo");
         String avatar = request.getAvatar();
         String code = request.getAccessCode();
@@ -45,7 +45,7 @@ public class ExpoService {
     }
 
 
-    public void updateExpoByID(Integer expoID, ExpoRequest request){
+    public void updateExpoByID(Integer expoID, ExpoCreateRequest request){
         System.out.println("ExpoService: updateExpoByID >> "+expoID);
         ExpoEditResponse expo = expoRepository.getExpoEditByID(expoID);
         if(expo == null) throw new NotFoundException("Can't find an expo with ID < "+expoID+" >");

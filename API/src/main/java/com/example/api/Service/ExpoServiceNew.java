@@ -1,12 +1,17 @@
 package com.example.api.Service;
 
+import com.example.api.DTO.Request.ExpoCreateRequest;
 import com.example.api.DTO.Response.ExpoEditResponse;
 import com.example.api.Entity.Expo;
+import com.example.api.Entity.OpenMode;
 import com.example.api.Exception.NotFoundException;
+import com.example.api.Exception.UnprocessableEntityException;
 import com.example.api.Repository.ExpoRepositoryNew;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import static com.example.api.Other.UpdateTool.updateIfNotBlank;
 
 @Service
 public class ExpoServiceNew {
@@ -28,5 +33,25 @@ public class ExpoServiceNew {
         Expo expo = expoRepository.findById(expoID)
                 .orElseThrow(() -> new NotFoundException("找不到展會ID為 < "+ expoID+" > 的展會"));
         return modelMapper.map(expo, ExpoEditResponse.class);
+    }
+
+
+    public Integer createExpo(ExpoCreateRequest request) {
+        System.out.println("ExpoServiceNew: createExpo");
+        request.setAvatar(updateIfNotBlank(null, request.getAvatar()));
+        request.setIntroduction(updateIfNotBlank(null, request.getIntroduction()));
+        request.setAccessCode(updateIfNotBlank(null, request.getAvatar()));
+
+        Boolean status = request.getOpenStatus();
+        OpenMode mode = request.getOpenMode();
+        if(mode == OpenMode.MANUAL && status == null){
+            throw new UnprocessableEntityException("Open mode 為 MANUAL 時，open status 不可為空");
+        }else if (mode == OpenMode.AUTO && (request.getOpenStart() == null || request.getOpenEnd() == null)) {
+            throw new UnprocessableEntityException("Open mode 為 MANUAL 時，open start/end 不可為空");
+        }
+
+        Expo expo = modelMapper.map(request, Expo.class);
+        expoRepository.save(expo);
+        return expo.getExpoID();
     }
 }
