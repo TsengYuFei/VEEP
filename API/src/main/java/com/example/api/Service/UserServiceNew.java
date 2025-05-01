@@ -3,6 +3,8 @@ package com.example.api.Service;
 import com.example.api.DTO.Request.UserCreateRequest;
 import com.example.api.DTO.Request.UserUpdateRequest;
 import com.example.api.DTO.Response.UserDetailResponse;
+import com.example.api.DTO.Response.UserEditResponse;
+import com.example.api.DTO.Response.UserOverviewResponse;
 import com.example.api.Entity.User;
 import com.example.api.Exception.NotFoundException;
 import com.example.api.Repository.UserRepositoryInterface;
@@ -30,20 +32,28 @@ public class UserServiceNew {
     }
 
 
-    private void testUserExists(String account) {
-        UserDetailResponse user = null;
-
-        try {
-            user = getUserDetailByAccount(account);
-        }catch (NotFoundException ignored){}
-        if(user != null) throw new ClosedOnExpiredPasswordException("已存在使用者帳號為 < "+ account+" > 的使用者");
-    }
 
     public UserDetailResponse getUserDetailByAccount(String account){
         System.out.println("UserServiceNew: getUserByAccount >> "+account);
         User user = userRepository.findById(account)
                 .orElseThrow(() -> new NotFoundException("找不到使用者帳號為 < "+ account+" > 的使用者"));
         return modelMapper.map(user, UserDetailResponse.class);
+    }
+
+
+    public UserOverviewResponse getUserOverviewByAccount(String account){
+        System.out.println("UserServiceNew: getUserOverviewByAccount >> "+account);
+        User user = userRepository.findById(account)
+                .orElseThrow(() -> new NotFoundException("找不到使用者帳號為 < "+ account+" > 的使用者"));
+        return modelMapper.map(user, UserOverviewResponse.class);
+    }
+
+
+    public UserEditResponse getUserEditByAccount(String account){
+        System.out.println("UserServiceNew: getUserEditByAccount >> "+account);
+        User user = userRepository.findById(account)
+                .orElseThrow(() -> new NotFoundException("找不到使用者帳號為 < "+ account+" > 的使用者"));
+        return modelMapper.map(user, UserEditResponse.class);
     }
 
 
@@ -56,7 +66,13 @@ public class UserServiceNew {
 
     public String createUser(UserCreateRequest request){
         System.out.println("UserServiceNew: createUser");
-        testUserExists(request.getUserAccount());
+        UserDetailResponse user = null;
+
+        try {
+            user = getUserDetailByAccount(request.getUserAccount());
+        }catch (NotFoundException ignored){}
+        if(user != null) throw new ClosedOnExpiredPasswordException("已存在使用者帳號為 < "+ request.getUserAccount()+" > 的使用者");
+
 
         User newUser = modelMapper.map(request, User.class);
         userRepository.save(newUser);

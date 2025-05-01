@@ -3,6 +3,8 @@ package com.example.api.Controller;
 import com.example.api.DTO.Request.UserCreateRequest;
 import com.example.api.DTO.Request.UserUpdateRequest;
 import com.example.api.DTO.Response.UserDetailResponse;
+import com.example.api.DTO.Response.UserEditResponse;
+import com.example.api.DTO.Response.UserOverviewResponse;
 import com.example.api.Service.UserServiceNew;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -60,6 +62,74 @@ public class UserControllerNew {
         System.out.println("UserControllerNew: getUsrDetailByAccount >> "+userAccount);
         UserDetailResponse user = userService.getUserDetailByAccount(userAccount);
         return ResponseEntity.status(HttpStatus.OK).body(user);
+    }
+
+
+    @Operation(
+            summary = "獲取使用者資訊(概略)",
+            description = "使用於展會中。" +
+                    "取得 1.使用者名稱 2.使用者帳號 3.頭像 4.身分"
+    )
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "成功取得使用者資訊(概略)",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = UserOverviewResponse.class)
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = "404",
+                    description = "找不到使用者"
+            ),
+            @ApiResponse(
+                    responseCode = "500",
+                    description = "伺服器錯誤"
+            )
+    })
+    @GetMapping("/overview/{userAccount}")
+    public ResponseEntity<UserOverviewResponse> getUserOverviewByAccount(
+            @Parameter(description = "使用者帳號", required = true)
+            @PathVariable String userAccount
+    ){
+        System.out.println("UserControllerNew: getUserOverview >> "+userAccount);
+        UserOverviewResponse user = userService.getUserOverviewByAccount(userAccount);
+        return ResponseEntity.status(HttpStatus.OK).body(user);
+    }
+
+
+    @Operation(
+            summary = "獲取使用者資訊(編輯用)",
+            description = "用於個人資料更新頁面。可獲取除了userAccount、password及role外之所有欄位"
+    )
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "成功取得使用者資訊(編輯用)",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = UserEditResponse.class)
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = "404",
+                    description = "找不到使用者"
+            ),
+            @ApiResponse(
+                    responseCode = "500",
+                    description = "伺服器錯誤"
+            )
+    })
+    @GetMapping("/edit/{userAccount}")
+    public ResponseEntity<UserEditResponse> getUserEditByAccount(
+            @Parameter(description = "使用者帳號", required = true)
+            @PathVariable String userAccount
+    ) {
+        System.out.println("UserControllerNew: getUserEdit >> "+userAccount);
+        UserEditResponse user = userService.getUserEditByAccount(userAccount);
+        return ResponseEntity.status(HttpStatus.OK).body(user);
+
     }
 
 

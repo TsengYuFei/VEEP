@@ -16,10 +16,10 @@ public class UserEditResponse {
     private LocalDate birthday;
     private String bio;
     private String background;
-    private boolean showFollowers;
-    private boolean showFollowing;
-    private boolean showHistory;
-    private boolean showCurrentExpo;
-    private boolean showCurrentBooth;
+    private Boolean showFollowers;
+    private Boolean showFollowing;
+    private Boolean showHistory;
+    private Boolean showCurrentExpo;
+    private Boolean showCurrentBooth;
     private Role role;
 }
