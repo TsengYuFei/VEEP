@@ -1,4 +1,4 @@
-package com.example.api.Controller;
+package com.example.api.Other;
 
 import com.example.api.DTO.Response.ErrorResponseResponse;
 import com.example.api.Exception.*;

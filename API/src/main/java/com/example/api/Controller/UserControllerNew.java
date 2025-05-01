@@ -1,6 +1,8 @@
 package com.example.api.Controller;
 
+import com.example.api.DTO.Request.UserCreateRequest;
 import com.example.api.DTO.Response.UserDetailResponse;
+import com.example.api.DTO.Response.UserOverviewResponse;
 import com.example.api.Service.UserServiceNew;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -9,13 +11,11 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @Tag(name = "單一使用者相關", description = "含三種不同範圍的GET")
 @RequestMapping("/user")
@@ -60,5 +60,36 @@ public class UserControllerNew {
         System.out.println("UserControllerNew: getUsrDetailByAccount >> "+userAccount);
         UserDetailResponse user = userService.getUserByAccount(userAccount);
         return ResponseEntity.status(HttpStatus.OK).body(user);
+    }
+
+
+    @Operation(
+            summary = "新增使用者",
+            description = "可輸入欄位 1.使用者名稱 2.使用者帳號 3.密碼 4.電話 5.電子郵箱 6.頭像URL 7.生日(yyyy-MM-dd格式)"
+    )
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "201",
+                    description = "成功新增使用者",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = UserDetailResponse.class)
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = "409",
+                    description = "使用者帳號已存在"
+            ),
+            @ApiResponse(
+                    responseCode = "500",
+                    description = "伺服器錯誤"
+            )
+    })
+    @PostMapping("")
+    public ResponseEntity<UserDetailResponse> createUser(@Valid @RequestBody UserCreateRequest userRequest){
+        System.out.println("UserControllerNew: createUser");
+        String userAccount = userService.createUser(userRequest);
+        UserDetailResponse user = userService.getUserByAccount(userAccount);
+        return ResponseEntity.status(HttpStatus.CREATED).body(user);
     }
 }

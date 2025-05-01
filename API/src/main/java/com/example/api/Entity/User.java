@@ -4,7 +4,6 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
 
@@ -13,7 +12,7 @@ import java.time.LocalDate;
 @AllArgsConstructor
 @NoArgsConstructor
 @Table(name = "`user`")
-public class User {
+public class User{
 
     @Column(name = "name", nullable = false, length = 20)
     private String name;
@@ -34,6 +33,7 @@ public class User {
     @Column(name = "avatar", length = 255)
     private String avatar;
 
+    @Temporal(TemporalType.DATE)
     @Column(name = "birthday")
     private LocalDate birthday;
 
