@@ -27,13 +27,12 @@ public class User{
     @Column(name = "tel", nullable = false, length = 10)
     private String tel;
 
-    @Column(name = "mail", nullable = false, length = 255)
+    @Column(name = "mail", nullable = false)
     private String mail;
 
-    @Column(name = "avatar", length = 255)
+    @Column(name = "avatar")
     private String avatar;
 
-    @Temporal(TemporalType.DATE)
     @Column(name = "birthday")
     private LocalDate birthday;
 

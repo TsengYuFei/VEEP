@@ -6,6 +6,7 @@ public class UpdateTool {
     }
 
     public static String updateIfNotBlank(String oldData, String newData){
-        return (newData == null || newData.isBlank())? oldData : newData;
+        if(newData == null) return oldData;
+        return (newData.isBlank())? null : newData;
     }
 }
