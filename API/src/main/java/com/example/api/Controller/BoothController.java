@@ -127,7 +127,7 @@ public class BoothController {
         return ResponseEntity.status(HttpStatus.OK).body(booth);
     }
 
-/*
+
     @Operation(summary = "刪除攤位")
     @ApiResponses(value = {
             @ApiResponse(
@@ -151,5 +151,5 @@ public class BoothController {
         System.out.println("BoothController: deleteBoothByID >> "+boothID);
         boothService.deleteBoothByID(boothID);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
-    }*/
+    }
 }

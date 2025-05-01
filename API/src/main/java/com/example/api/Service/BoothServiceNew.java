@@ -83,4 +83,11 @@ public class BoothServiceNew {
 
         boothRepository.save(booth);
     }
+
+
+    public void deleteBoothByID(Integer boothID){
+        System.out.println("BoothServiceNew: deleteBoothByID >> "+boothID);
+        Booth booth = getBoothByID(boothID);
+        boothRepository.delete(booth);
+    }
 }
