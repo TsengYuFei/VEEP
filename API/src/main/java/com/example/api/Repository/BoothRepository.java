@@ -1,7 +1,7 @@
 package com.example.api.Repository;
 
 import com.example.api.DTO.Response.BoothEditResponse;
-import com.example.api.DTO.Request.BoothRequest;
+import com.example.api.DTO.Request.BoothCreateRequest;
 import com.example.api.RowMapper.BoothEditRowMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
@@ -42,7 +42,7 @@ public class BoothRepository {
     }
 
 
-    public Integer createBooth(BoothRequest request){
+    public Integer createBooth(BoothCreateRequest request){
         System.out.println("BoothDao: createBooth");
         String sql = "INSERT INTO booth(name, avatar, introduction, openMode, " +
                 "openStatus, openStart, openEnd, maxParticipants, display) " +
@@ -68,7 +68,7 @@ public class BoothRepository {
     }
 
 
-    public void updateBoothByID(Integer boothID, BoothRequest request){
+    public void updateBoothByID(Integer boothID, BoothCreateRequest request){
         System.out.println("BoothDao: updateBoothByID >> "+boothID);
         String sql = "UPDATE booth SET name = :name, avatar = :avatar, introduction = :introduction, " +
                 "openMode = :openMode, openStatus = :openStatus, openStart = :openStart, openEnd = :openEnd, " +

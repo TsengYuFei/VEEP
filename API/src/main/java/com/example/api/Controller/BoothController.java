@@ -1,8 +1,9 @@
 package com.example.api.Controller;
 
 import com.example.api.DTO.Response.BoothEditResponse;
-import com.example.api.DTO.Request.BoothRequest;
+import com.example.api.DTO.Request.BoothCreateRequest;
 import com.example.api.Service.BoothService;
+import com.example.api.Service.BoothServiceNew;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -21,9 +22,9 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 public class BoothController {
     @Autowired
-    private final BoothService boothService;
+    private final BoothServiceNew boothService;
 
-    public BoothController(BoothService boothService) {
+    public BoothController(BoothServiceNew boothService) {
         this.boothService = boothService;
     }
 
@@ -50,16 +51,16 @@ public class BoothController {
             )
     })
     @GetMapping("/edit/{boothID}")
-    public ResponseEntity<BoothEditResponse> getBoothEdit(
+    public ResponseEntity<BoothEditResponse> getBoothEditByID(
             @Parameter(description = "攤位ID", required = true)
             @PathVariable Integer boothID
     ){
-        System.out.println("BoothController: getBoothEdit >> "+boothID);
-        BoothEditResponse booth = boothService.getBoothByID(boothID);
+        System.out.println("BoothController: getBoothEditByID >> "+boothID);
+        BoothEditResponse booth = boothService.getBoothEditByID(boothID);
         return ResponseEntity.status(HttpStatus.OK).body(booth);
     }
 
-
+/*
     @Operation(
             summary = "新增攤位",
             description = "可輸入欄位 1.攤位名稱 2.圖像URL 3.介紹 4.開放模式 5.開放狀態 6.開始時間 7.結束時間 8.同時間最大參與人數 9.是否顯示於攤位總覽頁面"
@@ -79,10 +80,10 @@ public class BoothController {
             )
     })
     @PostMapping("")
-    public ResponseEntity<BoothEditResponse> createBooth(@Valid @RequestBody BoothRequest boothRequest){
+    public ResponseEntity<BoothEditResponse> createBooth(@Valid @RequestBody BoothCreateRequest boothCreateRequest){
         System.out.println("BoothController: createBooth");
-        System.out.println(boothRequest);
-        Integer boothID = boothService.createBooth(boothRequest);
+        System.out.println(boothCreateRequest);
+        Integer boothID = boothService.createBooth(boothCreateRequest);
         BoothEditResponse booth = boothService.getBoothByID(boothID);
         return ResponseEntity.status(HttpStatus.CREATED).body(booth);
     }
@@ -118,10 +119,10 @@ public class BoothController {
     public ResponseEntity<BoothEditResponse> updateBoothByID(
             @Parameter(description = "攤位ID", required = true)
             @PathVariable Integer boothID,
-            @Valid @RequestBody BoothRequest boothRequest
+            @Valid @RequestBody BoothCreateRequest boothCreateRequest
     ){
         System.out.println("BoothController: updateBoothByID >> "+boothID);
-        boothService.updateBoothByID(boothID, boothRequest);
+        boothService.updateBoothByID(boothID, boothCreateRequest);
         BoothEditResponse booth = boothService.getBoothByID(boothID);
         return ResponseEntity.status(HttpStatus.OK).body(booth);
     }
@@ -150,5 +151,5 @@ public class BoothController {
         System.out.println("BoothController: deleteBoothByID >> "+boothID);
         boothService.deleteBoothByID(boothID);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
-    }
+    }*/
 }

@@ -5,7 +5,7 @@ import com.example.api.Repository.BoothRepository;
 import com.example.api.Exception.NotFoundException;
 import com.example.api.Exception.UnprocessableEntityException;
 import com.example.api.Entity.OpenMode;
-import com.example.api.DTO.Request.BoothRequest;
+import com.example.api.DTO.Request.BoothCreateRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -27,7 +27,7 @@ public class BoothService {
     }
 
 
-    public Integer createBooth(BoothRequest request){
+    public Integer createBooth(BoothCreateRequest request){
         System.out.println("BoothService: createBooth");
         String avatar = request.getAvatar();
         if(avatar != null && avatar.isBlank()) request.setAvatar(null);
@@ -44,7 +44,7 @@ public class BoothService {
     }
 
 
-    public void updateBoothByID(Integer boothID, BoothRequest request){
+    public void updateBoothByID(Integer boothID, BoothCreateRequest request){
         System.out.println("BoothService: updateBoothByID >> "+boothID);
         BoothEditResponse booth = boothRepository.getBoothByID(boothID);
         if(booth == null) throw new NotFoundException("Can't find an booth with ID < "+boothID+" >");

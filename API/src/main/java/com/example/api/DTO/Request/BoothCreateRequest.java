@@ -9,8 +9,7 @@ import org.hibernate.validator.constraints.URL;
 import java.time.LocalDateTime;
 
 @Data
-public class BoothRequest {
-    @NotBlank(message = "攤位名稱不可為空")
+public class BoothCreateRequest {
     @Size(min = 1, max = 30, message = "攤位名稱長度應在1~30字元之間")
     private String name;
 
@@ -35,5 +34,6 @@ public class BoothRequest {
     @Max(value = 500, message = "攤位同時間最大參與人數至多500人")
     private Integer maxParticipants;
 
+    @NotNull(message = "攤位是否顯示於總覽頁面不可為空")
     private Boolean display;
 }
