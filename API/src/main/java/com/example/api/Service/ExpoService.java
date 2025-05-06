@@ -8,6 +8,7 @@ import com.example.api.Entity.OpenMode;
 import com.example.api.Exception.NotFoundException;
 import com.example.api.Exception.UnprocessableEntityException;
 import com.example.api.Repository.ExpoRepository;
+import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -16,17 +17,13 @@ import static com.example.api.Other.UpdateTool.updateIfNotBlank;
 import static com.example.api.Other.UpdateTool.updateIfNotNull;
 
 @Service
+@RequiredArgsConstructor
 public class ExpoService {
     @Autowired
     private final ExpoRepository expoRepository;
 
     @Autowired
     private final ModelMapper modelMapper;
-
-    public ExpoService(ExpoRepository expoRepository, ModelMapper modelMapper) {
-        this.expoRepository = expoRepository;
-        this.modelMapper = modelMapper;
-    }
 
 
 

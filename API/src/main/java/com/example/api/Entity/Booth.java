@@ -48,4 +48,8 @@ public class Booth {
 
     @Column(name = "display", nullable = false)
     private Boolean display = true;
+
+    @OneToOne
+    @JoinColumn(name = "collaborator", nullable = false, unique = true)
+    private CollaboratorList collaborator;
 }

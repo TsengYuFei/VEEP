@@ -9,6 +9,7 @@ import com.example.api.Entity.User;
 import com.example.api.Exception.NotFoundException;
 import com.example.api.Repository.UserRepository;
 import com.mysql.cj.exceptions.ClosedOnExpiredPasswordException;
+import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -17,17 +18,13 @@ import static com.example.api.Other.UpdateTool.updateIfNotBlank;
 import static com.example.api.Other.UpdateTool.updateIfNotNull;
 
 @Service
+@RequiredArgsConstructor
 public class UserService {
     @Autowired
     private final UserRepository userRepository;
 
     @Autowired
     private final ModelMapper modelMapper;
-
-    public UserService(UserRepository userRepository, ModelMapper modelMapper) {
-        this.userRepository = userRepository;
-        this.modelMapper = modelMapper;
-    }
 
 
 

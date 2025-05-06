@@ -3,30 +3,33 @@ package com.example.api.Service;
 import com.example.api.DTO.Request.BoothCreateRequest;
 import com.example.api.DTO.Request.BoothUpdateRequest;
 import com.example.api.DTO.Response.BoothEditResponse;
+import com.example.api.DTO.Response.CollaboratorUserResponse;
 import com.example.api.Entity.Booth;
+import com.example.api.Entity.CollaboratorList;
 import com.example.api.Entity.OpenMode;
+import com.example.api.Entity.User;
 import com.example.api.Exception.NotFoundException;
 import com.example.api.Exception.UnprocessableEntityException;
 import com.example.api.Repository.BoothRepository;
+import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.Set;
 
 import static com.example.api.Other.UpdateTool.updateIfNotBlank;
 import static com.example.api.Other.UpdateTool.updateIfNotNull;
 
 @Service
+@RequiredArgsConstructor
 public class BoothService {
     @Autowired
     private final BoothRepository boothRepository;
 
     @Autowired
     private final ModelMapper modelMapper;
-
-    public BoothService(BoothRepository boothRepository, ModelMapper modelMapper) {
-        this.boothRepository = boothRepository;
-        this.modelMapper = modelMapper;
-    }
 
 
 
@@ -41,7 +44,15 @@ public class BoothService {
         System.out.println("BoothService: getBoothEditByID >> "+boothID);
         Booth booth = boothRepository.findById(boothID)
                 .orElseThrow(() -> new NotFoundException("找不到攤位ID為 < "+ boothID+" > 的攤位"));
-        return modelMapper.map(booth, BoothEditResponse.class);
+
+        BoothEditResponse response = modelMapper.map(booth, BoothEditResponse.class);
+        Set<User> users = booth.getCollaborator().getCollaborators();
+        List<CollaboratorUserResponse> collaborators = users.stream()
+                .map(user -> modelMapper.map(user, CollaboratorUserResponse.class))
+                .toList();
+        response.setCollaborators(collaborators);
+
+        return response;
     }
 
 

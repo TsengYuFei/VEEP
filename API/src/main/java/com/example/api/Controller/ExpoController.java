@@ -12,6 +12,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,13 +21,11 @@ import org.springframework.web.bind.annotation.*;
 @Tag(name = "單一展會相關")
 @RequestMapping("/expo")
 @RestController
+@RequiredArgsConstructor
 public class ExpoController {
     @Autowired
     private final ExpoService expoService;
 
-    public ExpoController(ExpoService expoService) {
-        this.expoService = expoService;
-    }
 
     @Operation(
             summary = "獲取展會資訊(編輯用)",

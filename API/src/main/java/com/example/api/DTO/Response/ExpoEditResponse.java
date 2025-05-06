@@ -10,13 +10,13 @@ import java.time.LocalDateTime;
 public class ExpoEditResponse {
     private String name;
     private String avatar;
-    private int price;
+    private Integer price;
     private String introduction;
     private OpenMode openMode;
-    private boolean openStatus;
+    private Boolean openStatus;
     private LocalDateTime openStart;
     private LocalDateTime openEnd;
     private String accessCode;
-    private int maxParticipants;
-    private boolean display;
+    private Integer maxParticipants;
+    private Boolean display;
 }
