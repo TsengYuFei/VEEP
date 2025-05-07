@@ -90,7 +90,7 @@ public class BoothService {
             List<User> userList = userRepository.findAllById(userIDs);
             Set<User> users = new HashSet<>(userList);
             collaborator.setCollaborators(users);
-        }else collaborator.setCollaborators(null);
+        }else collaborator.setCollaborators(new HashSet<>());
 
         collaborator = colListRepository.save(collaborator);
         booth.setCollaborator(collaborator);
@@ -100,14 +100,9 @@ public class BoothService {
     }
 
 
+    @Transactional
     public void updateBoothByID(Integer boothID, BoothUpdateRequest request){
         System.out.println("BoothService: updateBoothByID >> "+boothID);
-
-        CollaboratorList collaborator = new CollaboratorList();
-        List<User> userList = userRepository.findAllById(request.getCollaborators());
-        Set<User> users = new HashSet<>(userList);
-        collaborator.setCollaborators(users);
-        collaborator = colListRepository.save(collaborator);
 
         Booth booth = getBoothByID(boothID);
         booth.setName(updateIfNotBlank(booth.getName(), request.getName()));
@@ -119,7 +114,14 @@ public class BoothService {
         booth.setOpenEnd(updateIfNotNull(booth.getOpenEnd(), request.getOpenEnd()));
         booth.setMaxParticipants(updateIfNotNull(booth.getMaxParticipants(), request.getMaxParticipants()));
         booth.setDisplay(updateIfNotNull(booth.getDisplay(), request.getDisplay()));
-        booth.setCollaborator(collaborator);
+
+        List<String> userIDs = request.getCollaborators();
+        CollaboratorList collaborator = new CollaboratorList();
+        if(userIDs != null && !userIDs.isEmpty()) {
+            List<User> userList = userRepository.findAllById(userIDs);
+            Set<User> users = new HashSet<>(userList);
+            collaborator.setCollaborators(users);
+        }else collaborator.setCollaborators(null);
 
         boothRepository.save(booth);
     }
