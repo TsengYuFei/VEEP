@@ -1,5 +1,7 @@
 package com.example.api.Entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -20,13 +22,15 @@ public class CollaboratorList {
     private Integer id;
 
     @OneToOne(mappedBy = "collaborator")
+    @JsonBackReference
     private Booth booth;
 
     @ManyToMany
     @JoinTable(
-            name = "collaborator_list_user",
-            joinColumns = {@JoinColumn(name = "listID")},  //this table's foreigner key
-            inverseJoinColumns = {@JoinColumn(name = "userAccount")}  //User table's foreigner key
+            name = "collaborator_list_user",  // 中間關聯表名稱
+            joinColumns = {@JoinColumn(name = "listID")},  //this table's foreigner key in database
+            inverseJoinColumns = {@JoinColumn(name = "userAccount")}  //User table's foreigner key in database
     )
+    @JsonIgnore
     private Set<User> collaborators = new HashSet<>();
 }

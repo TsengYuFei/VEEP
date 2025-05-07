@@ -6,8 +6,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
-import java.util.HashSet;
-import java.util.Set;
 
 @Data
 @Entity
@@ -63,7 +61,4 @@ public class User{
     @Enumerated(EnumType.STRING)
     @Column(name = "role", nullable = false)
     private Role role = Role.GENERAL;
-
-    @ManyToMany(mappedBy = "collaborators")
-    private Set<CollaboratorList> collaboratorLists = new HashSet<>();
 }

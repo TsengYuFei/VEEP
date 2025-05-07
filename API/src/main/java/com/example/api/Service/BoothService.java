@@ -52,8 +52,7 @@ public class BoothService {
 
     public BoothEditResponse getBoothEditByID(Integer boothID) {
         System.out.println("BoothService: getBoothEditByID >> "+boothID);
-        Booth booth = boothRepository.findById(boothID)
-                .orElseThrow(() -> new NotFoundException("找不到攤位ID為 < "+ boothID+" > 的攤位"));
+        Booth booth = getBoothByID(boothID);
 
         BoothEditResponse response = modelMapper.map(booth, BoothEditResponse.class);
         Set<User> users = booth.getCollaborator().getCollaborators();
@@ -115,13 +114,23 @@ public class BoothService {
         booth.setMaxParticipants(updateIfNotNull(booth.getMaxParticipants(), request.getMaxParticipants()));
         booth.setDisplay(updateIfNotNull(booth.getDisplay(), request.getDisplay()));
 
-        List<String> userIDs = request.getCollaborators();
-        CollaboratorList collaborator = new CollaboratorList();
-        if(userIDs != null && !userIDs.isEmpty()) {
-            List<User> userList = userRepository.findAllById(userIDs);
-            Set<User> users = new HashSet<>(userList);
-            collaborator.setCollaborators(users);
-        }else collaborator.setCollaborators(null);
+        List<String> newUserAccounts = request.getCollaborators();
+        CollaboratorList collaborator = booth.getCollaborator();
+
+        if (newUserAccounts != null) {
+            collaborator.getCollaborators().clear();
+
+            if (!newUserAccounts.isEmpty()) {
+                List<User> userList = userRepository.findAllById(newUserAccounts);
+
+                for (User user : userList) {
+                    if (!colListRepository.existsByIdAndCollaborators_UserAccount(collaborator.getId(), user.getUserAccount())) {
+                        collaborator.getCollaborators().add(user);
+                    }
+                }
+            }
+            colListRepository.save(collaborator);
+        }
 
         boothRepository.save(booth);
     }

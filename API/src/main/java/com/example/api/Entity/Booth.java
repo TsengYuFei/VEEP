@@ -1,10 +1,10 @@
 package com.example.api.Entity;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
 
@@ -51,5 +51,6 @@ public class Booth {
 
     @OneToOne
     @JoinColumn(name = "collaborator", nullable = false, unique = true)
+    @JsonManagedReference
     private CollaboratorList collaborator;
 }
