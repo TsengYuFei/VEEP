@@ -10,6 +10,7 @@ import lombok.Data;
 import org.hibernate.validator.constraints.URL;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Data
 public class BoothUpdateRequest {
@@ -36,4 +37,6 @@ public class BoothUpdateRequest {
     private Integer maxParticipants;
 
     private Boolean display;
+
+    private List<String> collaborators;
 }

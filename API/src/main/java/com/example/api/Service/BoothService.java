@@ -57,10 +57,12 @@ public class BoothService {
 
         BoothEditResponse response = modelMapper.map(booth, BoothEditResponse.class);
         Set<User> users = booth.getCollaborator().getCollaborators();
-        List<CollaboratorUserResponse> collaborators = users.stream()
-                .map(user -> modelMapper.map(user, CollaboratorUserResponse.class))
-                .toList();
-        response.setCollaborators(collaborators);
+        if(users != null && !users.isEmpty()) {
+            List<CollaboratorUserResponse> collaborators = users.stream()
+                    .map(user -> modelMapper.map(user, CollaboratorUserResponse.class))
+                    .toList();
+            response.setCollaborators(collaborators);
+        }else response.setCollaborators(null);
 
         return response;
     }
@@ -72,12 +74,6 @@ public class BoothService {
         request.setAvatar(updateIfNotBlank(null, request.getAvatar()));
         request.setIntroduction(updateIfNotBlank(null, request.getIntroduction()));
 
-        CollaboratorList collaborator = new CollaboratorList();
-        List<User> userList = userRepository.findAllById(request.getCollaborators());
-        Set<User> users = new HashSet<>(userList);
-        collaborator.setCollaborators(users);
-        collaborator = colListRepository.save(collaborator);
-
         Boolean status = request.getOpenStatus();
         OpenMode mode = request.getOpenMode();
         if(mode == OpenMode.MANUAL && status == null){
@@ -87,7 +83,18 @@ public class BoothService {
         }
 
         Booth booth = modelMapper.map(request, Booth.class);
+
+        List<String> userIDs = request.getCollaborators();
+        CollaboratorList collaborator = new CollaboratorList();
+        if(userIDs != null && !userIDs.isEmpty()) {
+            List<User> userList = userRepository.findAllById(userIDs);
+            Set<User> users = new HashSet<>(userList);
+            collaborator.setCollaborators(users);
+        }else collaborator.setCollaborators(null);
+
+        collaborator = colListRepository.save(collaborator);
         booth.setCollaborator(collaborator);
+
         boothRepository.save(booth);
         return booth.getBoothID();
     }
@@ -95,8 +102,14 @@ public class BoothService {
 
     public void updateBoothByID(Integer boothID, BoothUpdateRequest request){
         System.out.println("BoothService: updateBoothByID >> "+boothID);
-        Booth booth = getBoothByID(boothID);
 
+        CollaboratorList collaborator = new CollaboratorList();
+        List<User> userList = userRepository.findAllById(request.getCollaborators());
+        Set<User> users = new HashSet<>(userList);
+        collaborator.setCollaborators(users);
+        collaborator = colListRepository.save(collaborator);
+
+        Booth booth = getBoothByID(boothID);
         booth.setName(updateIfNotBlank(booth.getName(), request.getName()));
         booth.setAvatar(updateIfNotBlank(booth.getAvatar(), request.getAvatar()));
         booth.setIntroduction(updateIfNotBlank(booth.getIntroduction(), request.getIntroduction()));
@@ -106,6 +119,7 @@ public class BoothService {
         booth.setOpenEnd(updateIfNotNull(booth.getOpenEnd(), request.getOpenEnd()));
         booth.setMaxParticipants(updateIfNotNull(booth.getMaxParticipants(), request.getMaxParticipants()));
         booth.setDisplay(updateIfNotNull(booth.getDisplay(), request.getDisplay()));
+        booth.setCollaborator(collaborator);
 
         boothRepository.save(booth);
     }
