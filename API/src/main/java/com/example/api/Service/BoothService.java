@@ -11,11 +11,15 @@ import com.example.api.Entity.User;
 import com.example.api.Exception.NotFoundException;
 import com.example.api.Exception.UnprocessableEntityException;
 import com.example.api.Repository.BoothRepository;
+import com.example.api.Repository.CollaboratorListRepository;
+import com.example.api.Repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -27,6 +31,12 @@ import static com.example.api.Other.UpdateTool.updateIfNotNull;
 public class BoothService {
     @Autowired
     private final BoothRepository boothRepository;
+
+    @Autowired
+    private final UserRepository userRepository;
+
+    @Autowired
+    private final CollaboratorListRepository colListRepository;
 
     @Autowired
     private final ModelMapper modelMapper;
@@ -56,10 +66,17 @@ public class BoothService {
     }
 
 
+    @Transactional
     public Integer createBooth(BoothCreateRequest request) {
         System.out.println("BoothService: createBooth");
         request.setAvatar(updateIfNotBlank(null, request.getAvatar()));
         request.setIntroduction(updateIfNotBlank(null, request.getIntroduction()));
+
+        CollaboratorList collaborator = new CollaboratorList();
+        List<User> userList = userRepository.findAllById(request.getCollaborators());
+        Set<User> users = new HashSet<>(userList);
+        collaborator.setCollaborators(users);
+        collaborator = colListRepository.save(collaborator);
 
         Boolean status = request.getOpenStatus();
         OpenMode mode = request.getOpenMode();
@@ -70,6 +87,7 @@ public class BoothService {
         }
 
         Booth booth = modelMapper.map(request, Booth.class);
+        booth.setCollaborator(collaborator);
         boothRepository.save(booth);
         return booth.getBoothID();
     }

@@ -7,6 +7,7 @@ import lombok.Data;
 import org.hibernate.validator.constraints.URL;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Data
 public class BoothCreateRequest {
@@ -36,4 +37,6 @@ public class BoothCreateRequest {
 
     @NotNull(message = "攤位是否顯示於總覽頁面不可為空")
     private Boolean display;
+
+    private List<String> collaborators;
 }
