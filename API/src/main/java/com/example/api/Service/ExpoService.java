@@ -2,16 +2,23 @@ package com.example.api.Service;
 
 import com.example.api.DTO.Request.ExpoCreateRequest;
 import com.example.api.DTO.Request.ExpoUpdateRequest;
+import com.example.api.DTO.Response.CollaboratorUserResponse;
 import com.example.api.DTO.Response.ExpoEditResponse;
-import com.example.api.Entity.Expo;
-import com.example.api.Entity.OpenMode;
+import com.example.api.Entity.*;
 import com.example.api.Exception.NotFoundException;
 import com.example.api.Exception.UnprocessableEntityException;
+import com.example.api.Repository.ExpoCollaboratorListRepository;
 import com.example.api.Repository.ExpoRepository;
+import com.example.api.Repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 import static com.example.api.Other.UpdateTool.updateIfNotBlank;
 import static com.example.api.Other.UpdateTool.updateIfNotNull;
@@ -21,6 +28,12 @@ import static com.example.api.Other.UpdateTool.updateIfNotNull;
 public class ExpoService {
     @Autowired
     private final ExpoRepository expoRepository;
+
+    @Autowired
+    private final UserRepository userRepository;
+
+    @Autowired
+    private final ExpoCollaboratorListRepository colListRepository;
 
     @Autowired
     private final ModelMapper modelMapper;
@@ -36,12 +49,22 @@ public class ExpoService {
 
     public ExpoEditResponse getExpoEditByID(Integer expoID) {
         System.out.println("ExpoService: getExpoEditByID >> "+expoID);
-        Expo expo = expoRepository.findById(expoID)
-                .orElseThrow(() -> new NotFoundException("找不到展會ID為 < "+ expoID+" > 的展會"));
-        return modelMapper.map(expo, ExpoEditResponse.class);
+        Expo expo = getExpoByID(expoID);
+
+        ExpoEditResponse response = modelMapper.map(expo, ExpoEditResponse.class);
+        Set<User> users = expo.getCollaborator().getCollaborators();
+        if(users != null && !users.isEmpty()){
+            List<CollaboratorUserResponse> collaborators = users.stream()
+                    .map(user -> modelMapper.map(user, CollaboratorUserResponse.class))
+                    .toList();
+            response.setCollaborators(collaborators);
+        }else response.setCollaborators(null);
+
+        return response;
     }
 
 
+    @Transactional
     public Integer createExpo(ExpoCreateRequest request) {
         System.out.println("ExpoService: createExpo");
         request.setAvatar(updateIfNotBlank(null, request.getAvatar()));
@@ -57,15 +80,26 @@ public class ExpoService {
         }
 
         Expo expo = modelMapper.map(request, Expo.class);
+
+        List<String> userIDs = request.getCollaborators();
+        ExpoCollaboratorList collaborator = new ExpoCollaboratorList();
+        if(userIDs != null && !userIDs.isEmpty()){
+            List<User> userList = userRepository.findAllById(userIDs);
+            Set<User> users = new HashSet<>(userList);
+            collaborator.setCollaborators(users);
+        }else collaborator.setCollaborators(new HashSet<>());
+        expo.setCollaborator(collaborator);
+
         expoRepository.save(expo);
         return expo.getExpoID();
     }
 
 
+    @Transactional
     public void updateExpoByID(Integer expoID, ExpoUpdateRequest request){
         System.out.println("ExpoService: updateExpoByID >> "+expoID);
-        Expo expo = getExpoByID(expoID);
 
+        Expo expo = getExpoByID(expoID);
         expo.setName(updateIfNotBlank(expo.getName(), request.getName()));
         expo.setAvatar(updateIfNotBlank(expo.getAvatar(), request.getAvatar()));
         expo.setPrice(updateIfNotNull(expo.getPrice(), request.getPrice()));
@@ -78,10 +112,28 @@ public class ExpoService {
         expo.setMaxParticipants(updateIfNotNull(expo.getMaxParticipants(), request.getMaxParticipants()));
         expo.setDisplay(updateIfNotNull(expo.getDisplay(), request.getDisplay()));
 
+        List<String> newUserAccounts = request.getCollaborators();
+        ExpoCollaboratorList collaborator = expo.getCollaborator();
+
+        if (newUserAccounts != null) {
+            collaborator.getCollaborators().clear();
+
+            if (!newUserAccounts.isEmpty()) {
+                List<User> userList = userRepository.findAllById(newUserAccounts);
+
+                for (User user : userList) {
+                    if (!colListRepository.existsByIdAndCollaborators_UserAccount(collaborator.getId(), user.getUserAccount())) {
+                        collaborator.getCollaborators().add(user);
+                    }
+                }
+            }
+        }
+
         expoRepository.save(expo);
     }
 
 
+    @Transactional
     public void deleteExpoByID(Integer expoID){
         System.out.println("ExpoService: deleteExpoByID >> "+expoID);
         Expo expo = getExpoByID(expoID);

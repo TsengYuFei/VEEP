@@ -1,5 +1,6 @@
 package com.example.api.Entity;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -53,4 +54,9 @@ public class Expo {
 
     @Column(name = "display", nullable = false)
     private Boolean display = true;
+
+    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "collaborator", nullable = false, unique = true)  // 主控方加JoinColumn
+    @JsonManagedReference
+    private ExpoCollaboratorList collaborator;
 }

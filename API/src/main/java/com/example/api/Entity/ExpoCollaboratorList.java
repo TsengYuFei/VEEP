@@ -1,0 +1,36 @@
+package com.example.api.Entity;
+
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+import java.util.HashSet;
+import java.util.Set;
+
+@Data
+@Entity
+@AllArgsConstructor
+@NoArgsConstructor
+@Table(name = "expo_collaborator_list")
+public class ExpoCollaboratorList {
+    @Id
+    @Column(name = "id")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer id;
+
+    @OneToOne(mappedBy = "collaborator")  // 被控方加mappingBy
+    @JsonBackReference
+    private Expo expo;
+
+    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @JoinTable(
+            name = "expo_collaborator_list_user",  // 中間關聯表名稱
+            joinColumns = {@JoinColumn(name = "listID")},  //this table's foreigner key in database
+            inverseJoinColumns = {@JoinColumn(name = "userAccount")}  //User table's foreigner key in database
+    )
+    @JsonIgnore
+    private Set<User> collaborators = new HashSet<>();
+}

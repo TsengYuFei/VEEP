@@ -7,6 +7,7 @@ import lombok.Data;
 import org.hibernate.validator.constraints.URL;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Data
 public class ExpoCreateRequest {
@@ -42,4 +43,6 @@ public class ExpoCreateRequest {
 
     @NotNull(message = "展會是否顯示於總覽頁面不可為空")
     private Boolean display;
+
+    private List<String> collaborators;
 }

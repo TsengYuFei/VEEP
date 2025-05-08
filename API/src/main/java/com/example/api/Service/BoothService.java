@@ -11,7 +11,7 @@ import com.example.api.Entity.User;
 import com.example.api.Exception.NotFoundException;
 import com.example.api.Exception.UnprocessableEntityException;
 import com.example.api.Repository.BoothRepository;
-import com.example.api.Repository.CollaboratorListRepository;
+import com.example.api.Repository.BoothCollaboratorListRepository;
 import com.example.api.Repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
@@ -36,7 +36,7 @@ public class BoothService {
     private final UserRepository userRepository;
 
     @Autowired
-    private final CollaboratorListRepository colListRepository;
+    private final BoothCollaboratorListRepository colListRepository;
 
     @Autowired
     private final ModelMapper modelMapper;
@@ -90,7 +90,6 @@ public class BoothService {
             Set<User> users = new HashSet<>(userList);
             collaborator.setCollaborators(users);
         }else collaborator.setCollaborators(new HashSet<>());
-
         booth.setCollaborator(collaborator);
 
         boothRepository.save(booth);
