@@ -5,7 +5,7 @@ import org.springframework.stereotype.Component;
 
 @Data
 @Component
-public class CollaboratorUserResponse {
+public class UserListResponse {
     private String name;
     private String userAccount;
 }

@@ -2,14 +2,12 @@ package com.example.api.Service;
 
 import com.example.api.DTO.Request.ExpoCreateRequest;
 import com.example.api.DTO.Request.ExpoUpdateRequest;
-import com.example.api.DTO.Response.CollaboratorUserResponse;
+import com.example.api.DTO.Response.UserListResponse;
 import com.example.api.DTO.Response.ExpoEditResponse;
 import com.example.api.Entity.*;
 import com.example.api.Exception.NotFoundException;
 import com.example.api.Exception.UnprocessableEntityException;
-import com.example.api.Repository.ExpoCollaboratorListRepository;
-import com.example.api.Repository.ExpoRepository;
-import com.example.api.Repository.UserRepository;
+import com.example.api.Repository.*;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,6 +34,12 @@ public class ExpoService {
     private final ExpoCollaboratorListRepository colListRepository;
 
     @Autowired
+    private final BlacklistRepository blacklistRepository;
+
+    @Autowired
+    private final WhitelistRepository whitelistRepository;
+
+    @Autowired
     private final ModelMapper modelMapper;
 
 
@@ -50,15 +54,35 @@ public class ExpoService {
     public ExpoEditResponse getExpoEditByID(Integer expoID) {
         System.out.println("ExpoService: getExpoEditByID >> "+expoID);
         Expo expo = getExpoByID(expoID);
-
         ExpoEditResponse response = modelMapper.map(expo, ExpoEditResponse.class);
-        Set<User> users = expo.getCollaborator().getCollaborators();
-        if(users != null && !users.isEmpty()){
-            List<CollaboratorUserResponse> collaborators = users.stream()
-                    .map(user -> modelMapper.map(user, CollaboratorUserResponse.class))
+
+        // Collaborator
+        Set<User> colUsers = expo.getCollaborator().getCollaborators();
+        if(colUsers != null && !colUsers.isEmpty()){
+            List<UserListResponse> collaborators = colUsers.stream()
+                    .map(user -> modelMapper.map(user, UserListResponse.class))
                     .toList();
             response.setCollaborators(collaborators);
         }else response.setCollaborators(null);
+
+
+        // Blacklist
+        Set<User> blackedUser = expo.getBlacklist().getBlacklistedUsers();
+        if(blackedUser != null && !blackedUser.isEmpty()){
+            List<UserListResponse> users = blackedUser.stream()
+                    .map(user -> modelMapper.map(user, UserListResponse.class))
+                    .toList();
+            response.setBlacklist(users);
+        }else response.setBlacklist(null);
+
+        // Whitelist
+        Set<User> whitedUser = expo.getWhitelist().getWhitelistedUsers();
+        if(whitedUser != null && !whitedUser.isEmpty()){
+            List<UserListResponse> users = whitedUser.stream()
+                    .map(user -> modelMapper.map(user, UserListResponse.class))
+                    .toList();
+            response.setWhitelist(users);
+        }else response.setWhitelist(null);
 
         return response;
     }
@@ -81,14 +105,36 @@ public class ExpoService {
 
         Expo expo = modelMapper.map(request, Expo.class);
 
-        List<String> userIDs = request.getCollaborators();
+        // Collaborator
+        List<String> colIDs = request.getCollaborators();
         ExpoCollaboratorList collaborator = new ExpoCollaboratorList();
-        if(userIDs != null && !userIDs.isEmpty()){
-            List<User> userList = userRepository.findAllById(userIDs);
+        if(colIDs != null && !colIDs.isEmpty()){
+            List<User> userList = userRepository.findAllById(colIDs);
             Set<User> users = new HashSet<>(userList);
             collaborator.setCollaborators(users);
         }else collaborator.setCollaborators(new HashSet<>());
         expo.setCollaborator(collaborator);
+
+        // Blacklist
+        List<String> blackIDs = request.getBlacklist();
+        Blacklist blacklistedUser = new Blacklist();
+        if(blackIDs != null && !blackIDs.isEmpty()){
+            List<User> userList = userRepository.findAllById(blackIDs);
+            Set<User> users = new HashSet<>(userList);
+            blacklistedUser.setBlacklistedUsers(users);
+        }else blacklistedUser.setBlacklistedUsers(new HashSet<>());
+        expo.setBlacklist(blacklistedUser);
+
+        // Whitelist
+        List<String> whiteIDs = request.getWhitelist();
+        Whitelist whitelistedUser = new Whitelist();
+        if(whiteIDs != null && !whiteIDs.isEmpty()){
+            List<User> userList = userRepository.findAllById(whiteIDs);
+            Set<User> users = new HashSet<>(userList);
+            whitelistedUser.setWhitelistedUsers(users);
+        }else whitelistedUser.setWhitelistedUsers(new HashSet<>());
+        expo.setWhitelist(whitelistedUser);
+
 
         expoRepository.save(expo);
         return expo.getExpoID();
@@ -112,18 +158,52 @@ public class ExpoService {
         expo.setMaxParticipants(updateIfNotNull(expo.getMaxParticipants(), request.getMaxParticipants()));
         expo.setDisplay(updateIfNotNull(expo.getDisplay(), request.getDisplay()));
 
-        List<String> newUserAccounts = request.getCollaborators();
+        // Collaborator
+        List<String> newColAccounts = request.getCollaborators();
         ExpoCollaboratorList collaborator = expo.getCollaborator();
-
-        if (newUserAccounts != null) {
+        if (newColAccounts != null) {
             collaborator.getCollaborators().clear();
 
-            if (!newUserAccounts.isEmpty()) {
-                List<User> userList = userRepository.findAllById(newUserAccounts);
+            if (!newColAccounts.isEmpty()) {
+                List<User> userList = userRepository.findAllById(newColAccounts);
 
                 for (User user : userList) {
                     if (!colListRepository.existsByIdAndCollaborators_UserAccount(collaborator.getId(), user.getUserAccount())) {
                         collaborator.getCollaborators().add(user);
+                    }
+                }
+            }
+        }
+
+        // Blacklist
+        List<String> newBlackAccounts = request.getBlacklist();
+        Blacklist blacklistedUser = expo.getBlacklist();
+        if (newBlackAccounts != null) {
+            blacklistedUser.getBlacklistedUsers().clear();
+
+            if (!newBlackAccounts.isEmpty()) {
+                List<User> userList = userRepository.findAllById(newBlackAccounts);
+
+                for (User user : userList) {
+                    if (!blacklistRepository.existsByIdAndBlacklistedUsers_UserAccount(blacklistedUser.getId(), user.getUserAccount())) {
+                        blacklistedUser.getBlacklistedUsers().add(user);
+                    }
+                }
+            }
+        }
+
+        // Whitelist
+        List<String> newWhiteAccounts = request.getWhitelist();
+        Whitelist whitelistedUser = expo.getWhitelist();
+        if (newWhiteAccounts != null) {
+            whitelistedUser.getWhitelistedUsers().clear();
+
+            if (!newWhiteAccounts.isEmpty()) {
+                List<User> userList = userRepository.findAllById(newWhiteAccounts);
+
+                for (User user : userList) {
+                    if (!whitelistRepository.existsByIdAndWhitelistedUsers_UserAccount(whitelistedUser.getId(), user.getUserAccount())) {
+                        whitelistedUser.getWhitelistedUsers().add(user);
                     }
                 }
             }

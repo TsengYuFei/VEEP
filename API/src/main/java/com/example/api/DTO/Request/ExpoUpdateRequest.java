@@ -41,4 +41,8 @@ public class ExpoUpdateRequest {
     private Boolean display;
 
     private List<String> collaborators;
+
+    private List<String> blacklist;
+
+    private List<String> whitelist;
 }

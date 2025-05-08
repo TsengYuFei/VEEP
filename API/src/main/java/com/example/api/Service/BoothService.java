@@ -3,7 +3,7 @@ package com.example.api.Service;
 import com.example.api.DTO.Request.BoothCreateRequest;
 import com.example.api.DTO.Request.BoothUpdateRequest;
 import com.example.api.DTO.Response.BoothEditResponse;
-import com.example.api.DTO.Response.CollaboratorUserResponse;
+import com.example.api.DTO.Response.UserListResponse;
 import com.example.api.Entity.Booth;
 import com.example.api.Entity.BoothCollaboratorList;
 import com.example.api.Entity.OpenMode;
@@ -57,8 +57,8 @@ public class BoothService {
         BoothEditResponse response = modelMapper.map(booth, BoothEditResponse.class);
         Set<User> users = booth.getCollaborator().getCollaborators();
         if(users != null && !users.isEmpty()) {
-            List<CollaboratorUserResponse> collaborators = users.stream()
-                    .map(user -> modelMapper.map(user, CollaboratorUserResponse.class))
+            List<UserListResponse> collaborators = users.stream()
+                    .map(user -> modelMapper.map(user, UserListResponse.class))
                     .toList();
             response.setCollaborators(collaborators);
         }else response.setCollaborators(null);

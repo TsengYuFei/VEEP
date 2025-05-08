@@ -20,5 +20,7 @@ public class ExpoEditResponse {
     private String accessCode;
     private Integer maxParticipants;
     private Boolean display;
-    private List<CollaboratorUserResponse> collaborators;
+    private List<UserListResponse> collaborators;
+    private List<UserListResponse> blacklist;
+    private List<UserListResponse> whitelist;
 }

@@ -59,4 +59,14 @@ public class Expo {
     @JoinColumn(name = "collaborator", nullable = false, unique = true)  // 主控方加JoinColumn
     @JsonManagedReference
     private ExpoCollaboratorList collaborator;
+
+    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "blacklist", nullable = false, unique = true)
+    @JsonManagedReference
+    private Blacklist blacklist;
+
+    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "whitelist", nullable = false, unique = true)
+    @JsonManagedReference
+    private Whitelist whitelist;
 }
