@@ -52,5 +52,5 @@ public class Booth {
     @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "collaborator", nullable = false, unique = true)  // 主控方加JoinColumn
     @JsonManagedReference
-    private CollaboratorList collaborator;
+    private BoothCollaboratorList collaborator;
 }

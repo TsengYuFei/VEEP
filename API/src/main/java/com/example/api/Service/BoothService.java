@@ -5,7 +5,7 @@ import com.example.api.DTO.Request.BoothUpdateRequest;
 import com.example.api.DTO.Response.BoothEditResponse;
 import com.example.api.DTO.Response.CollaboratorUserResponse;
 import com.example.api.Entity.Booth;
-import com.example.api.Entity.CollaboratorList;
+import com.example.api.Entity.BoothCollaboratorList;
 import com.example.api.Entity.OpenMode;
 import com.example.api.Entity.User;
 import com.example.api.Exception.NotFoundException;
@@ -84,14 +84,13 @@ public class BoothService {
         Booth booth = modelMapper.map(request, Booth.class);
 
         List<String> userIDs = request.getCollaborators();
-        CollaboratorList collaborator = new CollaboratorList();
+        BoothCollaboratorList collaborator = new BoothCollaboratorList();
         if(userIDs != null && !userIDs.isEmpty()) {
             List<User> userList = userRepository.findAllById(userIDs);
             Set<User> users = new HashSet<>(userList);
             collaborator.setCollaborators(users);
         }else collaborator.setCollaborators(new HashSet<>());
 
-//        collaborator = colListRepository.save(collaborator);
         booth.setCollaborator(collaborator);
 
         boothRepository.save(booth);
@@ -115,7 +114,7 @@ public class BoothService {
         booth.setDisplay(updateIfNotNull(booth.getDisplay(), request.getDisplay()));
 
         List<String> newUserAccounts = request.getCollaborators();
-        CollaboratorList collaborator = booth.getCollaborator();
+        BoothCollaboratorList collaborator = booth.getCollaborator();
 
         if (newUserAccounts != null) {
             collaborator.getCollaborators().clear();
@@ -129,7 +128,6 @@ public class BoothService {
                     }
                 }
             }
-//            colListRepository.save(collaborator);
         }
 
         boothRepository.save(booth);

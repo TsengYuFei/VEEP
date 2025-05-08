@@ -14,8 +14,8 @@ import java.util.Set;
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "collaborator_list")
-public class CollaboratorList {
+@Table(name = "booth_collaborator_list")
+public class BoothCollaboratorList {
     @Id
     @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -27,7 +27,7 @@ public class CollaboratorList {
 
     @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinTable(
-            name = "collaborator_list_user",  // 中間關聯表名稱
+            name = "booth_collaborator_list_user",  // 中間關聯表名稱
             joinColumns = {@JoinColumn(name = "listID")},  //this table's foreigner key in database
             inverseJoinColumns = {@JoinColumn(name = "userAccount")}  //User table's foreigner key in database
     )
