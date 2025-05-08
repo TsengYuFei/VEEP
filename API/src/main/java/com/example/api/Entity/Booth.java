@@ -49,8 +49,8 @@ public class Booth {
     @Column(name = "display", nullable = false)
     private Boolean display = true;
 
-    @OneToOne
-    @JoinColumn(name = "collaborator", nullable = false, unique = true)
+    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "collaborator", nullable = false, unique = true)  // 主控方加JoinColumn
     @JsonManagedReference
     private CollaboratorList collaborator;
 }

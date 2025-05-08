@@ -21,11 +21,11 @@ public class CollaboratorList {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @OneToOne(mappedBy = "collaborator")
+    @OneToOne(mappedBy = "collaborator")  // 被控方加mappingBy
     @JsonBackReference
     private Booth booth;
 
-    @ManyToMany
+    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinTable(
             name = "collaborator_list_user",  // 中間關聯表名稱
             joinColumns = {@JoinColumn(name = "listID")},  //this table's foreigner key in database

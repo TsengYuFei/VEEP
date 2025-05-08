@@ -91,7 +91,7 @@ public class BoothService {
             collaborator.setCollaborators(users);
         }else collaborator.setCollaborators(new HashSet<>());
 
-        collaborator = colListRepository.save(collaborator);
+//        collaborator = colListRepository.save(collaborator);
         booth.setCollaborator(collaborator);
 
         boothRepository.save(booth);
@@ -129,14 +129,15 @@ public class BoothService {
                     }
                 }
             }
-            colListRepository.save(collaborator);
+//            colListRepository.save(collaborator);
         }
 
         boothRepository.save(booth);
     }
 
 
-    public void deleteBoothByID(Integer boothID){
+    @Transactional
+    public void deleteBoothByID(Integer boothID) {
         System.out.println("BoothService: deleteBoothByID >> "+boothID);
         Booth booth = getBoothByID(boothID);
         boothRepository.delete(booth);
