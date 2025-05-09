@@ -58,13 +58,13 @@ public class ExpoService {
     public ExpoEditResponse getExpoEditByID(Integer expoID) {
         System.out.println("ExpoService: getExpoEditByID >> "+expoID);
         Expo expo = getExpoByID(expoID);
-        ExpoEditResponse response = modelMapper.map(expo, ExpoEditResponse.class);
+        ExpoEditResponse response = ExpoEditResponse.fromExpo(expo);
 
         // Collaborator
         Set<User> colUsers = expo.getCollaborator().getCollaborators();
         if(colUsers != null && !colUsers.isEmpty()){
             List<UserListResponse> collaborators = colUsers.stream()
-                    .map(user -> modelMapper.map(user, UserListResponse.class))
+                    .map(UserListResponse::fromUser)
                     .toList();
             response.setCollaborators(collaborators);
         }else response.setCollaborators(null);
@@ -74,7 +74,7 @@ public class ExpoService {
         Set<User> blackedUser = expo.getBlacklist().getBlacklistedUsers();
         if(blackedUser != null && !blackedUser.isEmpty()){
             List<UserListResponse> users = blackedUser.stream()
-                    .map(user -> modelMapper.map(user, UserListResponse.class))
+                    .map(UserListResponse::fromUser)
                     .toList();
             response.setBlacklist(users);
         }else response.setBlacklist(null);
@@ -83,7 +83,7 @@ public class ExpoService {
         Set<User> whitedUser = expo.getWhitelist().getWhitelistedUsers();
         if(whitedUser != null && !whitedUser.isEmpty()){
             List<UserListResponse> users = whitedUser.stream()
-                    .map(user -> modelMapper.map(user, UserListResponse.class))
+                    .map(UserListResponse::fromUser)
                     .toList();
             response.setWhitelist(users);
         }else response.setWhitelist(null);
@@ -92,7 +92,7 @@ public class ExpoService {
         Set<Tag> tagNames = expo.getTags();
         if(tagNames != null && !tagNames.isEmpty()){
             List<TagResponse> tags = tagNames.stream()
-                    .map(tag -> modelMapper.map(tag, TagResponse.class))
+                    .map(TagResponse::fromTag)
                     .toList();
             response.setTags(tags);
         }else response.setTags(null);

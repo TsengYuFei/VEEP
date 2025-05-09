@@ -22,7 +22,7 @@ public class Blacklist {
     private Integer id;
 
     @OneToOne(mappedBy = "blacklist")
-    @JsonBackReference
+    @JsonIgnore
     private Expo expo;
 
     @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})

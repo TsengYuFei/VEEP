@@ -22,7 +22,7 @@ public class BoothCollaboratorList {
     private Integer id;
 
     @OneToOne(mappedBy = "collaborator")  // 被控方加mappingBy
-    @JsonBackReference
+    @JsonIgnore
     private Booth booth;
 
     @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})

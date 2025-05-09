@@ -60,17 +60,14 @@ public class Expo {
 
     @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "collaborator", nullable = false, unique = true)  // 主控方加JoinColumn
-    @JsonManagedReference
     private ExpoCollaboratorList collaborator;
 
     @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "blacklist", nullable = false, unique = true)
-    @JsonManagedReference
     private Blacklist blacklist;
 
     @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "whitelist", nullable = false, unique = true)
-    @JsonManagedReference
     private Whitelist whitelist;
 
     @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
@@ -79,6 +76,5 @@ public class Expo {
             joinColumns = {@JoinColumn(name = "expoID")},
             inverseJoinColumns = {@JoinColumn(name = "tagID")}
     )
-    @JsonIgnore
     private Set<Tag> tags = new HashSet<>();
 }
