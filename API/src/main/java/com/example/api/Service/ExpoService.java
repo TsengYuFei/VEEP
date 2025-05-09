@@ -234,6 +234,21 @@ public class ExpoService {
             }
         }
 
+        // Tag
+        List<String> newTagNames = request.getTags();
+        Set<Tag> tags = expo.getTags();
+        if (newTagNames != null) {
+            tags.clear();
+
+            if (!newTagNames.isEmpty()) {
+                for(String name : newTagNames){
+                    Tag tag = tagRepository.findByName(name);
+                    if(tag == null) tag = tagRepository.save(new Tag(name));
+                    tags.add(tag);
+                }
+            }
+        }
+
         expoRepository.save(expo);
     }
 

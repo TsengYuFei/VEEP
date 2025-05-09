@@ -22,6 +22,8 @@ public class ExpoUpdateRequest {
 
     private String introduction;
 
+    private List<String> tags;
+
     private OpenMode openMode;
 
     private Boolean openStatus;
@@ -42,7 +44,7 @@ public class ExpoUpdateRequest {
 
     private List<String> collaborators;
 
-    private List<String> blacklist;
-
     private List<String> whitelist;
+
+    private List<String> blacklist;
 }
