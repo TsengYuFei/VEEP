@@ -1,5 +1,6 @@
 package com.example.api.Entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -7,6 +8,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.HashSet;
+import java.util.Set;
 
 @Data
 @Entity
@@ -69,4 +72,13 @@ public class Expo {
     @JoinColumn(name = "whitelist", nullable = false, unique = true)
     @JsonManagedReference
     private Whitelist whitelist;
+
+    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @JoinTable(
+            name = "expo_tag",
+            joinColumns = {@JoinColumn(name = "expoID")},
+            inverseJoinColumns = {@JoinColumn(name = "tagID")}
+    )
+    @JsonIgnore
+    private Set<Tag> tags = new HashSet<>();
 }

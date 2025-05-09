@@ -13,6 +13,7 @@ public class ExpoEditResponse {
     private String avatar;
     private Integer price;
     private String introduction;
+    private List<TagResponse> tags;
     private OpenMode openMode;
     private Boolean openStatus;
     private LocalDateTime openStart;
@@ -21,6 +22,6 @@ public class ExpoEditResponse {
     private Integer maxParticipants;
     private Boolean display;
     private List<UserListResponse> collaborators;
-    private List<UserListResponse> blacklist;
     private List<UserListResponse> whitelist;
+    private List<UserListResponse> blacklist;
 }

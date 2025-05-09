@@ -2,6 +2,7 @@ package com.example.api.Service;
 
 import com.example.api.DTO.Request.ExpoCreateRequest;
 import com.example.api.DTO.Request.ExpoUpdateRequest;
+import com.example.api.DTO.Response.TagResponse;
 import com.example.api.DTO.Response.UserListResponse;
 import com.example.api.DTO.Response.ExpoEditResponse;
 import com.example.api.Entity.*;
@@ -83,6 +84,15 @@ public class ExpoService {
                     .toList();
             response.setWhitelist(users);
         }else response.setWhitelist(null);
+
+        // Tag
+        Set<Tag> tagNames = expo.getTags();
+        if(tagNames != null && !tagNames.isEmpty()){
+            List<TagResponse> tags = tagNames.stream()
+                    .map(tag -> modelMapper.map(tag, TagResponse.class))
+                    .toList();
+            response.setTags(tags);
+        }else response.setTags(null);
 
         return response;
     }
