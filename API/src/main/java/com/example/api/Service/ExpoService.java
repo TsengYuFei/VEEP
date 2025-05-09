@@ -41,6 +41,9 @@ public class ExpoService {
     private final WhitelistRepository whitelistRepository;
 
     @Autowired
+    private final TagRepository tagRepository;
+
+    @Autowired
     private final ModelMapper modelMapper;
 
 
@@ -144,6 +147,18 @@ public class ExpoService {
             whitelistedUser.setWhitelistedUsers(users);
         }else whitelistedUser.setWhitelistedUsers(new HashSet<>());
         expo.setWhitelist(whitelistedUser);
+
+        // Tag
+        List<String> tagNames = request.getTags();
+        Set<Tag> tags = new HashSet<>();
+        if(tagNames != null && !tagNames.isEmpty()){
+            for(String name : tagNames){
+                Tag tag = tagRepository.findByName(name);
+                if(tag == null) tag = tagRepository.save(new Tag(name));
+                tags.add(tag);
+            }
+        }
+        expo.setTags(tags);
 
 
         expoRepository.save(expo);

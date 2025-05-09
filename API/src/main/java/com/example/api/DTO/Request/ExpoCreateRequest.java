@@ -23,6 +23,8 @@ public class ExpoCreateRequest {
 
     private String introduction;
 
+    private List<String> tags;
+
     @NotNull(message = "展會開放模式不可為空")
     private OpenMode openMode;
 
@@ -46,7 +48,7 @@ public class ExpoCreateRequest {
 
     private List<String> collaborators;
 
-    private List<String> blacklist;
-
     private List<String> whitelist;
+
+    private List<String> blacklist;
 }
