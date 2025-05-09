@@ -106,7 +106,7 @@ public class ExpoService {
         System.out.println("ExpoService: createExpo");
         request.setAvatar(updateIfNotBlank(null, request.getAvatar()));
         request.setIntroduction(updateIfNotBlank(null, request.getIntroduction()));
-        request.setAccessCode(updateIfNotBlank(null, request.getAvatar()));
+        request.setAccessCode(updateIfNotBlank(null, request.getAccessCode()));
 
         Boolean status = request.getOpenStatus();
         OpenMode mode = request.getOpenMode();
