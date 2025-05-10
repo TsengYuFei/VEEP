@@ -7,7 +7,9 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Data
@@ -63,4 +65,7 @@ public class Booth {
             inverseJoinColumns = {@JoinColumn(name = "tagID")}
     )
     private Set<Tag> tags = new HashSet<>();
+
+    @OneToMany(mappedBy = "booth", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Content> contentList = new ArrayList<>();
 }

@@ -8,16 +8,13 @@ import com.example.api.DTO.Response.UserListResponse;
 import com.example.api.Entity.*;
 import com.example.api.Exception.NotFoundException;
 import com.example.api.Exception.UnprocessableEntityException;
-import com.example.api.Repository.BoothRepository;
-import com.example.api.Repository.BoothCollaboratorListRepository;
-import com.example.api.Repository.TagRepository;
-import com.example.api.Repository.UserRepository;
+import com.example.api.Repository.*;
 import lombok.RequiredArgsConstructor;
-import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -39,9 +36,6 @@ public class BoothService {
 
     @Autowired
     private final TagRepository tagRepository;
-
-    @Autowired
-    private final ModelMapper modelMapper;
 
 
 
@@ -82,8 +76,6 @@ public class BoothService {
     @Transactional
     public Integer createBooth(BoothCreateRequest request) {
         System.out.println("BoothService: createBooth");
-        request.setAvatar(updateIfNotBlank(null, request.getAvatar()));
-        request.setIntroduction(updateIfNotBlank(null, request.getIntroduction()));
 
         Boolean status = request.getOpenStatus();
         OpenMode mode = request.getOpenMode();
@@ -93,7 +85,16 @@ public class BoothService {
             throw new UnprocessableEntityException("Open mode 為 MANUAL 時，open start/end 不可為空");
         }
 
-        Booth booth = modelMapper.map(request, Booth.class);
+        Booth booth = new Booth();
+        booth.setName(request.getName());
+        booth.setAvatar(updateIfNotBlank(null, request.getAvatar()));
+        booth.setIntroduction(updateIfNotBlank(null, request.getIntroduction()));
+        booth.setOpenMode(mode);
+        booth.setOpenStatus(status);
+        booth.setOpenStart(request.getOpenStart());
+        booth.setOpenEnd(request.getOpenEnd());
+        booth.setMaxParticipants(request.getMaxParticipants());
+        booth.setDisplay(request.getDisplay());
 
         // Collaborator
         List<String> userIDs = request.getCollaborators();
@@ -117,6 +118,16 @@ public class BoothService {
             }
         }
         booth.setTags(tags);
+
+        // Content
+        List<Content> contentList = new ArrayList<>();
+        for(int i = 1; i <= 6; i++){
+            Content content = new Content();
+            content.setNumber(i);
+            content.setBooth(booth);
+            contentList.add(content);
+        }
+        booth.setContentList(contentList);
 
         boothRepository.save(booth);
         return booth.getBoothID();
