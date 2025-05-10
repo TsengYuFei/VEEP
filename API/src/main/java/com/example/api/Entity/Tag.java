@@ -31,4 +31,8 @@ public class Tag {
     @ManyToMany(mappedBy = "tags")
     @JsonIgnore
     private Set<Expo> expos = new HashSet<>();
+
+    @ManyToMany(mappedBy = "tags")
+    @JsonIgnore
+    private Set<Booth> booths = new HashSet<>();
 }

@@ -19,6 +19,8 @@ public class BoothCreateRequest {
 
     private String introduction;
 
+    private List<String> tags;
+
     @NotNull(message = "攤位開放模式不可為空")
     private OpenMode openMode;
 

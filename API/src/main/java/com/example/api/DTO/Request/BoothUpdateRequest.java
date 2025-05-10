@@ -22,6 +22,8 @@ public class BoothUpdateRequest {
 
     private String introduction;
 
+    private List<String> tags;
+
     private OpenMode openMode;
 
     private Boolean openStatus;

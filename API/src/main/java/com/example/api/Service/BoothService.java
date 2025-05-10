@@ -3,15 +3,14 @@ package com.example.api.Service;
 import com.example.api.DTO.Request.BoothCreateRequest;
 import com.example.api.DTO.Request.BoothUpdateRequest;
 import com.example.api.DTO.Response.BoothEditResponse;
+import com.example.api.DTO.Response.TagResponse;
 import com.example.api.DTO.Response.UserListResponse;
-import com.example.api.Entity.Booth;
-import com.example.api.Entity.BoothCollaboratorList;
-import com.example.api.Entity.OpenMode;
-import com.example.api.Entity.User;
+import com.example.api.Entity.*;
 import com.example.api.Exception.NotFoundException;
 import com.example.api.Exception.UnprocessableEntityException;
 import com.example.api.Repository.BoothRepository;
 import com.example.api.Repository.BoothCollaboratorListRepository;
+import com.example.api.Repository.TagRepository;
 import com.example.api.Repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
@@ -39,6 +38,9 @@ public class BoothService {
     private final BoothCollaboratorListRepository colListRepository;
 
     @Autowired
+    private final TagRepository tagRepository;
+
+    @Autowired
     private final ModelMapper modelMapper;
 
 
@@ -53,15 +55,25 @@ public class BoothService {
     public BoothEditResponse getBoothEditByID(Integer boothID) {
         System.out.println("BoothService: getBoothEditByID >> "+boothID);
         Booth booth = getBoothByID(boothID);
+        BoothEditResponse response = BoothEditResponse.fromBooth(booth);
 
-        BoothEditResponse response = modelMapper.map(booth, BoothEditResponse.class);
+        // Collaborator
         Set<User> users = booth.getCollaborator().getCollaborators();
         if(users != null && !users.isEmpty()) {
             List<UserListResponse> collaborators = users.stream()
-                    .map(user -> modelMapper.map(user, UserListResponse.class))
+                    .map(UserListResponse::fromUser)
                     .toList();
             response.setCollaborators(collaborators);
         }else response.setCollaborators(null);
+
+        // Tag
+        Set<Tag> tagNames = booth.getTags();
+        if(tagNames != null && !tagNames.isEmpty()){
+            List<TagResponse> tags = tagNames.stream()
+                    .map(TagResponse::fromTag)
+                    .toList();
+            response.setTags(tags);
+        }else response.setTags(null);
 
         return response;
     }
@@ -83,6 +95,7 @@ public class BoothService {
 
         Booth booth = modelMapper.map(request, Booth.class);
 
+        // Collaborator
         List<String> userIDs = request.getCollaborators();
         BoothCollaboratorList collaborator = new BoothCollaboratorList();
         if(userIDs != null && !userIDs.isEmpty()) {
@@ -91,6 +104,18 @@ public class BoothService {
             collaborator.setCollaborators(users);
         }else collaborator.setCollaborators(new HashSet<>());
         booth.setCollaborator(collaborator);
+
+        // Tag
+        List<String> tagNames = request.getTags();
+        Set<Tag> tags = new HashSet<>();
+        if(tagNames != null && !tagNames.isEmpty()){
+            for(String name : tagNames){
+                Tag tag = tagRepository.findByName(name);
+                if(tag == null) tag = tagRepository.save(new Tag(name));
+                tags.add(tag);
+            }
+        }
+        booth.setTags(tags);
 
         boothRepository.save(booth);
         return booth.getBoothID();
@@ -112,9 +137,9 @@ public class BoothService {
         booth.setMaxParticipants(updateIfNotNull(booth.getMaxParticipants(), request.getMaxParticipants()));
         booth.setDisplay(updateIfNotNull(booth.getDisplay(), request.getDisplay()));
 
+        // Collaborator
         List<String> newUserAccounts = request.getCollaborators();
         BoothCollaboratorList collaborator = booth.getCollaborator();
-
         if (newUserAccounts != null) {
             collaborator.getCollaborators().clear();
 
@@ -125,6 +150,21 @@ public class BoothService {
                     if (!colListRepository.existsByIdAndCollaborators_UserAccount(collaborator.getId(), user.getUserAccount())) {
                         collaborator.getCollaborators().add(user);
                     }
+                }
+            }
+        }
+
+        // Tag
+        List<String> newTagNames = request.getTags();
+        Set<Tag> tags = booth.getTags();
+        if (newTagNames != null) {
+            tags.clear();
+
+            if (!newTagNames.isEmpty()) {
+                for(String name : newTagNames){
+                    Tag tag = tagRepository.findByName(name);
+                    if(tag == null) tag = tagRepository.save(new Tag(name));
+                    tags.add(tag);
                 }
             }
         }

@@ -7,6 +7,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.HashSet;
+import java.util.Set;
 
 @Data
 @Entity
@@ -53,4 +55,12 @@ public class Booth {
     @JoinColumn(name = "collaborator", nullable = false, unique = true)  // 主控方加JoinColumn
     @JsonManagedReference
     private BoothCollaboratorList collaborator;
+
+    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @JoinTable(
+            name = "booth_tag",
+            joinColumns = {@JoinColumn(name = "boothID")},
+            inverseJoinColumns = {@JoinColumn(name = "tagID")}
+    )
+    private Set<Tag> tags = new HashSet<>();
 }
