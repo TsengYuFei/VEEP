@@ -110,6 +110,7 @@ public class BoothService {
         Set<Tag> tags = new HashSet<>();
         if(tagNames != null && !tagNames.isEmpty()){
             for(String name : tagNames){
+                name = name.toLowerCase();
                 Tag tag = tagRepository.findByName(name);
                 if(tag == null) tag = tagRepository.save(new Tag(name));
                 tags.add(tag);
@@ -162,6 +163,7 @@ public class BoothService {
 
             if (!newTagNames.isEmpty()) {
                 for(String name : newTagNames){
+                    name = name.toLowerCase();
                     Tag tag = tagRepository.findByName(name);
                     if(tag == null) tag = tagRepository.save(new Tag(name));
                     tags.add(tag);
