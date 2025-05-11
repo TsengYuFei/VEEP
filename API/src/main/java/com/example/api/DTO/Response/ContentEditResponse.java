@@ -1,0 +1,23 @@
+package com.example.api.DTO.Response;
+
+import com.example.api.Entity.Content;
+import lombok.Data;
+import org.springframework.stereotype.Component;
+
+@Data
+@Component
+public class ContentEditResponse {
+    private String title;
+    private String content;
+    private String image;
+
+    public static ContentEditResponse fromContent(Content content) {
+        ContentEditResponse response = new ContentEditResponse();
+
+        response.title = content.getTitle();
+        response.content = content.getContent();
+        response.image = content.getImage();
+
+        return response;
+    }
+}
