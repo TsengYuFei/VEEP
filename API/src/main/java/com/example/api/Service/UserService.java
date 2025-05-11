@@ -10,7 +10,6 @@ import com.example.api.Exception.NotFoundException;
 import com.example.api.Repository.UserRepository;
 import com.mysql.cj.exceptions.ClosedOnExpiredPasswordException;
 import lombok.RequiredArgsConstructor;
-import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -23,33 +22,6 @@ public class UserService {
     @Autowired
     private final UserRepository userRepository;
 
-    @Autowired
-    private final ModelMapper modelMapper;
-
-
-
-    public UserDetailResponse getUserDetailByAccount(String account){
-        System.out.println("UserService: getUserByAccount >> "+account);
-        User user = userRepository.findById(account)
-                .orElseThrow(() -> new NotFoundException("找不到使用者帳號為 < "+ account+" > 的使用者"));
-        return modelMapper.map(user, UserDetailResponse.class);
-    }
-
-
-    public UserOverviewResponse getUserOverviewByAccount(String account){
-        System.out.println("UserService: getUserOverviewByAccount >> "+account);
-        User user = userRepository.findById(account)
-                .orElseThrow(() -> new NotFoundException("找不到使用者帳號為 < "+ account+" > 的使用者"));
-        return modelMapper.map(user, UserOverviewResponse.class);
-    }
-
-
-    public UserEditResponse getUserEditByAccount(String account){
-        System.out.println("UserService: getUserEditByAccount >> "+account);
-        User user = userRepository.findById(account)
-                .orElseThrow(() -> new NotFoundException("找不到使用者帳號為 < "+ account+" > 的使用者"));
-        return modelMapper.map(user, UserEditResponse.class);
-    }
 
 
     private User getUserByAccount(String account){
@@ -58,21 +30,51 @@ public class UserService {
                 .orElseThrow(() -> new NotFoundException("找不到使用者帳號為 < "+ account+" > 的使用者"));
     }
 
+    public UserDetailResponse getUserDetailByAccount(String account){
+        System.out.println("UserService: getUserByAccount >> "+account);
+        User user = userRepository.findById(account)
+                .orElseThrow(() -> new NotFoundException("找不到使用者帳號為 < "+ account+" > 的使用者"));
+        return UserDetailResponse.fromUser(user);
+    }
+
+
+    public UserOverviewResponse getUserOverviewByAccount(String account){
+        System.out.println("UserService: getUserOverviewByAccount >> "+account);
+        User user = userRepository.findById(account)
+                .orElseThrow(() -> new NotFoundException("找不到使用者帳號為 < "+ account+" > 的使用者"));
+        return UserOverviewResponse.fromUser(user);
+    }
+
+
+    public UserEditResponse getUserEditByAccount(String account){
+        System.out.println("UserService: getUserEditByAccount >> "+account);
+        User user = userRepository.findById(account)
+                .orElseThrow(() -> new NotFoundException("找不到使用者帳號為 < "+ account+" > 的使用者"));
+        return UserEditResponse.fromUser(user);
+    }
+
 
     public String createUser(UserCreateRequest request){
         System.out.println("UserService: createUser");
-        request.setAvatar(updateIfNotBlank(null, request.getAvatar()));
-        UserOverviewResponse user = null;
 
+        UserOverviewResponse user = null;
         try {
             user = getUserOverviewByAccount(request.getUserAccount());
         }catch (NotFoundException ignored){}
         if(user != null) throw new ClosedOnExpiredPasswordException("已存在使用者帳號為 < "+ request.getUserAccount()+" > 的使用者");
 
 
-        User newUser = modelMapper.map(request, User.class);
-        userRepository.save(newUser);
+        User newUser = new User();
+        newUser.setName(request.getName());
+        newUser.setUserAccount(request.getUserAccount());
+        newUser.setPassword(request.getPassword());
+        newUser.setTel(request.getTel());
+        newUser.setMail(request.getMail());
+        newUser.setAvatar(updateIfNotBlank(null, request.getAvatar()));
+        newUser.setBirthday(request.getBirthday());
+        newUser.setRole(request.getRole());
 
+        userRepository.save(newUser);
         return newUser.getUserAccount();
     }
 

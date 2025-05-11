@@ -10,7 +10,6 @@ import com.example.api.Exception.NotFoundException;
 import com.example.api.Exception.UnprocessableEntityException;
 import com.example.api.Repository.*;
 import lombok.RequiredArgsConstructor;
-import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -42,9 +41,6 @@ public class ExpoService {
 
     @Autowired
     private final TagRepository tagRepository;
-
-    @Autowired
-    private final ModelMapper modelMapper;
 
 
 
@@ -104,9 +100,6 @@ public class ExpoService {
     @Transactional
     public Integer createExpo(ExpoCreateRequest request) {
         System.out.println("ExpoService: createExpo");
-        request.setAvatar(updateIfNotBlank(null, request.getAvatar()));
-        request.setIntroduction(updateIfNotBlank(null, request.getIntroduction()));
-        request.setAccessCode(updateIfNotBlank(null, request.getAccessCode()));
 
         Boolean status = request.getOpenStatus();
         OpenMode mode = request.getOpenMode();
@@ -116,7 +109,18 @@ public class ExpoService {
             throw new UnprocessableEntityException("Open mode 為 MANUAL 時，open start/end 不可為空");
         }
 
-        Expo expo = modelMapper.map(request, Expo.class);
+        Expo expo = new Expo();
+        expo.setName(request.getName());
+        expo.setAvatar(updateIfNotBlank(null, request.getAvatar()));
+        expo.setPrice(request.getPrice());
+        expo.setIntroduction(updateIfNotBlank(null, request.getIntroduction()));
+        expo.setOpenMode(mode);
+        expo.setOpenStatus(status);
+        expo.setOpenStart(request.getOpenStart());
+        expo.setOpenEnd(request.getOpenEnd());
+        expo.setAccessCode(updateIfNotBlank(null, request.getAccessCode()));
+        expo.setMaxParticipants(request.getMaxParticipants());
+        expo.setDisplay(request.getDisplay());
 
         // Collaborator
         List<String> colIDs = request.getCollaborators();
