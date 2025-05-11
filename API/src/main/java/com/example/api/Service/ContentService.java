@@ -1,12 +1,21 @@
 package com.example.api.Service;
 
+import com.example.api.DTO.Request.BoothUpdateRequest;
+import com.example.api.DTO.Request.ContentUpdateRequest;
 import com.example.api.DTO.Response.ContentEditResponse;
-import com.example.api.Entity.Content;
+import com.example.api.Entity.*;
 import com.example.api.Exception.NotFoundException;
 import com.example.api.Repository.ContentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+import java.util.Set;
+
+import static com.example.api.Other.UpdateTool.updateIfNotBlank;
+import static com.example.api.Other.UpdateTool.updateIfNotNull;
 
 @Service
 @Repository
@@ -27,5 +36,18 @@ public class ContentService {
         System.out.println("ContentService: getContentEditByBoothIDAndNumber >> "+boothID+", "+number);
         Content content = getContentByBoothIDAndNumber(boothID, number);
         return ContentEditResponse.fromContent(content);
+    }
+
+
+    @Transactional
+    public void updateContentByBoothIDAndNumber(Integer boothID, Integer number, ContentUpdateRequest request){
+        System.out.println("ContentService: updateContentByBoothIDAndNumber >> "+boothID+", "+number);
+
+        Content content = getContentByBoothIDAndNumber(boothID, number);
+        content.setTitle(updateIfNotBlank(content.getTitle(), request.getTitle()));
+        content.setContent(updateIfNotBlank(content.getContent(), request.getContent()));
+        content.setImage(updateIfNotBlank(content.getImage(), request.getImage()));
+
+        contentRepository.save(content);
     }
 }
