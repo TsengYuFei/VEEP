@@ -41,4 +41,6 @@ public class BoothCreateRequest {
     private Boolean display;
 
     private List<String> collaborators;
+
+    private List<String> staffs;
 }

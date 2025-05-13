@@ -58,6 +58,11 @@ public class Booth {
     @JsonManagedReference
     private BoothCollaboratorList collaborator;
 
+    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "staff", nullable = false, unique = true)  // 主控方加JoinColumn
+    @JsonManagedReference
+    private BoothStaffList staff;
+
     @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinTable(
             name = "booth_tag",

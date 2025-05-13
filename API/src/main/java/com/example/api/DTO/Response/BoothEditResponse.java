@@ -21,6 +21,7 @@ public class BoothEditResponse {
     private Integer maxParticipants;
     private Boolean display;
     private List<UserListResponse> collaborators;
+    private List<UserListResponse> staffs;
 
     public static BoothEditResponse fromBooth(Booth booth) {
         BoothEditResponse response = new BoothEditResponse();

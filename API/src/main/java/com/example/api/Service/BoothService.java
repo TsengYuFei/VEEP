@@ -35,6 +35,9 @@ public class BoothService {
     private final BoothCollaboratorListRepository colListRepository;
 
     @Autowired
+    private final BoothStaffListRepository staffListRepository;
+
+    @Autowired
     private final TagRepository tagRepository;
 
 
@@ -52,13 +55,22 @@ public class BoothService {
         BoothEditResponse response = BoothEditResponse.fromBooth(booth);
 
         // Collaborator
-        Set<User> users = booth.getCollaborator().getCollaborators();
-        if(users != null && !users.isEmpty()) {
-            List<UserListResponse> collaborators = users.stream()
+        Set<User> cols = booth.getCollaborator().getCollaborators();
+        if(cols != null && !cols.isEmpty()) {
+            List<UserListResponse> collaborators = cols.stream()
                     .map(UserListResponse::fromUser)
                     .toList();
             response.setCollaborators(collaborators);
         }else response.setCollaborators(null);
+
+        // Staff
+        Set<User> stas = booth.getStaff().getStaffs();
+        if(stas != null && !stas.isEmpty()) {
+            List<UserListResponse> staffs = stas.stream()
+                    .map(UserListResponse::fromUser)
+                    .toList();
+            response.setStaffs(staffs);
+        }else response.setStaffs(null);
 
         // Tag
         Set<Tag> tagNames = booth.getTags();
@@ -97,14 +109,24 @@ public class BoothService {
         booth.setDisplay(request.getDisplay());
 
         // Collaborator
-        List<String> userIDs = request.getCollaborators();
+        List<String> colUserIDs = request.getCollaborators();
         BoothCollaboratorList collaborator = new BoothCollaboratorList();
-        if(userIDs != null && !userIDs.isEmpty()) {
-            List<User> userList = userRepository.findAllById(userIDs);
+        if(colUserIDs != null && !colUserIDs.isEmpty()) {
+            List<User> userList = userRepository.findAllById(colUserIDs);
             Set<User> users = new HashSet<>(userList);
             collaborator.setCollaborators(users);
         }else collaborator.setCollaborators(new HashSet<>());
         booth.setCollaborator(collaborator);
+
+        // Staff
+        List<String> StaffUserIDs = request.getStaffs();
+        BoothStaffList staff = new BoothStaffList();
+        if(StaffUserIDs != null && !StaffUserIDs.isEmpty()) {
+            List<User> userList = userRepository.findAllById(StaffUserIDs);
+            Set<User> users = new HashSet<>(userList);
+            staff.setStaffs(users);
+        }else staff.setStaffs(new HashSet<>());
+        booth.setStaff(staff);
 
         // Tag
         List<String> tagNames = request.getTags();
@@ -150,17 +172,34 @@ public class BoothService {
         booth.setDisplay(updateIfNotNull(booth.getDisplay(), request.getDisplay()));
 
         // Collaborator
-        List<String> newUserAccounts = request.getCollaborators();
+        List<String> newColAccounts = request.getCollaborators();
         BoothCollaboratorList collaborator = booth.getCollaborator();
-        if (newUserAccounts != null) {
+        if (newColAccounts != null) {
             collaborator.getCollaborators().clear();
 
-            if (!newUserAccounts.isEmpty()) {
-                List<User> userList = userRepository.findAllById(newUserAccounts);
+            if (!newColAccounts.isEmpty()) {
+                List<User> userList = userRepository.findAllById(newColAccounts);
 
                 for (User user : userList) {
                     if (!colListRepository.existsByIdAndCollaborators_UserAccount(collaborator.getId(), user.getUserAccount())) {
                         collaborator.getCollaborators().add(user);
+                    }
+                }
+            }
+        }
+
+        // Staff
+        List<String> newStaffAccounts = request.getStaffs();
+        BoothStaffList staff = booth.getStaff();
+        if (newStaffAccounts != null) {
+            staff.getStaffs().clear();
+
+            if (!newStaffAccounts.isEmpty()) {
+                List<User> userList = userRepository.findAllById(newStaffAccounts);
+
+                for (User user : userList) {
+                    if (!staffListRepository.existsByIdAndStaffs_UserAccount(staff.getId(), user.getUserAccount())) {
+                        staff.getStaffs().add(user);
                     }
                 }
             }

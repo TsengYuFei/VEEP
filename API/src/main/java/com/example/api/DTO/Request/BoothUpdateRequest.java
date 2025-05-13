@@ -41,4 +41,6 @@ public class BoothUpdateRequest {
     private Boolean display;
 
     private List<String> collaborators;
+
+    private List<String> staffs;
 }
