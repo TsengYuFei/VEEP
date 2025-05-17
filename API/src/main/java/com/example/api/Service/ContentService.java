@@ -1,6 +1,5 @@
 package com.example.api.Service;
 
-import com.example.api.DTO.Request.BoothUpdateRequest;
 import com.example.api.DTO.Request.ContentUpdateRequest;
 import com.example.api.DTO.Response.ContentEditResponse;
 import com.example.api.Entity.*;
@@ -11,11 +10,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
-import java.util.Set;
-
 import static com.example.api.Other.UpdateTool.updateIfNotBlank;
-import static com.example.api.Other.UpdateTool.updateIfNotNull;
 
 @Service
 @Repository
@@ -27,7 +22,7 @@ public class ContentService {
 
     private Content getContentByBoothIDAndNumber(Integer boothID, Integer number) {
         System.out.println("ContentService: getContentByBoothAndNumber >> "+boothID+", "+number);
-        return contentRepository.findByBoothIDAndNumber(boothID, number)
+        return contentRepository.findByBooth_BoothIDAndNumber(boothID, number)
                 .orElseThrow(() -> new NotFoundException("在攤位ID為 < "+ boothID+" > 的攤位中，找不到內容編號為 < "+ number+" > 的內容"));
     }
 

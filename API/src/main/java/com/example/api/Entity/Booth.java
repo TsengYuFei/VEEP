@@ -1,5 +1,6 @@
 package com.example.api.Entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -72,5 +73,11 @@ public class Booth {
     private Set<Tag> tags = new HashSet<>();
 
     @OneToMany(mappedBy = "booth", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference
     private List<Content> contentList = new ArrayList<>();
+
+    @ManyToOne
+    @JoinColumn(name = "owner", nullable = false, insertable = false, updatable = false)
+    @JsonBackReference
+    private User owner;
 }

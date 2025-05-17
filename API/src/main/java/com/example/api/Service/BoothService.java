@@ -40,6 +40,8 @@ public class BoothService {
     @Autowired
     private final TagRepository tagRepository;
 
+    @Autowired
+    private UserService userService;
 
 
     private Booth getBoothByID(Integer boothID) {
@@ -86,7 +88,7 @@ public class BoothService {
 
 
     @Transactional
-    public Integer createBooth(BoothCreateRequest request) {
+    public Integer createBooth(String userAccount, BoothCreateRequest request) {
         System.out.println("BoothService: createBooth");
 
         Boolean status = request.getOpenStatus();
@@ -107,6 +109,10 @@ public class BoothService {
         booth.setOpenEnd(request.getOpenEnd());
         booth.setMaxParticipants(request.getMaxParticipants());
         booth.setDisplay(request.getDisplay());
+
+        // Owner
+        User owner = userService.getUserByAccount(userAccount);
+        booth.setOwner(owner);
 
         // Collaborator
         List<String> colUserIDs = request.getCollaborators();

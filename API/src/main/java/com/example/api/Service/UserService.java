@@ -24,7 +24,7 @@ public class UserService {
 
 
 
-    private User getUserByAccount(String account){
+    protected User getUserByAccount(String account){
         System.out.println("UserService: getUserByAccount >> "+account);
         return userRepository.findById(account)
                 .orElseThrow(() -> new NotFoundException("找不到使用者帳號為 < "+ account+" > 的使用者"));

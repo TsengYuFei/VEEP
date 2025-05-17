@@ -86,10 +86,14 @@ public class BoothController {
                     description = "伺服器錯誤"
             )
     })
-    @PostMapping("")
-    public ResponseEntity<BoothEditResponse> createBooth(@Valid @RequestBody BoothCreateRequest boothRequest){
-        System.out.println("BoothController: createBooth");
-        Integer boothID = boothService.createBooth(boothRequest);
+    @PostMapping("/{userAccount}")
+    public ResponseEntity<BoothEditResponse> createBooth(
+            @Parameter(description = "攤位擁有者userAccount", required = true)
+            @PathVariable String userAccount,
+            @Valid @RequestBody BoothCreateRequest boothRequest
+    ){
+        System.out.println("BoothController: createBooth >> "+userAccount);
+        Integer boothID = boothService.createBooth(userAccount, boothRequest);
         BoothEditResponse booth = boothService.getBoothEditByID(boothID);
         return ResponseEntity.status(HttpStatus.CREATED).body(booth);
     }

@@ -19,9 +19,6 @@ public class Content {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @Column(name = "boothID", nullable = false, insertable = false, updatable = false)
-    private Integer boothID;
-
     @Column(name = "number", nullable = false)
     private Integer number;
 
