@@ -1,12 +1,15 @@
 package com.example.api.Entity;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Data
@@ -75,4 +78,8 @@ public class Expo {
             inverseJoinColumns = {@JoinColumn(name = "tagID")}
     )
     private Set<Tag> tags = new HashSet<>();
+
+    @OneToMany(mappedBy = "expo", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
+    @JsonManagedReference
+    private List<Booth> boothList = new ArrayList<>();
 }

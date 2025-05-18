@@ -77,7 +77,14 @@ public class Booth {
     private List<Content> contentList = new ArrayList<>();
 
     @ManyToOne
-    @JoinColumn(name = "owner", nullable = false, insertable = false, updatable = false)
+    @JoinColumn(name = "owner", nullable = false)
     @JsonBackReference
     private User owner;
+
+    @ManyToOne
+    @JoinColumn(name = "expoID", nullable = false)
+    @JsonBackReference
+    private Expo expo;
+
+    // 攤位的位置編號(搭配UI地圖用)要加在這裡
 }

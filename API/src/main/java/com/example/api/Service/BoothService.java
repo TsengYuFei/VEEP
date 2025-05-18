@@ -29,22 +29,22 @@ public class BoothService {
     private final BoothRepository boothRepository;
 
     @Autowired
-    private final UserRepository userRepository;
+    private final BoothColListService colListService;
 
     @Autowired
-    private final BoothCollaboratorListRepository colListRepository;
+    private final UserService userService;
 
     @Autowired
-    private final BoothStaffListRepository staffListRepository;
+    private final ExpoService expoService;
 
     @Autowired
-    private final TagRepository tagRepository;
+    private final BoothStaffListService staffListService;
 
     @Autowired
-    private UserService userService;
+    private final TagService tagService;
 
 
-    private Booth getBoothByID(Integer boothID) {
+    Booth getBoothByID(Integer boothID) {
         System.out.println("BoothService: getBoothByID >> "+boothID);
         return boothRepository.findById(boothID)
                 .orElseThrow(() -> new NotFoundException("找不到攤位ID為 < "+ boothID+" > 的攤位"));
@@ -88,8 +88,11 @@ public class BoothService {
 
 
     @Transactional
-    public Integer createBooth(String userAccount, BoothCreateRequest request) {
-        System.out.println("BoothService: createBooth");
+    public Integer createBooth(String userAccount, Integer expoID, BoothCreateRequest request) {
+        System.out.println("BoothService: createBooth >> "+ userAccount+", "+expoID);
+
+        User owner = userService.getUserByAccount(userAccount);
+        Expo expo = expoService.getExpoByID(expoID);
 
         Boolean status = request.getOpenStatus();
         OpenMode mode = request.getOpenMode();
@@ -101,6 +104,8 @@ public class BoothService {
 
         Booth booth = new Booth();
         booth.setName(request.getName());
+        booth.setExpo(expo);
+        booth.setOwner(owner);
         booth.setAvatar(updateIfNotBlank(null, request.getAvatar()));
         booth.setIntroduction(updateIfNotBlank(null, request.getIntroduction()));
         booth.setOpenMode(mode);
@@ -110,25 +115,21 @@ public class BoothService {
         booth.setMaxParticipants(request.getMaxParticipants());
         booth.setDisplay(request.getDisplay());
 
-        // Owner
-        User owner = userService.getUserByAccount(userAccount);
-        booth.setOwner(owner);
-
         // Collaborator
         List<String> colUserIDs = request.getCollaborators();
         BoothCollaboratorList collaborator = new BoothCollaboratorList();
         if(colUserIDs != null && !colUserIDs.isEmpty()) {
-            List<User> userList = userRepository.findAllById(colUserIDs);
+            List<User> userList = userService.getAllUserByAccount(colUserIDs);
             Set<User> users = new HashSet<>(userList);
             collaborator.setCollaborators(users);
         }else collaborator.setCollaborators(new HashSet<>());
         booth.setCollaborator(collaborator);
 
         // Staff
-        List<String> StaffUserIDs = request.getStaffs();
+        List<String> staffUserIDs = request.getStaffs();
         BoothStaffList staff = new BoothStaffList();
-        if(StaffUserIDs != null && !StaffUserIDs.isEmpty()) {
-            List<User> userList = userRepository.findAllById(StaffUserIDs);
+        if(staffUserIDs != null && !staffUserIDs.isEmpty()) {
+            List<User> userList = userService.getAllUserByAccount(staffUserIDs);
             Set<User> users = new HashSet<>(userList);
             staff.setStaffs(users);
         }else staff.setStaffs(new HashSet<>());
@@ -140,8 +141,7 @@ public class BoothService {
         if(tagNames != null && !tagNames.isEmpty()){
             for(String name : tagNames){
                 name = name.toLowerCase();
-                Tag tag = tagRepository.findByName(name);
-                if(tag == null) tag = tagRepository.save(new Tag(name));
+                Tag tag = tagService.addTagIfNotExist(name);
                 tags.add(tag);
             }
         }
@@ -184,10 +184,10 @@ public class BoothService {
             collaborator.getCollaborators().clear();
 
             if (!newColAccounts.isEmpty()) {
-                List<User> userList = userRepository.findAllById(newColAccounts);
+                List<User> userList = userService.getAllUserByAccount(newColAccounts);
 
                 for (User user : userList) {
-                    if (!colListRepository.existsByIdAndCollaborators_UserAccount(collaborator.getId(), user.getUserAccount())) {
+                    if (!colListService.existInList(collaborator.getId(), user.getUserAccount())) {
                         collaborator.getCollaborators().add(user);
                     }
                 }
@@ -201,10 +201,10 @@ public class BoothService {
             staff.getStaffs().clear();
 
             if (!newStaffAccounts.isEmpty()) {
-                List<User> userList = userRepository.findAllById(newStaffAccounts);
+                List<User> userList = userService.getAllUserByAccount(newStaffAccounts);
 
                 for (User user : userList) {
-                    if (!staffListRepository.existsByIdAndStaffs_UserAccount(staff.getId(), user.getUserAccount())) {
+                    if (!staffListService.existInList(staff.getId(), user.getUserAccount())) {
                         staff.getStaffs().add(user);
                     }
                 }
@@ -220,8 +220,7 @@ public class BoothService {
             if (!newTagNames.isEmpty()) {
                 for(String name : newTagNames){
                     name = name.toLowerCase();
-                    Tag tag = tagRepository.findByName(name);
-                    if(tag == null) tag = tagRepository.save(new Tag(name));
+                    Tag tag = tagService.addTagIfNotExist(name);
                     tags.add(tag);
                 }
             }

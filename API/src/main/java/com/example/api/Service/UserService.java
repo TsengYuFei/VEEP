@@ -13,6 +13,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 import static com.example.api.Other.UpdateTool.updateIfNotBlank;
 import static com.example.api.Other.UpdateTool.updateIfNotNull;
 
@@ -24,11 +26,17 @@ public class UserService {
 
 
 
-    protected User getUserByAccount(String account){
+    User getUserByAccount(String account){
         System.out.println("UserService: getUserByAccount >> "+account);
         return userRepository.findById(account)
                 .orElseThrow(() -> new NotFoundException("找不到使用者帳號為 < "+ account+" > 的使用者"));
     }
+
+
+    List<User> getAllUserByAccount(List<String> accounts){
+        return userRepository.findAllById(accounts);
+    }
+
 
     public UserDetailResponse getUserDetailByAccount(String account){
         System.out.println("UserService: getUserByAccount >> "+account);

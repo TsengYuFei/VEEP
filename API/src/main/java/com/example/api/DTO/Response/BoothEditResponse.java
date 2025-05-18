@@ -10,6 +10,9 @@ import java.util.List;
 @Data
 @Component
 public class BoothEditResponse {
+    private Integer boothID;
+    private Integer expoID;
+    private String owner;
     private String name;
     private String avatar;
     private String introduction;
@@ -25,6 +28,9 @@ public class BoothEditResponse {
 
     public static BoothEditResponse fromBooth(Booth booth) {
         BoothEditResponse response = new BoothEditResponse();
+        response.setBoothID(booth.getBoothID());
+        response.setExpoID(booth.getExpo().getExpoID());
+        response.setOwner(booth.getOwner().getUserAccount());
         response.setName(booth.getName());
         response.setAvatar(booth.getAvatar());
         response.setIntroduction(booth.getIntroduction());

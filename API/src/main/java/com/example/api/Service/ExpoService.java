@@ -44,7 +44,7 @@ public class ExpoService {
 
 
 
-    private Expo getExpoByID(Integer expoID){
+    Expo getExpoByID(Integer expoID){
         System.out.println("ExpoService: getExpoByID >> "+expoID);
         return expoRepository.findById(expoID)
                 .orElseThrow(() -> new NotFoundException("找不到展會ID為 < "+ expoID+" > 的展會"));

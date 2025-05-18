@@ -36,7 +36,7 @@ public class BoothController {
 
     @Operation(
             summary = "獲取攤位資訊(編輯用)",
-            description = "用於攤位編輯頁面。可獲取除了boothID外之所有欄位"
+            description = "用於攤位編輯頁面。"
     )
     @ApiResponses(value = {
             @ApiResponse(
@@ -69,8 +69,9 @@ public class BoothController {
 
     @Operation(
             summary = "新增攤位",
-            description = "可輸入欄位 1.攤位名稱 2.圖像URL 3.介紹 4.標籤 5.開放模式 6.開放狀態 " +
-                    "7.開始時間 8.結束時間 9.同時間最大參與人數 10.是否顯示於攤位總覽頁面 11.合作者"
+            description = "可輸入欄位 1.攤位擁有者的使用者帳號 2.攤位所屬展會的ID  3.攤位名稱 4.圖像URL " +
+                    "5.介紹 6.標籤(數個) 7.開放模式 8.開放狀態 9.開始時間 10.結束時間 11.同時間最大參與人數 " +
+                    "12.是否顯示於攤位總覽頁面 13.合作者(數個) 14.員工(數個)"
     )
     @ApiResponses(value = {
             @ApiResponse(
@@ -86,14 +87,16 @@ public class BoothController {
                     description = "伺服器錯誤"
             )
     })
-    @PostMapping("/{userAccount}")
+    @PostMapping("/{userAccount}/{expoID}")
     public ResponseEntity<BoothEditResponse> createBooth(
-            @Parameter(description = "攤位擁有者userAccount", required = true)
+            @Parameter(description = "攤位擁有者的userAccount", required = true)
             @PathVariable String userAccount,
+            @Parameter(description = "攤位所屬展會的ID", required = true)
+            @PathVariable Integer expoID,
             @Valid @RequestBody BoothCreateRequest boothRequest
     ){
-        System.out.println("BoothController: createBooth >> "+userAccount);
-        Integer boothID = boothService.createBooth(userAccount, boothRequest);
+        System.out.println("BoothController: createBooth >> "+ userAccount+", "+expoID);
+        Integer boothID = boothService.createBooth(userAccount, expoID, boothRequest);
         BoothEditResponse booth = boothService.getBoothEditByID(boothID);
         return ResponseEntity.status(HttpStatus.CREATED).body(booth);
     }
@@ -101,7 +104,7 @@ public class BoothController {
 
     @Operation(
             summary = "更新攤位",
-            description = "用於攤位資料更新頁面。可更新除了boothID外之所有欄位"
+            description = "用於攤位資料更新頁面。可更新除boothID、expoID、ownerAccount外之的欄位"
     )
     @ApiResponses(value = {
             @ApiResponse(
