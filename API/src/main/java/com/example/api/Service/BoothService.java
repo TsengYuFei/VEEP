@@ -43,6 +43,10 @@ public class BoothService {
     @Autowired
     private final TagService tagService;
 
+    @Autowired
+    private final ContentService contentService;
+
+
 
     Booth getBoothByID(Integer boothID) {
         System.out.println("BoothService: getBoothByID >> "+boothID);
@@ -150,17 +154,12 @@ public class BoothService {
         }
         booth.setTags(tags);
 
+        boothRepository.save(booth);
+
         // Content
-        List<Content> contentList = new ArrayList<>();
-        for(int i = 1; i <= 6; i++){
-            Content content = new Content();
-            content.setNumber(i);
-            content.setBooth(booth);
-            contentList.add(content);
-        }
+        List<Content> contentList = contentService.createDefaultContent(booth);
         booth.setContentList(contentList);
 
-        boothRepository.save(booth);
         return booth.getBoothID();
     }
 
