@@ -10,6 +10,8 @@ import java.util.List;
 @Data
 @Component
 public class ExpoEditResponse {
+    private Integer expoID;
+    private String owner;
     private String name;
     private String avatar;
     private Integer price;
@@ -28,6 +30,8 @@ public class ExpoEditResponse {
 
     public static ExpoEditResponse fromExpo(Expo expo){
         ExpoEditResponse response = new ExpoEditResponse();
+        response.setExpoID(expo.getExpoID());
+        response.setOwner(expo.getOwner().getUserAccount());
         response.setName(expo.getName());
         response.setAvatar(expo.getAvatar());
         response.setPrice(expo.getPrice());

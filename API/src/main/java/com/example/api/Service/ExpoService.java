@@ -28,19 +28,19 @@ public class ExpoService {
     private final ExpoRepository expoRepository;
 
     @Autowired
-    private final UserRepository userRepository;
+    private final UserService userService;
 
     @Autowired
-    private final ExpoCollaboratorListRepository colListRepository;
+    private final ExpoColListService colListService;
 
     @Autowired
-    private final BlacklistRepository blacklistRepository;
+    private final TagService tagService;
 
     @Autowired
-    private final WhitelistRepository whitelistRepository;
+    private final BlackListService blacklistService;
 
     @Autowired
-    private final TagRepository tagRepository;
+    private final WhiteListService whiteListService;
 
 
 
@@ -98,8 +98,10 @@ public class ExpoService {
 
 
     @Transactional
-    public Integer createExpo(ExpoCreateRequest request) {
-        System.out.println("ExpoService: createExpo");
+    public Integer createExpo(String userAccount, ExpoCreateRequest request) {
+        System.out.println("ExpoService: createExpo >> "+ userAccount);
+
+        User owner = userService.getUserByAccount(userAccount);
 
         Boolean status = request.getOpenStatus();
         OpenMode mode = request.getOpenMode();
@@ -111,6 +113,7 @@ public class ExpoService {
 
         Expo expo = new Expo();
         expo.setName(request.getName());
+        expo.setOwner(owner);
         expo.setAvatar(updateIfNotBlank(null, request.getAvatar()));
         expo.setPrice(request.getPrice());
         expo.setIntroduction(updateIfNotBlank(null, request.getIntroduction()));
@@ -126,7 +129,7 @@ public class ExpoService {
         List<String> colIDs = request.getCollaborators();
         ExpoCollaboratorList collaborator = new ExpoCollaboratorList();
         if(colIDs != null && !colIDs.isEmpty()){
-            List<User> userList = userRepository.findAllById(colIDs);
+            List<User> userList = userService.getAllUserByAccount(colIDs);
             Set<User> users = new HashSet<>(userList);
             collaborator.setCollaborators(users);
         }else collaborator.setCollaborators(new HashSet<>());
@@ -136,7 +139,7 @@ public class ExpoService {
         List<String> blackIDs = request.getBlacklist();
         Blacklist blacklistedUser = new Blacklist();
         if(blackIDs != null && !blackIDs.isEmpty()){
-            List<User> userList = userRepository.findAllById(blackIDs);
+            List<User> userList = userService.getAllUserByAccount(blackIDs);
             Set<User> users = new HashSet<>(userList);
             blacklistedUser.setBlacklistedUsers(users);
         }else blacklistedUser.setBlacklistedUsers(new HashSet<>());
@@ -146,7 +149,7 @@ public class ExpoService {
         List<String> whiteIDs = request.getWhitelist();
         Whitelist whitelistedUser = new Whitelist();
         if(whiteIDs != null && !whiteIDs.isEmpty()){
-            List<User> userList = userRepository.findAllById(whiteIDs);
+            List<User> userList = userService.getAllUserByAccount(whiteIDs);
             Set<User> users = new HashSet<>(userList);
             whitelistedUser.setWhitelistedUsers(users);
         }else whitelistedUser.setWhitelistedUsers(new HashSet<>());
@@ -158,8 +161,7 @@ public class ExpoService {
         if(tagNames != null && !tagNames.isEmpty()){
             for(String name : tagNames){
                 name = name.toLowerCase();
-                Tag tag = tagRepository.findByName(name);
-                if(tag == null) tag = tagRepository.save(new Tag(name));
+                Tag tag = tagService.addTagIfNotExist(name);
                 tags.add(tag);
             }
         }
@@ -195,10 +197,10 @@ public class ExpoService {
             collaborator.getCollaborators().clear();
 
             if (!newColAccounts.isEmpty()) {
-                List<User> userList = userRepository.findAllById(newColAccounts);
+                List<User> userList = userService.getAllUserByAccount(newColAccounts);
 
                 for (User user : userList) {
-                    if (!colListRepository.existsByIdAndCollaborators_UserAccount(collaborator.getId(), user.getUserAccount())) {
+                    if (!colListService.existInList(collaborator.getId(), user.getUserAccount())) {
                         collaborator.getCollaborators().add(user);
                     }
                 }
@@ -212,10 +214,10 @@ public class ExpoService {
             blacklistedUser.getBlacklistedUsers().clear();
 
             if (!newBlackAccounts.isEmpty()) {
-                List<User> userList = userRepository.findAllById(newBlackAccounts);
+                List<User> userList = userService.getAllUserByAccount(newBlackAccounts);
 
                 for (User user : userList) {
-                    if (!blacklistRepository.existsByIdAndBlacklistedUsers_UserAccount(blacklistedUser.getId(), user.getUserAccount())) {
+                    if (!blacklistService.existInList(blacklistedUser.getId(), user.getUserAccount())) {
                         blacklistedUser.getBlacklistedUsers().add(user);
                     }
                 }
@@ -229,10 +231,10 @@ public class ExpoService {
             whitelistedUser.getWhitelistedUsers().clear();
 
             if (!newWhiteAccounts.isEmpty()) {
-                List<User> userList = userRepository.findAllById(newWhiteAccounts);
+                List<User> userList = userService.getAllUserByAccount(newWhiteAccounts);
 
                 for (User user : userList) {
-                    if (!whitelistRepository.existsByIdAndWhitelistedUsers_UserAccount(whitelistedUser.getId(), user.getUserAccount())) {
+                    if (!whiteListService.existInList(whitelistedUser.getId(), user.getUserAccount())) {
                         whitelistedUser.getWhitelistedUsers().add(user);
                     }
                 }
@@ -248,8 +250,7 @@ public class ExpoService {
             if (!newTagNames.isEmpty()) {
                 for(String name : newTagNames){
                     name = name.toLowerCase();
-                    Tag tag = tagRepository.findByName(name);
-                    if(tag == null) tag = tagRepository.save(new Tag(name));
+                    Tag tag = tagService.addTagIfNotExist(name);
                     tags.add(tag);
                 }
             }
