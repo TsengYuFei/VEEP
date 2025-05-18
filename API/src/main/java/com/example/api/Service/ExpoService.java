@@ -264,6 +264,11 @@ public class ExpoService {
     public void deleteExpoByID(Integer expoID){
         System.out.println("ExpoService: deleteExpoByID >> "+expoID);
         Expo expo = getExpoByID(expoID);
+
+        for(Booth booth : expo.getBoothList()){
+            booth.setExpo(null);
+        }
+
         expoRepository.delete(expo);
     }
 }

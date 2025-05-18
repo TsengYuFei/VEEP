@@ -82,7 +82,7 @@ public class Booth {
     private User owner;
 
     @ManyToOne
-    @JoinColumn(name = "expoID", nullable = false)
+    @JoinColumn(name = "expoID")
     @JsonBackReference
     private Expo expo;
 

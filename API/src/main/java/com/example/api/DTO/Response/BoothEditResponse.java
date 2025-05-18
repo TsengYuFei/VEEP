@@ -29,7 +29,6 @@ public class BoothEditResponse {
     public static BoothEditResponse fromBooth(Booth booth) {
         BoothEditResponse response = new BoothEditResponse();
         response.setBoothID(booth.getBoothID());
-        response.setExpoID(booth.getExpo().getExpoID());
         response.setOwner(booth.getOwner().getUserAccount());
         response.setName(booth.getName());
         response.setAvatar(booth.getAvatar());

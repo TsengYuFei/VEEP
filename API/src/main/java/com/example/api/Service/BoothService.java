@@ -55,6 +55,9 @@ public class BoothService {
         System.out.println("BoothService: getBoothEditByID >> "+boothID);
         Booth booth = getBoothByID(boothID);
         BoothEditResponse response = BoothEditResponse.fromBooth(booth);
+        Expo expo = booth.getExpo();
+        if(expo == null) response.setExpoID(null);
+        else response.setExpoID(expo.getExpoID());
 
         // Collaborator
         Set<User> cols = booth.getCollaborator().getCollaborators();

@@ -80,7 +80,7 @@ public class Expo {
     )
     private Set<Tag> tags = new HashSet<>();
 
-    @OneToMany(mappedBy = "expo", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
+    @OneToMany(mappedBy = "expo", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JsonManagedReference
     private List<Booth> boothList = new ArrayList<>();
 
