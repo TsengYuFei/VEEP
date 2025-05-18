@@ -11,6 +11,7 @@ import java.time.LocalDate;
 @Component
 public class UserEditResponse {
     private String name;
+    private String userAccount;
     private String tel;
     private String mail;
     private String avatar;
@@ -28,6 +29,7 @@ public class UserEditResponse {
         UserEditResponse response = new UserEditResponse();
 
         response.name = user.getName();
+        response.userAccount = user.getUserAccount();
         response.tel = user.getTel();
         response.mail = user.getMail();
         response.avatar = user.getAvatar();

@@ -7,16 +7,19 @@ import org.springframework.stereotype.Component;
 @Data
 @Component
 public class ContentEditResponse {
+    private Integer boothID;
+    private Integer number;
     private String title;
     private String content;
     private String image;
 
     public static ContentEditResponse fromContent(Content content) {
         ContentEditResponse response = new ContentEditResponse();
-
-        response.title = content.getTitle();
-        response.content = content.getContent();
-        response.image = content.getImage();
+        response.setBoothID(content.getBooth().getBoothID());
+        response.setNumber(content.getNumber());
+        response.setTitle(content.getTitle());
+        response.setContent(content.getContent());
+        response.setImage(content.getImage());
 
         return response;
     }
