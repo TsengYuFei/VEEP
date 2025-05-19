@@ -6,14 +6,14 @@ import org.springframework.stereotype.Component;
 
 @Data
 @Component
-public class BoothOverviewReaponse {
+public class BoothOverviewResponse {
     private Integer boothID;
     private Integer expoID;
     private String owner;
     private String name;
 
-    public static BoothOverviewReaponse fromBooth(Booth booth) {
-        BoothOverviewReaponse response = new BoothOverviewReaponse();
+    public static BoothOverviewResponse fromBooth(Booth booth) {
+        BoothOverviewResponse response = new BoothOverviewResponse();
         response.setBoothID(booth.getBoothID());
         response.setOwner(booth.getOwner().getUserAccount());
         response.setName(booth.getName());
