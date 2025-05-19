@@ -1,6 +1,7 @@
 package com.example.api.Controller;
 
 import com.example.api.DTO.Response.BoothOverviewResponse;
+import com.example.api.DTO.Response.UserListResponse;
 import com.example.api.Service.BatchBoothService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -81,8 +82,39 @@ public class BatchBoothController {
             @Parameter(description = "數量(一頁幾筆資料)", required = true)
             @RequestParam(defaultValue = "5") Integer size
     ){
-        System.out.println("BatchBoothController: getAllBoothOverviewPage");
+        System.out.println("BatchBoothController: getAllBoothOverviewPage >> "+page+", "+size);
         Page<BoothOverviewResponse> booths = batchBoothService.getAllBoothOverviewPage(page, size);
         return ResponseEntity.status(HttpStatus.OK).body(booths);
+    }
+
+
+    @Operation(
+            summary = "獲取攤位的所有合作者",
+            description = "合作者可共同編輯此攤位"
+    )
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "獲取攤位的所有合作者",
+                    content = @Content(
+                            mediaType = "application/json",
+                            array = @ArraySchema(
+                                    schema = @Schema(implementation = UserListResponse.class)
+                            )
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = "500",
+                    description = "伺服器錯誤"
+            )
+    })
+    @GetMapping("/collaborator/{boothID}")
+    public ResponseEntity<List<UserListResponse>> getAllCollaborator(
+            @Parameter(description = "攤位ID", required = true)
+            @PathVariable Integer boothID
+    ){
+        System.out.println("BatchBoothController: getAllCollaborator");
+        List<UserListResponse> collaborator = batchBoothService.getAllCollaborator(boothID);
+        return ResponseEntity.status(HttpStatus.OK).body(collaborator);
     }
 }
