@@ -13,6 +13,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 
@@ -79,5 +80,16 @@ public class BatchBoothService {
         }else response = new ArrayList<>();
 
         return response;
+    }
+
+
+    public List<BoothOverviewResponse> getTagBoothOverview(String tags){
+        System.out.println("BatchBoothService: getTagBoothOverview >> "+tags);
+        if(tags == null) return new ArrayList<>();
+
+        return boothRepository.findBoothsByTagsName(tags)
+                .stream()
+                .map(BoothOverviewResponse::fromBooth)
+                .toList();
     }
 }

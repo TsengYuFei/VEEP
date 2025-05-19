@@ -95,7 +95,7 @@ public class BatchBoothController {
     @ApiResponses(value = {
             @ApiResponse(
                     responseCode = "200",
-                    description = "獲取攤位的所有合作者",
+                    description = "成功獲取攤位的所有合作者",
                     content = @Content(
                             mediaType = "application/json",
                             array = @ArraySchema(
@@ -126,7 +126,7 @@ public class BatchBoothController {
     @ApiResponses(value = {
             @ApiResponse(
                     responseCode = "200",
-                    description = "獲取攤位的所有員工",
+                    description = "成功獲取攤位的所有員工",
                     content = @Content(
                             mediaType = "application/json",
                             array = @ArraySchema(
@@ -147,5 +147,36 @@ public class BatchBoothController {
         System.out.println("BatchBoothController: getAllStaff");
         List<UserListResponse> staff = batchBoothService.getAllStaff(boothID);
         return ResponseEntity.status(HttpStatus.OK).body(staff);
+    }
+
+
+    @Operation(
+            summary = "獲取有某tag的所有攤位",
+            description = "只要符合部分字元即包含，關聯度排序"
+    )
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "成功獲取含該tag的所有攤位",
+                    content = @Content(
+                            mediaType = "application/json",
+                            array = @ArraySchema(
+                                    schema = @Schema(implementation = BoothOverviewResponse.class)
+                            )
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = "500",
+                    description = "伺服器錯誤"
+            )
+    })
+    @GetMapping("/by_tag")
+    public ResponseEntity<List<BoothOverviewResponse>> getTagBoothOverview(
+            @Parameter(description = "標籤名稱", required = true)
+            @RequestParam String tagsName
+    ){
+        System.out.println("BatchBoothController: getTagBoothOverview >> "+tagsName);
+        List<BoothOverviewResponse> booths = batchBoothService.getTagBoothOverview(tagsName);
+        return ResponseEntity.status(HttpStatus.OK).body(booths);
     }
 }
