@@ -64,4 +64,20 @@ public class BatchBoothService {
 
         return response;
     }
+
+
+    public List<UserListResponse> getAllStaff(Integer boothID){
+        System.out.println("BatchBoothService: getAllStaff >> "+boothID);
+        Booth booth = boothService.getBoothByID(boothID);
+        List<UserListResponse> response;
+
+        Set<User> stas = booth.getStaff().getStaffs();
+        if(stas != null && !stas.isEmpty()) {
+            response = stas.stream()
+                    .map(UserListResponse::fromUser)
+                    .toList();
+        }else response = new ArrayList<>();
+
+        return response;
+    }
 }

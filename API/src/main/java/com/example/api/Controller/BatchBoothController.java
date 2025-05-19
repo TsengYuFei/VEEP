@@ -117,4 +117,35 @@ public class BatchBoothController {
         List<UserListResponse> collaborator = batchBoothService.getAllCollaborator(boothID);
         return ResponseEntity.status(HttpStatus.OK).body(collaborator);
     }
+
+
+    @Operation(
+            summary = "獲取攤位的所有員工",
+            description = "員工可在活動中發傳單等，但不能編輯攤位"
+    )
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "獲取攤位的所有員工",
+                    content = @Content(
+                            mediaType = "application/json",
+                            array = @ArraySchema(
+                                    schema = @Schema(implementation = UserListResponse.class)
+                            )
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = "500",
+                    description = "伺服器錯誤"
+            )
+    })
+    @GetMapping("/staff/{boothID}")
+    public ResponseEntity<List<UserListResponse>> getAllStaff(
+            @Parameter(description = "攤位ID", required = true)
+            @PathVariable Integer boothID
+    ){
+        System.out.println("BatchBoothController: getAllStaff");
+        List<UserListResponse> staff = batchBoothService.getAllStaff(boothID);
+        return ResponseEntity.status(HttpStatus.OK).body(staff);
+    }
 }
