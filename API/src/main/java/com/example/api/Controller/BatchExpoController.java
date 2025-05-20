@@ -120,6 +120,68 @@ public class BatchExpoController {
 
 
     @Operation(
+            summary = "獲取某展會黑名單中的所有使用者",
+            description = "黑名單中的使用者不可進入此展會"
+    )
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "成功獲取該展會黑名單中的所有使用者",
+                    content = @Content(
+                            mediaType = "application/json",
+                            array = @ArraySchema(
+                                    schema = @Schema(implementation = UserListResponse.class)
+                            )
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = "500",
+                    description = "伺服器錯誤"
+            )
+    })
+    @GetMapping("/blacklist/{expoID}")
+    public ResponseEntity<List<UserListResponse>> getAllBlack(
+            @Parameter(description = "展會ID", required = true)
+            @PathVariable Integer expoID
+    ){
+        System.out.println("BatchExpoController: getAllBlack >> "+expoID);
+        List<UserListResponse> blacklisted = batchExpoService.getAllBlack(expoID);
+        return ResponseEntity.status(HttpStatus.OK).body(blacklisted);
+    }
+
+
+    @Operation(
+            summary = "獲取某展會白名單中的所有使用者",
+            description = "白名單中的使用者不可進入此展會"
+    )
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "成功獲取該展會白名單中的所有使用者",
+                    content = @Content(
+                            mediaType = "application/json",
+                            array = @ArraySchema(
+                                    schema = @Schema(implementation = UserListResponse.class)
+                            )
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = "500",
+                    description = "伺服器錯誤"
+            )
+    })
+    @GetMapping("/whitelist/{expoID}")
+    public ResponseEntity<List<UserListResponse>> getAllWhite(
+            @Parameter(description = "展會ID", required = true)
+            @PathVariable Integer expoID
+    ){
+        System.out.println("BatchExpoController: getAllWhite >> "+expoID);
+        List<UserListResponse> whitelisted = batchExpoService.getAllWhite(expoID);
+        return ResponseEntity.status(HttpStatus.OK).body(whitelisted);
+    }
+
+
+    @Operation(
             summary = "獲取有某tag的所有展會",
             description = "只要符合部分字元即包含，關聯度排序"
     )

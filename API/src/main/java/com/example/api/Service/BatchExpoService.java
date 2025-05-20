@@ -48,9 +48,41 @@ public class BatchExpoService {
         Expo expo = expoService.getExpoByID(expoID);
         List<UserListResponse> response;
 
-        Set<User> cols = expo.getCollaborator().getCollaborators();
-        if(cols != null && !cols.isEmpty()) {
-            response = cols.stream()
+        Set<User> users = expo.getCollaborator().getCollaborators();
+        if(users != null && !users.isEmpty()) {
+            response = users.stream()
+                    .map(UserListResponse::fromUser)
+                    .toList();
+        }else response = new ArrayList<>();
+
+        return response;
+    }
+
+
+    public List<UserListResponse> getAllBlack(Integer expoID){
+        System.out.println("BatchExpoService: getAllBlack >> "+expoID);
+        Expo expo = expoService.getExpoByID(expoID);
+        List<UserListResponse> response;
+
+        Set<User> users = expo.getBlacklist().getBlacklistedUsers();
+        if(users != null && !users.isEmpty()) {
+            response = users.stream()
+                    .map(UserListResponse::fromUser)
+                    .toList();
+        }else response = new ArrayList<>();
+
+        return response;
+    }
+
+
+    public List<UserListResponse> getAllWhite(Integer expoID){
+        System.out.println("BatchExpoService: getAllWhite >> "+expoID);
+        Expo expo = expoService.getExpoByID(expoID);
+        List<UserListResponse> response;
+
+        Set<User> users = expo.getWhitelist().getWhitelistedUsers();
+        if(users != null && !users.isEmpty()) {
+            response = users.stream()
                     .map(UserListResponse::fromUser)
                     .toList();
         }else response = new ArrayList<>();
