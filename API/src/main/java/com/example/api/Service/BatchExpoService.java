@@ -1,5 +1,6 @@
 package com.example.api.Service;
 
+import com.example.api.DTO.Response.BoothOverviewResponse;
 import com.example.api.DTO.Response.ExpoOverviewResponse;
 import com.example.api.DTO.Response.UserListResponse;
 import com.example.api.Entity.Expo;
@@ -98,6 +99,16 @@ public class BatchExpoService {
         return expoRepository.findExposByTagsName(tags)
                 .stream()
                 .map(ExpoOverviewResponse::fromExpo)
+                .toList();
+    }
+
+
+    public List<BoothOverviewResponse> getAllBoothOverview(Integer expoID){
+        System.out.println("BatchExpoService: getAllBoothOverview >> "+expoID);
+        Expo expo = expoService.getExpoByID(expoID);
+
+        return expo.getBoothList().stream()
+                .map(BoothOverviewResponse::fromBooth)
                 .toList();
     }
 }

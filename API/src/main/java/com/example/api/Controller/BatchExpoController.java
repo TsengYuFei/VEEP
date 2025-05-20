@@ -1,5 +1,6 @@
 package com.example.api.Controller;
 
+import com.example.api.DTO.Response.BoothOverviewResponse;
 import com.example.api.DTO.Response.ExpoOverviewResponse;
 import com.example.api.DTO.Response.UserListResponse;
 import com.example.api.Service.BatchExpoService;
@@ -209,5 +210,35 @@ public class BatchExpoController {
         System.out.println("BatchExpoController: getTagExpoOverview >> "+tagsName);
         List<ExpoOverviewResponse> expos = batchExpoService.getTagExpoOverview(tagsName);
         return ResponseEntity.status(HttpStatus.OK).body(expos);
+    }
+
+
+    @Operation(
+            summary = "獲取某展會中的所有攤位"
+    )
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "成功獲取該展會中的所有攤位",
+                    content = @Content(
+                            mediaType = "application/json",
+                            array = @ArraySchema(
+                                    schema = @Schema(implementation = BoothOverviewResponse.class)
+                            )
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = "500",
+                    description = "伺服器錯誤"
+            )
+    })
+    @GetMapping("/booths/{expoID}")
+    public ResponseEntity<List<BoothOverviewResponse>> getAllBoothOverview(
+            @Parameter(description = "展會ID", required = true)
+            @RequestParam Integer expoID
+    ){
+        System.out.println("BatchExpoController: getAllBoothOverview >> "+expoID);
+        List<BoothOverviewResponse> booths = batchExpoService.getAllBoothOverview(expoID);
+        return ResponseEntity.status(HttpStatus.OK).body(booths);
     }
 }
