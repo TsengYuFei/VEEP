@@ -88,13 +88,13 @@ public class MultipleExpoController {
 
 
     @Operation(
-            summary = "獲取有某tag的所有展會",
+            summary = "以標籤獲取展會(模糊搜尋)",
             description = "只要符合部分字元即包含，關聯度排序"
     )
     @ApiResponses(value = {
             @ApiResponse(
                     responseCode = "200",
-                    description = "成功獲取含該tag的所有展會",
+                    description = "成功獲取含該標籤的所有展會",
                     content = @Content(
                             mediaType = "application/json",
                             array = @ArraySchema(
@@ -108,12 +108,43 @@ public class MultipleExpoController {
             )
     })
     @GetMapping("/by_tag")
-    public ResponseEntity<List<ExpoOverviewResponse>> getTagExpoOverview(
+    public ResponseEntity<List<ExpoOverviewResponse>> getExpoOverviewByTag(
             @Parameter(description = "標籤名稱", required = true)
             @RequestParam String tagsName
     ){
-        System.out.println("MultipleExpoController: getTagExpoOverview >> "+tagsName);
-        List<ExpoOverviewResponse> expos = multipleExpoService.getTagExpoOverview(tagsName);
+        System.out.println("MultipleExpoController: getExpoOverviewByTag >> "+tagsName);
+        List<ExpoOverviewResponse> expos = multipleExpoService.getExpoOverviewByTag(tagsName);
+        return ResponseEntity.status(HttpStatus.OK).body(expos);
+    }
+
+
+    @Operation(
+            summary = "以展會名稱及描述獲取展會(模糊搜尋)",
+            description = "只要符合部分字元即包含，關聯度排序"
+    )
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "成功獲取含該展會名稱或描述的所有展會",
+                    content = @Content(
+                            mediaType = "application/json",
+                            array = @ArraySchema(
+                                    schema = @Schema(implementation = ExpoOverviewResponse.class)
+                            )
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = "500",
+                    description = "伺服器錯誤"
+            )
+    })
+    @GetMapping("/by_name_and_intro")
+    public ResponseEntity<List<ExpoOverviewResponse>> getExpoOverviewByNameAndIntro(
+            @Parameter(description = "搜尋關鍵字", required = true)
+            @RequestParam String keyword
+    ){
+        System.out.println("MultipleExpoController: getExpoOverviewByNameAndIntro >> "+keyword);
+        List<ExpoOverviewResponse> expos = multipleExpoService.getExpoOverviewByNameAndIntro(keyword);
         return ResponseEntity.status(HttpStatus.OK).body(expos);
     }
 }

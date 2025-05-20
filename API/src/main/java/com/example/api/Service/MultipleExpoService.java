@@ -36,11 +36,22 @@ public class MultipleExpoService {
     }
 
 
-    public List<ExpoOverviewResponse> getTagExpoOverview(String tags){
-        System.out.println("MultipleExpoService: getTagExpoOverview >> "+tags);
-        if(tags == null) return new ArrayList<>();
+    public List<ExpoOverviewResponse> getExpoOverviewByTag(String tag){
+        System.out.println("MultipleExpoService: getTagExpoOverview >> "+tag);
+        if(tag == null) return new ArrayList<>();
 
-        return expoRepository.findExposByTagsName(tags)
+        return expoRepository.findExposByTagName(tag)
+                .stream()
+                .map(ExpoOverviewResponse::fromExpo)
+                .toList();
+    }
+
+
+    public List<ExpoOverviewResponse> getExpoOverviewByNameAndIntro(String keyword){
+        System.out.println("MultipleExpoService: getExpoOverviewByNameAndIntro >> "+keyword);
+        if(keyword == null) return new ArrayList<>();
+
+        return expoRepository.findExposByNameAndIntro(keyword)
                 .stream()
                 .map(ExpoOverviewResponse::fromExpo)
                 .toList();

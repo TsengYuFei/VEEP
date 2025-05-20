@@ -20,9 +20,16 @@ public interface ExpoRepository extends JpaRepository<Expo, Integer> {
             "FROM expo expo " +
             "JOIN expo_tag et ON expo.expoID = et.expoID " +
             "JOIN tag tag ON et.tagID = tag.tagID " +
-            "WHERE LOWER(tag.name) LIKE CONCAT ('%', LOWER(:tagsName), '%') " +
+            "WHERE LOWER(tag.name) LIKE CONCAT ('%', LOWER(:tagName), '%') " +
             "GROUP BY expo.expoID " +
             "ORDER BY COUNT(tag.tagID) DESC"
             , nativeQuery = true)
-    List<Expo> findExposByTagsName(@Param("tagsName") String tagsName);
+    List<Expo> findExposByTagName(@Param("tagName") String tagName);
+
+    @Query(value = "SELECT expo.* " +
+            "FROM expo " +
+            "WHERE LOWER(expo.name) LIKE CONCAT ('%', LOWER(:keyword), '%') " +
+            "OR LOWER(expo.introduction LIKE CONCAT ('%', LOWER(:keyword), '%'))"
+            , nativeQuery = true)
+    List<Expo> findExposByNameAndIntro(@Param("keyword") String keyword);
 }
