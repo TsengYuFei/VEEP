@@ -3,7 +3,7 @@ package com.example.api.Controller;
 import com.example.api.DTO.Response.BoothOverviewResponse;
 import com.example.api.DTO.Response.ExpoOverviewResponse;
 import com.example.api.DTO.Response.UserListResponse;
-import com.example.api.Service.BatchExpoService;
+import com.example.api.Service.MultipleExpoService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
@@ -21,13 +21,13 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@Tag(name = "批量展會相關")
-@RequestMapping("/batch/expo")
+@Tag(name = "多筆展會相關")
+@RequestMapping("/multiple/expo")
 @RestController
 @RequiredArgsConstructor
-public class BatchExpoController {
+public class MultipleExpoController {
     @Autowired
-    private final BatchExpoService batchExpoService;
+    private final MultipleExpoService multipleExpoService;
 
 
 
@@ -53,7 +53,7 @@ public class BatchExpoController {
     @GetMapping("/overview")
     public ResponseEntity<List<ExpoOverviewResponse>> getAllExpoOverview(){
         System.out.println("BatchExpoController: getAllExpoOverview");
-        List<ExpoOverviewResponse> expos = batchExpoService.getAllExpoOverview();
+        List<ExpoOverviewResponse> expos = multipleExpoService.getAllExpoOverview();
         return ResponseEntity.status(HttpStatus.OK).body(expos);
     }
 
@@ -84,7 +84,7 @@ public class BatchExpoController {
             @RequestParam(defaultValue = "5") Integer size
     ){
         System.out.println("BatchExpoController: getAllExpoOverviewPage >> "+page+", "+size);
-        Page<ExpoOverviewResponse> expos = batchExpoService.getAllExpoOverviewPage(page, size);
+        Page<ExpoOverviewResponse> expos = multipleExpoService.getAllExpoOverviewPage(page, size);
         return ResponseEntity.status(HttpStatus.OK).body(expos);
     }
 
@@ -115,7 +115,7 @@ public class BatchExpoController {
             @PathVariable Integer expoID
     ){
         System.out.println("BatchExpoController: getAllCollaborator >> "+expoID);
-        List<UserListResponse> collaborator = batchExpoService.getAllCollaborator(expoID);
+        List<UserListResponse> collaborator = multipleExpoService.getAllCollaborator(expoID);
         return ResponseEntity.status(HttpStatus.OK).body(collaborator);
     }
 
@@ -146,7 +146,7 @@ public class BatchExpoController {
             @PathVariable Integer expoID
     ){
         System.out.println("BatchExpoController: getAllBlack >> "+expoID);
-        List<UserListResponse> blacklisted = batchExpoService.getAllBlack(expoID);
+        List<UserListResponse> blacklisted = multipleExpoService.getAllBlack(expoID);
         return ResponseEntity.status(HttpStatus.OK).body(blacklisted);
     }
 
@@ -177,7 +177,7 @@ public class BatchExpoController {
             @PathVariable Integer expoID
     ){
         System.out.println("BatchExpoController: getAllWhite >> "+expoID);
-        List<UserListResponse> whitelisted = batchExpoService.getAllWhite(expoID);
+        List<UserListResponse> whitelisted = multipleExpoService.getAllWhite(expoID);
         return ResponseEntity.status(HttpStatus.OK).body(whitelisted);
     }
 
@@ -208,7 +208,7 @@ public class BatchExpoController {
             @RequestParam String tagsName
     ){
         System.out.println("BatchExpoController: getTagExpoOverview >> "+tagsName);
-        List<ExpoOverviewResponse> expos = batchExpoService.getTagExpoOverview(tagsName);
+        List<ExpoOverviewResponse> expos = multipleExpoService.getTagExpoOverview(tagsName);
         return ResponseEntity.status(HttpStatus.OK).body(expos);
     }
 
@@ -238,7 +238,7 @@ public class BatchExpoController {
             @RequestParam Integer expoID
     ){
         System.out.println("BatchExpoController: getAllBoothOverview >> "+expoID);
-        List<BoothOverviewResponse> booths = batchExpoService.getAllBoothOverview(expoID);
+        List<BoothOverviewResponse> booths = multipleExpoService.getAllBoothOverview(expoID);
         return ResponseEntity.status(HttpStatus.OK).body(booths);
     }
 }

@@ -20,7 +20,7 @@ import static com.example.api.Other.UpdateTool.updateIfNotNull;
 
 @Service
 @RequiredArgsConstructor
-public class UserService {
+public class SingleUserService {
     @Autowired
     private final UserRepository userRepository;
 

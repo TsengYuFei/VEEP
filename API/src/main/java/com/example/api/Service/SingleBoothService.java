@@ -23,7 +23,7 @@ import static com.example.api.Other.UpdateTool.updateIfNotNull;
 
 @Service
 @RequiredArgsConstructor
-public class BoothService {
+public class SingleBoothService {
     @Autowired
     private final BoothRepository boothRepository;
 
@@ -31,10 +31,10 @@ public class BoothService {
     private final BoothColListService colListService;
 
     @Autowired
-    private final UserService userService;
+    private final SingleUserService singleUserService;
 
     @Autowired
-    private final ExpoService expoService;
+    private final SingleExpoService singleExpoService;
 
     @Autowired
     private final BoothStaffListService staffListService;
@@ -97,8 +97,8 @@ public class BoothService {
     public Integer createBooth(String userAccount, Integer expoID, BoothCreateRequest request) {
         System.out.println("BoothService: createBooth >> "+ userAccount+", "+expoID);
 
-        User owner = userService.getUserByAccount(userAccount);
-        Expo expo = expoService.getExpoByID(expoID);
+        User owner = singleUserService.getUserByAccount(userAccount);
+        Expo expo = singleExpoService.getExpoByID(expoID);
 
         Boolean status = request.getOpenStatus();
         OpenMode mode = request.getOpenMode();
@@ -125,7 +125,7 @@ public class BoothService {
         List<String> colUserIDs = request.getCollaborators();
         BoothCollaboratorList collaborator = new BoothCollaboratorList();
         if(colUserIDs != null && !colUserIDs.isEmpty()) {
-            List<User> userList = userService.getAllUserByAccount(colUserIDs);
+            List<User> userList = singleUserService.getAllUserByAccount(colUserIDs);
             Set<User> users = new HashSet<>(userList);
             collaborator.setCollaborators(users);
         }else collaborator.setCollaborators(new HashSet<>());
@@ -135,7 +135,7 @@ public class BoothService {
         List<String> staffUserIDs = request.getStaffs();
         BoothStaffList staff = new BoothStaffList();
         if(staffUserIDs != null && !staffUserIDs.isEmpty()) {
-            List<User> userList = userService.getAllUserByAccount(staffUserIDs);
+            List<User> userList = singleUserService.getAllUserByAccount(staffUserIDs);
             Set<User> users = new HashSet<>(userList);
             staff.setStaffs(users);
         }else staff.setStaffs(new HashSet<>());
@@ -185,7 +185,7 @@ public class BoothService {
             collaborator.getCollaborators().clear();
 
             if (!newColAccounts.isEmpty()) {
-                List<User> userList = userService.getAllUserByAccount(newColAccounts);
+                List<User> userList = singleUserService.getAllUserByAccount(newColAccounts);
 
                 for (User user : userList) {
                     if (!colListService.existInList(collaborator.getId(), user.getUserAccount())) {
@@ -202,7 +202,7 @@ public class BoothService {
             staff.getStaffs().clear();
 
             if (!newStaffAccounts.isEmpty()) {
-                List<User> userList = userService.getAllUserByAccount(newStaffAccounts);
+                List<User> userList = singleUserService.getAllUserByAccount(newStaffAccounts);
 
                 for (User user : userList) {
                     if (!staffListService.existInList(staff.getId(), user.getUserAccount())) {

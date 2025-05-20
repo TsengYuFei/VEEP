@@ -3,8 +3,7 @@ package com.example.api.Controller;
 import com.example.api.DTO.Request.BoothUpdateRequest;
 import com.example.api.DTO.Response.BoothEditResponse;
 import com.example.api.DTO.Request.BoothCreateRequest;
-import com.example.api.Service.BoothService;
-import com.example.api.Service.ContentService;
+import com.example.api.Service.SingleBoothService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -17,16 +16,15 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 @Tag(name = "單一攤位相關", description = "攤位內容與攤位本身的CRUD分開。")
 @RequestMapping("/booth")
 @RestController
 @RequiredArgsConstructor
-public class BoothController {
+public class SingleBoothController {
     @Autowired
-    private final BoothService boothService;
+    private final SingleBoothService singleBoothService;
 
 
 
@@ -58,7 +56,7 @@ public class BoothController {
             @PathVariable Integer boothID
     ){
         System.out.println("BoothController: getBoothEditByID >> "+boothID);
-        BoothEditResponse booth = boothService.getBoothEditByID(boothID);
+        BoothEditResponse booth = singleBoothService.getBoothEditByID(boothID);
         return ResponseEntity.status(HttpStatus.OK).body(booth);
     }
 
@@ -92,8 +90,8 @@ public class BoothController {
             @Valid @RequestBody BoothCreateRequest boothRequest
     ){
         System.out.println("BoothController: createBooth >> "+ userAccount+", "+expoID);
-        Integer boothID = boothService.createBooth(userAccount, expoID, boothRequest);
-        BoothEditResponse booth = boothService.getBoothEditByID(boothID);
+        Integer boothID = singleBoothService.createBooth(userAccount, expoID, boothRequest);
+        BoothEditResponse booth = singleBoothService.getBoothEditByID(boothID);
         return ResponseEntity.status(HttpStatus.CREATED).body(booth);
     }
 
@@ -131,8 +129,8 @@ public class BoothController {
             @Valid @RequestBody BoothUpdateRequest boothRequest
     ){
         System.out.println("BoothController: updateBoothByID >> "+boothID);
-        boothService.updateBoothByID(boothID, boothRequest);
-        BoothEditResponse booth = boothService.getBoothEditByID(boothID);
+        singleBoothService.updateBoothByID(boothID, boothRequest);
+        BoothEditResponse booth = singleBoothService.getBoothEditByID(boothID);
         return ResponseEntity.status(HttpStatus.OK).body(booth);
     }
 
@@ -158,7 +156,7 @@ public class BoothController {
             @PathVariable Integer boothID
     ){
         System.out.println("BoothController: deleteBoothByID >> "+boothID);
-        boothService.deleteBoothByID(boothID);
+        singleBoothService.deleteBoothByID(boothID);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 }

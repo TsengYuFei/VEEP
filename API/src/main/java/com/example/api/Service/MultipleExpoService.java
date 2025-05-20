@@ -19,12 +19,12 @@ import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
-public class BatchExpoService {
+public class MultipleExpoService {
     @Autowired
     private final ExpoRepository expoRepository;
 
     @Autowired
-    private final ExpoService expoService;
+    private final SingleExpoService singleExpoService;
 
 
 
@@ -46,7 +46,7 @@ public class BatchExpoService {
 
     public List<UserListResponse> getAllCollaborator(Integer expoID){
         System.out.println("BatchExpoService: getAllCollaborator >> "+expoID);
-        Expo expo = expoService.getExpoByID(expoID);
+        Expo expo = singleExpoService.getExpoByID(expoID);
         List<UserListResponse> response;
 
         Set<User> users = expo.getCollaborator().getCollaborators();
@@ -62,7 +62,7 @@ public class BatchExpoService {
 
     public List<UserListResponse> getAllBlack(Integer expoID){
         System.out.println("BatchExpoService: getAllBlack >> "+expoID);
-        Expo expo = expoService.getExpoByID(expoID);
+        Expo expo = singleExpoService.getExpoByID(expoID);
         List<UserListResponse> response;
 
         Set<User> users = expo.getBlacklist().getBlacklistedUsers();
@@ -78,7 +78,7 @@ public class BatchExpoService {
 
     public List<UserListResponse> getAllWhite(Integer expoID){
         System.out.println("BatchExpoService: getAllWhite >> "+expoID);
-        Expo expo = expoService.getExpoByID(expoID);
+        Expo expo = singleExpoService.getExpoByID(expoID);
         List<UserListResponse> response;
 
         Set<User> users = expo.getWhitelist().getWhitelistedUsers();
@@ -105,7 +105,7 @@ public class BatchExpoService {
 
     public List<BoothOverviewResponse> getAllBoothOverview(Integer expoID){
         System.out.println("BatchExpoService: getAllBoothOverview >> "+expoID);
-        Expo expo = expoService.getExpoByID(expoID);
+        Expo expo = singleExpoService.getExpoByID(expoID);
 
         return expo.getBoothList().stream()
                 .map(BoothOverviewResponse::fromBooth)

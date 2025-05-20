@@ -13,18 +13,17 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
-public class BatchBoothService {
+public class MultipleBoothService {
     @Autowired
     private final BoothRepository boothRepository;
 
     @Autowired
-    private final BoothService boothService;
+    private final SingleBoothService singleBoothService;
 
 
 
@@ -46,7 +45,7 @@ public class BatchBoothService {
 
     public List<UserListResponse> getAllCollaborator(Integer boothID){
         System.out.println("BatchBoothService: getAllCollaborator >> "+boothID);
-        Booth booth = boothService.getBoothByID(boothID);
+        Booth booth = singleBoothService.getBoothByID(boothID);
         List<UserListResponse> response;
 
         Set<User> cols = booth.getCollaborator().getCollaborators();
@@ -62,7 +61,7 @@ public class BatchBoothService {
 
     public List<UserListResponse> getAllStaff(Integer boothID){
         System.out.println("BatchBoothService: getAllStaff >> "+boothID);
-        Booth booth = boothService.getBoothByID(boothID);
+        Booth booth = singleBoothService.getBoothByID(boothID);
         List<UserListResponse> response;
 
         Set<User> stas = booth.getStaff().getStaffs();

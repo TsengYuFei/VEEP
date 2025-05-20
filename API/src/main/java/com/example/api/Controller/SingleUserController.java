@@ -5,7 +5,7 @@ import com.example.api.DTO.Request.UserUpdateRequest;
 import com.example.api.DTO.Response.UserDetailResponse;
 import com.example.api.DTO.Response.UserEditResponse;
 import com.example.api.DTO.Response.UserOverviewResponse;
-import com.example.api.Service.UserService;
+import com.example.api.Service.SingleUserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -24,9 +24,9 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/user")
 @RestController
 @RequiredArgsConstructor
-public class UserController {
+public class SingleUserController {
     @Autowired
-    private final UserService userService;
+    private final SingleUserService singleUserService;
 
 
     @Operation(
@@ -59,7 +59,7 @@ public class UserController {
             @PathVariable String userAccount
     ){
         System.out.println("UserController: getUsrDetailByAccount >> "+userAccount);
-        UserDetailResponse user = userService.getUserDetailByAccount(userAccount);
+        UserDetailResponse user = singleUserService.getUserDetailByAccount(userAccount);
         return ResponseEntity.status(HttpStatus.OK).body(user);
     }
 
@@ -93,7 +93,7 @@ public class UserController {
             @PathVariable String userAccount
     ){
         System.out.println("UserController: getUserOverviewByAccount >> "+userAccount);
-        UserOverviewResponse user = userService.getUserOverviewByAccount(userAccount);
+        UserOverviewResponse user = singleUserService.getUserOverviewByAccount(userAccount);
         return ResponseEntity.status(HttpStatus.OK).body(user);
     }
 
@@ -126,7 +126,7 @@ public class UserController {
             @PathVariable String userAccount
     ) {
         System.out.println("UserService: getUserEditByAccount >> "+userAccount);
-        UserEditResponse user = userService.getUserEditByAccount(userAccount);
+        UserEditResponse user = singleUserService.getUserEditByAccount(userAccount);
         return ResponseEntity.status(HttpStatus.OK).body(user);
 
     }
@@ -157,8 +157,8 @@ public class UserController {
     @PostMapping("")
     public ResponseEntity<UserDetailResponse> createUser(@Valid @RequestBody UserCreateRequest userRequest){
         System.out.println("UserController: createUser");
-        String userAccount = userService.createUser(userRequest);
-        UserDetailResponse user = userService.getUserDetailByAccount(userAccount);
+        String userAccount = singleUserService.createUser(userRequest);
+        UserDetailResponse user = singleUserService.getUserDetailByAccount(userAccount);
         return ResponseEntity.status(HttpStatus.CREATED).body(user);
     }
 
@@ -196,8 +196,8 @@ public class UserController {
             @Valid @RequestBody UserUpdateRequest userRequest
     ){
         System.out.println("UserController: updateUserByAccount >> "+userAccount);
-        userService.updateUserByAccount(userAccount, userRequest);
-        UserDetailResponse user = userService.getUserDetailByAccount(userAccount);
+        singleUserService.updateUserByAccount(userAccount, userRequest);
+        UserDetailResponse user = singleUserService.getUserDetailByAccount(userAccount);
         return ResponseEntity.status(HttpStatus.OK).body(user);
     }
 
@@ -223,7 +223,7 @@ public class UserController {
             @PathVariable String userAccount
     ){
         System.out.println("UserController: deleteUserByAccount >> "+userAccount);
-        userService.deleteUserByAccount(userAccount);
+        singleUserService.deleteUserByAccount(userAccount);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 }

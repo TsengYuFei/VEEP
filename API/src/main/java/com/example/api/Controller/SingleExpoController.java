@@ -3,7 +3,7 @@ package com.example.api.Controller;
 import com.example.api.DTO.Request.ExpoUpdateRequest;
 import com.example.api.DTO.Response.ExpoEditResponse;
 import com.example.api.DTO.Request.ExpoCreateRequest;
-import com.example.api.Service.ExpoService;
+import com.example.api.Service.SingleExpoService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -22,9 +22,9 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/expo")
 @RestController
 @RequiredArgsConstructor
-public class ExpoController {
+public class SingleExpoController {
     @Autowired
-    private final ExpoService expoService;
+    private final SingleExpoService singleExpoService;
 
 
     @Operation(
@@ -55,7 +55,7 @@ public class ExpoController {
             @PathVariable Integer expoID
     ){
         System.out.println("ExpoController: getExpoEdit >> "+expoID);
-        ExpoEditResponse expo = expoService.getExpoEditByID(expoID);
+        ExpoEditResponse expo = singleExpoService.getExpoEditByID(expoID);
         return ResponseEntity.status(HttpStatus.OK).body(expo);
     }
 
@@ -87,8 +87,8 @@ public class ExpoController {
             @Valid @RequestBody ExpoCreateRequest expoCreateRequest
     ){
         System.out.println("ExpoController: createExpo >> "+ userAccount);
-        Integer expoID = expoService.createExpo(userAccount, expoCreateRequest);
-        ExpoEditResponse expo = expoService.getExpoEditByID(expoID);
+        Integer expoID = singleExpoService.createExpo(userAccount, expoCreateRequest);
+        ExpoEditResponse expo = singleExpoService.getExpoEditByID(expoID);
         return ResponseEntity.status(HttpStatus.CREATED).body(expo);
     }
 
@@ -126,8 +126,8 @@ public class ExpoController {
             @Valid @RequestBody ExpoUpdateRequest expoRequest
     ){
         System.out.println("ExpoController: updateExpoByID >> "+expoID);
-        expoService.updateExpoByID(expoID, expoRequest);
-        ExpoEditResponse expo = expoService.getExpoEditByID(expoID);
+        singleExpoService.updateExpoByID(expoID, expoRequest);
+        ExpoEditResponse expo = singleExpoService.getExpoEditByID(expoID);
         return ResponseEntity.status(HttpStatus.OK).body(expo);
     }
 
@@ -153,7 +153,7 @@ public class ExpoController {
             @PathVariable Integer expoID
     ){
         System.out.println("ExpoController: deleteExpoByID >> "+expoID);
-        expoService.deleteExpoByID(expoID);
+        singleExpoService.deleteExpoByID(expoID);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 }

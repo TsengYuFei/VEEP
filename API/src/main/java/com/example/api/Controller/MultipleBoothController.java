@@ -2,7 +2,7 @@ package com.example.api.Controller;
 
 import com.example.api.DTO.Response.BoothOverviewResponse;
 import com.example.api.DTO.Response.UserListResponse;
-import com.example.api.Service.BatchBoothService;
+import com.example.api.Service.MultipleBoothService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
@@ -20,13 +20,13 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@Tag(name = "批量攤位相關")
-@RequestMapping("/batch/booth")
+@Tag(name = "多筆攤位相關")
+@RequestMapping("/multiple/booth")
 @RestController
 @RequiredArgsConstructor
-public class BatchBoothController {
+public class MultipleBoothController {
     @Autowired
-    private final BatchBoothService batchBoothService;
+    private final MultipleBoothService multipleBoothService;
 
 
 
@@ -52,7 +52,7 @@ public class BatchBoothController {
     @GetMapping("/overview")
     public ResponseEntity<List<BoothOverviewResponse>> getAllBoothOverview(){
         System.out.println("BatchBoothController: getAllBoothOverview");
-        List<BoothOverviewResponse> booths = batchBoothService.getAllBoothOverview();
+        List<BoothOverviewResponse> booths = multipleBoothService.getAllBoothOverview();
         return ResponseEntity.status(HttpStatus.OK).body(booths);
     }
 
@@ -83,7 +83,7 @@ public class BatchBoothController {
             @RequestParam(defaultValue = "5") Integer size
     ){
         System.out.println("BatchBoothController: getAllBoothOverviewPage >> "+page+", "+size);
-        Page<BoothOverviewResponse> booths = batchBoothService.getAllBoothOverviewPage(page, size);
+        Page<BoothOverviewResponse> booths = multipleBoothService.getAllBoothOverviewPage(page, size);
         return ResponseEntity.status(HttpStatus.OK).body(booths);
     }
 
@@ -114,7 +114,7 @@ public class BatchBoothController {
             @PathVariable Integer boothID
     ){
         System.out.println("BatchBoothController: getAllCollaborator >> "+boothID);
-        List<UserListResponse> collaborator = batchBoothService.getAllCollaborator(boothID);
+        List<UserListResponse> collaborator = multipleBoothService.getAllCollaborator(boothID);
         return ResponseEntity.status(HttpStatus.OK).body(collaborator);
     }
 
@@ -145,7 +145,7 @@ public class BatchBoothController {
             @PathVariable Integer boothID
     ){
         System.out.println("BatchBoothController: getAllStaff >> "+boothID);
-        List<UserListResponse> staff = batchBoothService.getAllStaff(boothID);
+        List<UserListResponse> staff = multipleBoothService.getAllStaff(boothID);
         return ResponseEntity.status(HttpStatus.OK).body(staff);
     }
 
@@ -176,7 +176,7 @@ public class BatchBoothController {
             @RequestParam String tagsName
     ){
         System.out.println("BatchBoothController: getTagBoothOverview >> "+tagsName);
-        List<BoothOverviewResponse> booths = batchBoothService.getTagBoothOverview(tagsName);
+        List<BoothOverviewResponse> booths = multipleBoothService.getTagBoothOverview(tagsName);
         return ResponseEntity.status(HttpStatus.OK).body(booths);
     }
 }

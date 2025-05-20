@@ -23,12 +23,12 @@ import static com.example.api.Other.UpdateTool.updateIfNotNull;
 
 @Service
 @RequiredArgsConstructor
-public class ExpoService {
+public class SingleExpoService {
     @Autowired
     private final ExpoRepository expoRepository;
 
     @Autowired
-    private final UserService userService;
+    private final SingleUserService singleUserService;
 
     @Autowired
     private final ExpoColListService colListService;
@@ -101,7 +101,7 @@ public class ExpoService {
     public Integer createExpo(String userAccount, ExpoCreateRequest request) {
         System.out.println("ExpoService: createExpo >> "+ userAccount);
 
-        User owner = userService.getUserByAccount(userAccount);
+        User owner = singleUserService.getUserByAccount(userAccount);
 
         Boolean status = request.getOpenStatus();
         OpenMode mode = request.getOpenMode();
@@ -129,7 +129,7 @@ public class ExpoService {
         List<String> colIDs = request.getCollaborators();
         ExpoCollaboratorList collaborator = new ExpoCollaboratorList();
         if(colIDs != null && !colIDs.isEmpty()){
-            List<User> userList = userService.getAllUserByAccount(colIDs);
+            List<User> userList = singleUserService.getAllUserByAccount(colIDs);
             Set<User> users = new HashSet<>(userList);
             collaborator.setCollaborators(users);
         }else collaborator.setCollaborators(new HashSet<>());
@@ -139,7 +139,7 @@ public class ExpoService {
         List<String> blackIDs = request.getBlacklist();
         Blacklist blacklistedUser = new Blacklist();
         if(blackIDs != null && !blackIDs.isEmpty()){
-            List<User> userList = userService.getAllUserByAccount(blackIDs);
+            List<User> userList = singleUserService.getAllUserByAccount(blackIDs);
             Set<User> users = new HashSet<>(userList);
             blacklistedUser.setBlacklistedUsers(users);
         }else blacklistedUser.setBlacklistedUsers(new HashSet<>());
@@ -149,7 +149,7 @@ public class ExpoService {
         List<String> whiteIDs = request.getWhitelist();
         Whitelist whitelistedUser = new Whitelist();
         if(whiteIDs != null && !whiteIDs.isEmpty()){
-            List<User> userList = userService.getAllUserByAccount(whiteIDs);
+            List<User> userList = singleUserService.getAllUserByAccount(whiteIDs);
             Set<User> users = new HashSet<>(userList);
             whitelistedUser.setWhitelistedUsers(users);
         }else whitelistedUser.setWhitelistedUsers(new HashSet<>());
@@ -197,7 +197,7 @@ public class ExpoService {
             collaborator.getCollaborators().clear();
 
             if (!newColAccounts.isEmpty()) {
-                List<User> userList = userService.getAllUserByAccount(newColAccounts);
+                List<User> userList = singleUserService.getAllUserByAccount(newColAccounts);
 
                 for (User user : userList) {
                     if (!colListService.existInList(collaborator.getId(), user.getUserAccount())) {
@@ -214,7 +214,7 @@ public class ExpoService {
             blacklistedUser.getBlacklistedUsers().clear();
 
             if (!newBlackAccounts.isEmpty()) {
-                List<User> userList = userService.getAllUserByAccount(newBlackAccounts);
+                List<User> userList = singleUserService.getAllUserByAccount(newBlackAccounts);
 
                 for (User user : userList) {
                     if (!blacklistService.existInList(blacklistedUser.getId(), user.getUserAccount())) {
@@ -231,7 +231,7 @@ public class ExpoService {
             whitelistedUser.getWhitelistedUsers().clear();
 
             if (!newWhiteAccounts.isEmpty()) {
-                List<User> userList = userService.getAllUserByAccount(newWhiteAccounts);
+                List<User> userList = singleUserService.getAllUserByAccount(newWhiteAccounts);
 
                 for (User user : userList) {
                     if (!whiteListService.existInList(whitelistedUser.getId(), user.getUserAccount())) {
