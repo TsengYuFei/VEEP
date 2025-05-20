@@ -3,7 +3,7 @@ package com.example.api.Service;
 import com.example.api.DTO.Request.UserCreateRequest;
 import com.example.api.DTO.Request.UserUpdateRequest;
 import com.example.api.DTO.Response.*;
-import com.example.api.Entity.Expo;
+import com.example.api.Entity.Role;
 import com.example.api.Entity.User;
 import com.example.api.Exception.NotFoundException;
 import com.example.api.Repository.UserRepository;
@@ -131,5 +131,14 @@ public class SingleUserService {
         return user.getBoothList().stream()
                 .map(BoothOverviewResponse::fromBooth)
                 .toList();
+    }
+
+
+    public void switchRole(String account){
+        System.out.println("SingleUserService: switchRole >> "+account);
+        User user = getUserByAccount(account);
+
+        if(user.getRole() == Role.GENERAL) user.setRole(Role.FOUNDER);
+        else user.setRole(Role.GENERAL);
     }
 }

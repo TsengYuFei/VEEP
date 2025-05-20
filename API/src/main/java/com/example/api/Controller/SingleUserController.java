@@ -244,6 +244,10 @@ public class SingleUserController {
                     )
             ),
             @ApiResponse(
+                    responseCode = "404",
+                    description = "找不到使用者"
+            ),
+            @ApiResponse(
                     responseCode = "500",
                     description = "伺服器錯誤"
             )
@@ -274,6 +278,10 @@ public class SingleUserController {
                     )
             ),
             @ApiResponse(
+                    responseCode = "404",
+                    description = "找不到使用者"
+            ),
+            @ApiResponse(
                     responseCode = "500",
                     description = "伺服器錯誤"
             )
@@ -286,5 +294,39 @@ public class SingleUserController {
         System.out.println("SingleUserController: getAllBoothOverview >> "+userAccount);
         List<BoothOverviewResponse> booths = singleUserService.getAllBoothOverview(userAccount);
         return ResponseEntity.status(HttpStatus.OK).body(booths);
+    }
+
+
+    @Operation(
+            summary = "切換使用者身分",
+            description = "有GENERAL和FOUNDER兩種"
+    )
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "成功切換使用者身分",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = UserOverviewResponse.class)
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = "404",
+                    description = "找不到使用者"
+            ),
+            @ApiResponse(
+                    responseCode = "500",
+                    description = "伺服器錯誤"
+            )
+    })
+    @PutMapping("/switch_role/{userAccount}")
+    public ResponseEntity<UserOverviewResponse> switchRole(
+            @Parameter(description = "使用者帳號", required = true)
+            @PathVariable String userAccount
+    ){
+        System.out.println("SingleUserController: switchRole >> "+userAccount);
+        singleUserService.switchRole(userAccount);
+        UserOverviewResponse user = singleUserService.getUserOverviewByAccount(userAccount);
+        return ResponseEntity.status(HttpStatus.OK).body(user);
     }
 }
