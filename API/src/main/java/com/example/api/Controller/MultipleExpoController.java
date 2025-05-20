@@ -1,8 +1,6 @@
 package com.example.api.Controller;
 
-import com.example.api.DTO.Response.BoothOverviewResponse;
 import com.example.api.DTO.Response.ExpoOverviewResponse;
-import com.example.api.DTO.Response.UserListResponse;
 import com.example.api.Service.MultipleExpoService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -52,7 +50,7 @@ public class MultipleExpoController {
     })
     @GetMapping("/overview")
     public ResponseEntity<List<ExpoOverviewResponse>> getAllExpoOverview(){
-        System.out.println("BatchExpoController: getAllExpoOverview");
+        System.out.println("MultipleExpoController: getAllExpoOverview");
         List<ExpoOverviewResponse> expos = multipleExpoService.getAllExpoOverview();
         return ResponseEntity.status(HttpStatus.OK).body(expos);
     }
@@ -83,102 +81,9 @@ public class MultipleExpoController {
             @Parameter(description = "數量(一頁幾筆資料)", required = true)
             @RequestParam(defaultValue = "5") Integer size
     ){
-        System.out.println("BatchExpoController: getAllExpoOverviewPage >> "+page+", "+size);
+        System.out.println("MultipleExpoController: getAllExpoOverviewPage >> "+page+", "+size);
         Page<ExpoOverviewResponse> expos = multipleExpoService.getAllExpoOverviewPage(page, size);
         return ResponseEntity.status(HttpStatus.OK).body(expos);
-    }
-
-
-    @Operation(
-            summary = "獲取某展會的所有合作者",
-            description = "合作者可共同編輯此攤位"
-    )
-    @ApiResponses(value = {
-            @ApiResponse(
-                    responseCode = "200",
-                    description = "成功獲取該展會的所有合作者",
-                    content = @Content(
-                            mediaType = "application/json",
-                            array = @ArraySchema(
-                                    schema = @Schema(implementation = UserListResponse.class)
-                            )
-                    )
-            ),
-            @ApiResponse(
-                    responseCode = "500",
-                    description = "伺服器錯誤"
-            )
-    })
-    @GetMapping("/collaborator/{expoID}")
-    public ResponseEntity<List<UserListResponse>> getAllCollaborator(
-            @Parameter(description = "展會ID", required = true)
-            @PathVariable Integer expoID
-    ){
-        System.out.println("BatchExpoController: getAllCollaborator >> "+expoID);
-        List<UserListResponse> collaborator = multipleExpoService.getAllCollaborator(expoID);
-        return ResponseEntity.status(HttpStatus.OK).body(collaborator);
-    }
-
-
-    @Operation(
-            summary = "獲取某展會黑名單中的所有使用者",
-            description = "黑名單中的使用者不可進入此展會"
-    )
-    @ApiResponses(value = {
-            @ApiResponse(
-                    responseCode = "200",
-                    description = "成功獲取該展會黑名單中的所有使用者",
-                    content = @Content(
-                            mediaType = "application/json",
-                            array = @ArraySchema(
-                                    schema = @Schema(implementation = UserListResponse.class)
-                            )
-                    )
-            ),
-            @ApiResponse(
-                    responseCode = "500",
-                    description = "伺服器錯誤"
-            )
-    })
-    @GetMapping("/blacklist/{expoID}")
-    public ResponseEntity<List<UserListResponse>> getAllBlack(
-            @Parameter(description = "展會ID", required = true)
-            @PathVariable Integer expoID
-    ){
-        System.out.println("BatchExpoController: getAllBlack >> "+expoID);
-        List<UserListResponse> blacklisted = multipleExpoService.getAllBlack(expoID);
-        return ResponseEntity.status(HttpStatus.OK).body(blacklisted);
-    }
-
-
-    @Operation(
-            summary = "獲取某展會白名單中的所有使用者",
-            description = "白名單中的使用者不可進入此展會"
-    )
-    @ApiResponses(value = {
-            @ApiResponse(
-                    responseCode = "200",
-                    description = "成功獲取該展會白名單中的所有使用者",
-                    content = @Content(
-                            mediaType = "application/json",
-                            array = @ArraySchema(
-                                    schema = @Schema(implementation = UserListResponse.class)
-                            )
-                    )
-            ),
-            @ApiResponse(
-                    responseCode = "500",
-                    description = "伺服器錯誤"
-            )
-    })
-    @GetMapping("/whitelist/{expoID}")
-    public ResponseEntity<List<UserListResponse>> getAllWhite(
-            @Parameter(description = "展會ID", required = true)
-            @PathVariable Integer expoID
-    ){
-        System.out.println("BatchExpoController: getAllWhite >> "+expoID);
-        List<UserListResponse> whitelisted = multipleExpoService.getAllWhite(expoID);
-        return ResponseEntity.status(HttpStatus.OK).body(whitelisted);
     }
 
 
@@ -207,38 +112,8 @@ public class MultipleExpoController {
             @Parameter(description = "標籤名稱", required = true)
             @RequestParam String tagsName
     ){
-        System.out.println("BatchExpoController: getTagExpoOverview >> "+tagsName);
+        System.out.println("MultipleExpoController: getTagExpoOverview >> "+tagsName);
         List<ExpoOverviewResponse> expos = multipleExpoService.getTagExpoOverview(tagsName);
         return ResponseEntity.status(HttpStatus.OK).body(expos);
-    }
-
-
-    @Operation(
-            summary = "獲取某展會中的所有攤位"
-    )
-    @ApiResponses(value = {
-            @ApiResponse(
-                    responseCode = "200",
-                    description = "成功獲取該展會中的所有攤位",
-                    content = @Content(
-                            mediaType = "application/json",
-                            array = @ArraySchema(
-                                    schema = @Schema(implementation = BoothOverviewResponse.class)
-                            )
-                    )
-            ),
-            @ApiResponse(
-                    responseCode = "500",
-                    description = "伺服器錯誤"
-            )
-    })
-    @GetMapping("/booths/{expoID}")
-    public ResponseEntity<List<BoothOverviewResponse>> getAllBoothOverview(
-            @Parameter(description = "展會ID", required = true)
-            @RequestParam Integer expoID
-    ){
-        System.out.println("BatchExpoController: getAllBoothOverview >> "+expoID);
-        List<BoothOverviewResponse> booths = multipleExpoService.getAllBoothOverview(expoID);
-        return ResponseEntity.status(HttpStatus.OK).body(booths);
     }
 }

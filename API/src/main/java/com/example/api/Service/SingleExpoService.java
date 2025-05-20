@@ -2,6 +2,7 @@ package com.example.api.Service;
 
 import com.example.api.DTO.Request.ExpoCreateRequest;
 import com.example.api.DTO.Request.ExpoUpdateRequest;
+import com.example.api.DTO.Response.BoothOverviewResponse;
 import com.example.api.DTO.Response.TagResponse;
 import com.example.api.DTO.Response.UserListResponse;
 import com.example.api.DTO.Response.ExpoEditResponse;
@@ -14,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -45,14 +47,14 @@ public class SingleExpoService {
 
 
     Expo getExpoByID(Integer expoID){
-        System.out.println("ExpoService: getExpoByID >> "+expoID);
+        System.out.println("SingleExpoService: getExpoByID >> "+expoID);
         return expoRepository.findById(expoID)
                 .orElseThrow(() -> new NotFoundException("找不到展會ID為 < "+ expoID+" > 的展會"));
     }
 
 
     public ExpoEditResponse getExpoEditByID(Integer expoID) {
-        System.out.println("ExpoService: getExpoEditByID >> "+expoID);
+        System.out.println("SingleExpoService: getExpoEditByID >> "+expoID);
         Expo expo = getExpoByID(expoID);
         ExpoEditResponse response = ExpoEditResponse.fromExpo(expo);
 
@@ -99,7 +101,7 @@ public class SingleExpoService {
 
     @Transactional
     public Integer createExpo(String userAccount, ExpoCreateRequest request) {
-        System.out.println("ExpoService: createExpo >> "+ userAccount);
+        System.out.println("SingleExpoService: createExpo >> "+ userAccount);
 
         User owner = singleUserService.getUserByAccount(userAccount);
 
@@ -175,7 +177,7 @@ public class SingleExpoService {
 
     @Transactional
     public void updateExpoByID(Integer expoID, ExpoUpdateRequest request){
-        System.out.println("ExpoService: updateExpoByID >> "+expoID);
+        System.out.println("SingleExpoService: updateExpoByID >> "+expoID);
 
         Expo expo = getExpoByID(expoID);
         expo.setName(updateIfNotBlank(expo.getName(), request.getName()));
@@ -262,7 +264,7 @@ public class SingleExpoService {
 
     @Transactional
     public void deleteExpoByID(Integer expoID){
-        System.out.println("ExpoService: deleteExpoByID >> "+expoID);
+        System.out.println("SingleExpoService: deleteExpoByID >> "+expoID);
         Expo expo = getExpoByID(expoID);
 
         for(Booth booth : expo.getBoothList()){
@@ -270,5 +272,63 @@ public class SingleExpoService {
         }
 
         expoRepository.delete(expo);
+    }
+
+
+    public List<UserListResponse> getAllCollaborator(Integer expoID){
+        System.out.println("SingleExpoService: getAllCollaborator >> "+expoID);
+        Expo expo = getExpoByID(expoID);
+        List<UserListResponse> response;
+
+        Set<User> users = expo.getCollaborator().getCollaborators();
+        if(users != null && !users.isEmpty()) {
+            response = users.stream()
+                    .map(UserListResponse::fromUser)
+                    .toList();
+        }else response = new ArrayList<>();
+
+        return response;
+    }
+
+
+    public List<UserListResponse> getAllBlack(Integer expoID){
+        System.out.println("SingleExpoService: getAllBlack >> "+expoID);
+        Expo expo = getExpoByID(expoID);
+        List<UserListResponse> response;
+
+        Set<User> users = expo.getBlacklist().getBlacklistedUsers();
+        if(users != null && !users.isEmpty()) {
+            response = users.stream()
+                    .map(UserListResponse::fromUser)
+                    .toList();
+        }else response = new ArrayList<>();
+
+        return response;
+    }
+
+
+    public List<UserListResponse> getAllWhite(Integer expoID){
+        System.out.println("SingleExpoService: getAllWhite >> "+expoID);
+        Expo expo = getExpoByID(expoID);
+        List<UserListResponse> response;
+
+        Set<User> users = expo.getWhitelist().getWhitelistedUsers();
+        if(users != null && !users.isEmpty()) {
+            response = users.stream()
+                    .map(UserListResponse::fromUser)
+                    .toList();
+        }else response = new ArrayList<>();
+
+        return response;
+    }
+
+
+    public List<BoothOverviewResponse> getAllBoothOverview(Integer expoID){
+        System.out.println("SingleExpoService: getAllBoothOverview >> "+expoID);
+        Expo expo = getExpoByID(expoID);
+
+        return expo.getBoothList().stream()
+                .map(BoothOverviewResponse::fromBooth)
+                .toList();
     }
 }

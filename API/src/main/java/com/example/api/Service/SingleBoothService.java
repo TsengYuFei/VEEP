@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -48,14 +49,14 @@ public class SingleBoothService {
 
 
     Booth getBoothByID(Integer boothID) {
-        System.out.println("BoothService: getBoothByID >> "+boothID);
+        System.out.println("SingleBoothService: getBoothByID >> "+boothID);
         return boothRepository.findById(boothID)
                 .orElseThrow(() -> new NotFoundException("找不到攤位ID為 < "+ boothID+" > 的攤位"));
     }
 
 
     public BoothEditResponse getBoothEditByID(Integer boothID) {
-        System.out.println("BoothService: getBoothEditByID >> "+boothID);
+        System.out.println("SingleBoothService: getBoothEditByID >> "+boothID);
         Booth booth = getBoothByID(boothID);
         BoothEditResponse response = BoothEditResponse.fromBooth(booth);
         Expo expo = booth.getExpo();
@@ -95,7 +96,7 @@ public class SingleBoothService {
 
     @Transactional
     public Integer createBooth(String userAccount, Integer expoID, BoothCreateRequest request) {
-        System.out.println("BoothService: createBooth >> "+ userAccount+", "+expoID);
+        System.out.println("SingleBoothService: createBooth >> "+ userAccount+", "+expoID);
 
         User owner = singleUserService.getUserByAccount(userAccount);
         Expo expo = singleExpoService.getExpoByID(expoID);
@@ -165,7 +166,7 @@ public class SingleBoothService {
 
     @Transactional
     public void updateBoothByID(Integer boothID, BoothUpdateRequest request){
-        System.out.println("BoothService: updateBoothByID >> "+boothID);
+        System.out.println("SingleBoothService: updateBoothByID >> "+boothID);
 
         Booth booth = getBoothByID(boothID);
         booth.setName(updateIfNotBlank(booth.getName(), request.getName()));
@@ -233,8 +234,40 @@ public class SingleBoothService {
 
     @Transactional
     public void deleteBoothByID(Integer boothID) {
-        System.out.println("BoothService: deleteBoothByID >> "+boothID);
+        System.out.println("SingleBoothService: deleteBoothByID >> "+boothID);
         Booth booth = getBoothByID(boothID);
         boothRepository.delete(booth);
+    }
+
+
+    public List<UserListResponse> getAllCollaborator(Integer boothID){
+        System.out.println("SingleBoothService: getAllCollaborator >> "+boothID);
+        Booth booth = getBoothByID(boothID);
+        List<UserListResponse> response;
+
+        Set<User> cols = booth.getCollaborator().getCollaborators();
+        if(cols != null && !cols.isEmpty()) {
+            response = cols.stream()
+                    .map(UserListResponse::fromUser)
+                    .toList();
+        }else response = new ArrayList<>();
+
+        return response;
+    }
+
+
+    public List<UserListResponse> getAllStaff(Integer boothID){
+        System.out.println("SingleBoothService: getAllStaff >> "+boothID);
+        Booth booth = getBoothByID(boothID);
+        List<UserListResponse> response;
+
+        Set<User> stas = booth.getStaff().getStaffs();
+        if(stas != null && !stas.isEmpty()) {
+            response = stas.stream()
+                    .map(UserListResponse::fromUser)
+                    .toList();
+        }else response = new ArrayList<>();
+
+        return response;
     }
 }

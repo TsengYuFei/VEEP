@@ -3,9 +3,11 @@ package com.example.api.Controller;
 import com.example.api.DTO.Request.BoothUpdateRequest;
 import com.example.api.DTO.Response.BoothEditResponse;
 import com.example.api.DTO.Request.BoothCreateRequest;
+import com.example.api.DTO.Response.UserListResponse;
 import com.example.api.Service.SingleBoothService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -17,6 +19,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @Tag(name = "單一攤位相關", description = "攤位內容與攤位本身的CRUD分開。")
 @RequestMapping("/booth")
@@ -55,7 +59,7 @@ public class SingleBoothController {
             @Parameter(description = "攤位ID", required = true)
             @PathVariable Integer boothID
     ){
-        System.out.println("BoothController: getBoothEditByID >> "+boothID);
+        System.out.println("SingleBoothController: getBoothEditByID >> "+boothID);
         BoothEditResponse booth = singleBoothService.getBoothEditByID(boothID);
         return ResponseEntity.status(HttpStatus.OK).body(booth);
     }
@@ -89,7 +93,7 @@ public class SingleBoothController {
             @PathVariable Integer expoID,
             @Valid @RequestBody BoothCreateRequest boothRequest
     ){
-        System.out.println("BoothController: createBooth >> "+ userAccount+", "+expoID);
+        System.out.println("SingleBoothController: createBooth >> "+ userAccount+", "+expoID);
         Integer boothID = singleBoothService.createBooth(userAccount, expoID, boothRequest);
         BoothEditResponse booth = singleBoothService.getBoothEditByID(boothID);
         return ResponseEntity.status(HttpStatus.CREATED).body(booth);
@@ -128,7 +132,7 @@ public class SingleBoothController {
             @PathVariable Integer boothID,
             @Valid @RequestBody BoothUpdateRequest boothRequest
     ){
-        System.out.println("BoothController: updateBoothByID >> "+boothID);
+        System.out.println("SingleBoothController: updateBoothByID >> "+boothID);
         singleBoothService.updateBoothByID(boothID, boothRequest);
         BoothEditResponse booth = singleBoothService.getBoothEditByID(boothID);
         return ResponseEntity.status(HttpStatus.OK).body(booth);
@@ -155,8 +159,70 @@ public class SingleBoothController {
             @Parameter(description = "攤位ID", required = true)
             @PathVariable Integer boothID
     ){
-        System.out.println("BoothController: deleteBoothByID >> "+boothID);
+        System.out.println("SingleBoothController: deleteBoothByID >> "+boothID);
         singleBoothService.deleteBoothByID(boothID);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+    }
+
+
+    @Operation(
+            summary = "獲取所有合作者",
+            description = "合作者可共同編輯此攤位"
+    )
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "成功獲取所有合作者",
+                    content = @Content(
+                            mediaType = "application/json",
+                            array = @ArraySchema(
+                                    schema = @Schema(implementation = UserListResponse.class)
+                            )
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = "500",
+                    description = "伺服器錯誤"
+            )
+    })
+    @GetMapping("/collaborator/{boothID}")
+    public ResponseEntity<List<UserListResponse>> getAllCollaborator(
+            @Parameter(description = "攤位ID", required = true)
+            @PathVariable Integer boothID
+    ){
+        System.out.println("SingleBoothController: getAllCollaborator >> "+boothID);
+        List<UserListResponse> collaborator = singleBoothService.getAllCollaborator(boothID);
+        return ResponseEntity.status(HttpStatus.OK).body(collaborator);
+    }
+
+
+    @Operation(
+            summary = "獲取所有員工",
+            description = "員工可在活動中發傳單等，但不能編輯攤位"
+    )
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "成功獲取所有員工",
+                    content = @Content(
+                            mediaType = "application/json",
+                            array = @ArraySchema(
+                                    schema = @Schema(implementation = UserListResponse.class)
+                            )
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = "500",
+                    description = "伺服器錯誤"
+            )
+    })
+    @GetMapping("/staff/{boothID}")
+    public ResponseEntity<List<UserListResponse>> getAllStaff(
+            @Parameter(description = "攤位ID", required = true)
+            @PathVariable Integer boothID
+    ){
+        System.out.println("SingleBoothController: getAllStaff >> "+boothID);
+        List<UserListResponse> staff = singleBoothService.getAllStaff(boothID);
+        return ResponseEntity.status(HttpStatus.OK).body(staff);
     }
 }

@@ -1,11 +1,14 @@
 package com.example.api.Controller;
 
 import com.example.api.DTO.Request.ExpoUpdateRequest;
+import com.example.api.DTO.Response.BoothOverviewResponse;
 import com.example.api.DTO.Response.ExpoEditResponse;
 import com.example.api.DTO.Request.ExpoCreateRequest;
+import com.example.api.DTO.Response.UserListResponse;
 import com.example.api.Service.SingleExpoService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -17,6 +20,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @Tag(name = "單一展會相關")
 @RequestMapping("/expo")
@@ -54,7 +59,7 @@ public class SingleExpoController {
             @Parameter(description = "展會ID", required = true)
             @PathVariable Integer expoID
     ){
-        System.out.println("ExpoController: getExpoEdit >> "+expoID);
+        System.out.println("SingleExpoController: getExpoEdit >> "+expoID);
         ExpoEditResponse expo = singleExpoService.getExpoEditByID(expoID);
         return ResponseEntity.status(HttpStatus.OK).body(expo);
     }
@@ -86,7 +91,7 @@ public class SingleExpoController {
             @PathVariable String userAccount,
             @Valid @RequestBody ExpoCreateRequest expoCreateRequest
     ){
-        System.out.println("ExpoController: createExpo >> "+ userAccount);
+        System.out.println("SingleExpoController: createExpo >> "+ userAccount);
         Integer expoID = singleExpoService.createExpo(userAccount, expoCreateRequest);
         ExpoEditResponse expo = singleExpoService.getExpoEditByID(expoID);
         return ResponseEntity.status(HttpStatus.CREATED).body(expo);
@@ -125,7 +130,7 @@ public class SingleExpoController {
             @PathVariable Integer expoID,
             @Valid @RequestBody ExpoUpdateRequest expoRequest
     ){
-        System.out.println("ExpoController: updateExpoByID >> "+expoID);
+        System.out.println("SingleExpoController: updateExpoByID >> "+expoID);
         singleExpoService.updateExpoByID(expoID, expoRequest);
         ExpoEditResponse expo = singleExpoService.getExpoEditByID(expoID);
         return ResponseEntity.status(HttpStatus.OK).body(expo);
@@ -152,8 +157,131 @@ public class SingleExpoController {
             @Parameter(description = "展會ID", required = true)
             @PathVariable Integer expoID
     ){
-        System.out.println("ExpoController: deleteExpoByID >> "+expoID);
+        System.out.println("SingleExpoController: deleteExpoByID >> "+expoID);
         singleExpoService.deleteExpoByID(expoID);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+    }
+
+
+    @Operation(
+            summary = "獲取某所有合作者",
+            description = "合作者可共同編輯此攤位"
+    )
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "成功獲取所有合作者",
+                    content = @Content(
+                            mediaType = "application/json",
+                            array = @ArraySchema(
+                                    schema = @Schema(implementation = UserListResponse.class)
+                            )
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = "500",
+                    description = "伺服器錯誤"
+            )
+    })
+    @GetMapping("/collaborator/{expoID}")
+    public ResponseEntity<List<UserListResponse>> getAllCollaborator(
+            @Parameter(description = "展會ID", required = true)
+            @PathVariable Integer expoID
+    ){
+        System.out.println("SingleExpoController: getAllCollaborator >> "+expoID);
+        List<UserListResponse> collaborator = singleExpoService.getAllCollaborator(expoID);
+        return ResponseEntity.status(HttpStatus.OK).body(collaborator);
+    }
+
+
+    @Operation(
+            summary = "獲取黑名單中的所有使用者",
+            description = "黑名單中的使用者不可進入此展會"
+    )
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "成功獲取黑名單中的所有使用者",
+                    content = @Content(
+                            mediaType = "application/json",
+                            array = @ArraySchema(
+                                    schema = @Schema(implementation = UserListResponse.class)
+                            )
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = "500",
+                    description = "伺服器錯誤"
+            )
+    })
+    @GetMapping("/blacklist/{expoID}")
+    public ResponseEntity<List<UserListResponse>> getAllBlack(
+            @Parameter(description = "展會ID", required = true)
+            @PathVariable Integer expoID
+    ){
+        System.out.println("SingleExpoController: getAllBlack >> "+expoID);
+        List<UserListResponse> blacklisted = singleExpoService.getAllBlack(expoID);
+        return ResponseEntity.status(HttpStatus.OK).body(blacklisted);
+    }
+
+
+    @Operation(
+            summary = "獲取白名單中的所有使用者",
+            description = "白名單中的使用者不可進入此展會"
+    )
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "成功獲取白名單中的所有使用者",
+                    content = @Content(
+                            mediaType = "application/json",
+                            array = @ArraySchema(
+                                    schema = @Schema(implementation = UserListResponse.class)
+                            )
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = "500",
+                    description = "伺服器錯誤"
+            )
+    })
+    @GetMapping("/whitelist/{expoID}")
+    public ResponseEntity<List<UserListResponse>> getAllWhite(
+            @Parameter(description = "展會ID", required = true)
+            @PathVariable Integer expoID
+    ){
+        System.out.println("SingleExpoController: getAllWhite >> "+expoID);
+        List<UserListResponse> whitelisted = singleExpoService.getAllWhite(expoID);
+        return ResponseEntity.status(HttpStatus.OK).body(whitelisted);
+    }
+
+
+    @Operation(
+            summary = "獲取所有攤位"
+    )
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "成功獲取所有攤位",
+                    content = @Content(
+                            mediaType = "application/json",
+                            array = @ArraySchema(
+                                    schema = @Schema(implementation = BoothOverviewResponse.class)
+                            )
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = "500",
+                    description = "伺服器錯誤"
+            )
+    })
+    @GetMapping("/booths/{expoID}")
+    public ResponseEntity<List<BoothOverviewResponse>> getAllBoothOverview(
+            @Parameter(description = "展會ID", required = true)
+            @RequestParam Integer expoID
+    ){
+        System.out.println("SingleExpoController: getAllBoothOverview >> "+expoID);
+        List<BoothOverviewResponse> booths = singleExpoService.getAllBoothOverview(expoID);
+        return ResponseEntity.status(HttpStatus.OK).body(booths);
     }
 }

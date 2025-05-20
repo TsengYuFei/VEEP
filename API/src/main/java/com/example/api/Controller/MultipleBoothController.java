@@ -1,7 +1,6 @@
 package com.example.api.Controller;
 
 import com.example.api.DTO.Response.BoothOverviewResponse;
-import com.example.api.DTO.Response.UserListResponse;
 import com.example.api.Service.MultipleBoothService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -82,71 +81,9 @@ public class MultipleBoothController {
             @Parameter(description = "數量(一頁幾筆資料)", required = true)
             @RequestParam(defaultValue = "5") Integer size
     ){
-        System.out.println("BatchBoothController: getAllBoothOverviewPage >> "+page+", "+size);
+        System.out.println("MultipleBoothController: getAllBoothOverviewPage >> "+page+", "+size);
         Page<BoothOverviewResponse> booths = multipleBoothService.getAllBoothOverviewPage(page, size);
         return ResponseEntity.status(HttpStatus.OK).body(booths);
-    }
-
-
-    @Operation(
-            summary = "獲取某攤位的所有合作者",
-            description = "合作者可共同編輯此攤位"
-    )
-    @ApiResponses(value = {
-            @ApiResponse(
-                    responseCode = "200",
-                    description = "成功獲取該攤位的所有合作者",
-                    content = @Content(
-                            mediaType = "application/json",
-                            array = @ArraySchema(
-                                    schema = @Schema(implementation = UserListResponse.class)
-                            )
-                    )
-            ),
-            @ApiResponse(
-                    responseCode = "500",
-                    description = "伺服器錯誤"
-            )
-    })
-    @GetMapping("/collaborator/{boothID}")
-    public ResponseEntity<List<UserListResponse>> getAllCollaborator(
-            @Parameter(description = "攤位ID", required = true)
-            @PathVariable Integer boothID
-    ){
-        System.out.println("BatchBoothController: getAllCollaborator >> "+boothID);
-        List<UserListResponse> collaborator = multipleBoothService.getAllCollaborator(boothID);
-        return ResponseEntity.status(HttpStatus.OK).body(collaborator);
-    }
-
-
-    @Operation(
-            summary = "獲取某攤位的所有員工",
-            description = "員工可在活動中發傳單等，但不能編輯攤位"
-    )
-    @ApiResponses(value = {
-            @ApiResponse(
-                    responseCode = "200",
-                    description = "成功獲取該攤位的所有員工",
-                    content = @Content(
-                            mediaType = "application/json",
-                            array = @ArraySchema(
-                                    schema = @Schema(implementation = UserListResponse.class)
-                            )
-                    )
-            ),
-            @ApiResponse(
-                    responseCode = "500",
-                    description = "伺服器錯誤"
-            )
-    })
-    @GetMapping("/staff/{boothID}")
-    public ResponseEntity<List<UserListResponse>> getAllStaff(
-            @Parameter(description = "攤位ID", required = true)
-            @PathVariable Integer boothID
-    ){
-        System.out.println("BatchBoothController: getAllStaff >> "+boothID);
-        List<UserListResponse> staff = multipleBoothService.getAllStaff(boothID);
-        return ResponseEntity.status(HttpStatus.OK).body(staff);
     }
 
 
@@ -175,7 +112,7 @@ public class MultipleBoothController {
             @Parameter(description = "標籤名稱", required = true)
             @RequestParam String tagsName
     ){
-        System.out.println("BatchBoothController: getTagBoothOverview >> "+tagsName);
+        System.out.println("MultipleBoothController: getTagBoothOverview >> "+tagsName);
         List<BoothOverviewResponse> booths = multipleBoothService.getTagBoothOverview(tagsName);
         return ResponseEntity.status(HttpStatus.OK).body(booths);
     }
