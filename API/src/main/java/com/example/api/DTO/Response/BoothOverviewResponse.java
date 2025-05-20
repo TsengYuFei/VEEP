@@ -17,6 +17,10 @@ public class BoothOverviewResponse {
         response.setBoothID(booth.getBoothID());
         response.setOwner(booth.getOwner().getUserAccount());
         response.setName(booth.getName());
+
+        if(booth.getExpo() == null) response.setExpoID(null);
+        else response.setExpoID(booth.getExpo().getExpoID());
+
         return response;
     }
 }

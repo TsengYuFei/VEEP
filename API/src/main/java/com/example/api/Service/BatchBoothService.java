@@ -30,17 +30,10 @@ public class BatchBoothService {
 
     public List<BoothOverviewResponse> getAllBoothOverview() {
         System.out.println("BatchBoothService: getAllBoothOverview");
-        List<Booth> booths =  boothRepository.findAll();
-        List<BoothOverviewResponse> response = new ArrayList<>();
-        for(Booth b : booths) {
-            BoothOverviewResponse booth = BoothOverviewResponse.fromBooth(b);
-
-            if(b.getExpo() == null) booth.setExpoID(null);
-            else booth.setExpoID(b.getExpo().getExpoID());
-
-            response.add(booth);
-        }
-        return response;
+        return  boothRepository.findAll()
+                .stream()
+                .map(BoothOverviewResponse::fromBooth)
+                .toList();
     }
 
 
