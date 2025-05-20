@@ -2,9 +2,8 @@ package com.example.api.Service;
 
 import com.example.api.DTO.Request.UserCreateRequest;
 import com.example.api.DTO.Request.UserUpdateRequest;
-import com.example.api.DTO.Response.UserDetailResponse;
-import com.example.api.DTO.Response.UserEditResponse;
-import com.example.api.DTO.Response.UserOverviewResponse;
+import com.example.api.DTO.Response.*;
+import com.example.api.Entity.Expo;
 import com.example.api.Entity.User;
 import com.example.api.Exception.NotFoundException;
 import com.example.api.Repository.UserRepository;
@@ -27,7 +26,7 @@ public class SingleUserService {
 
 
     User getUserByAccount(String account){
-        System.out.println("UserService: getUserByAccount >> "+account);
+        System.out.println("SingleUserService: getUserByAccount >> "+account);
         return userRepository.findById(account)
                 .orElseThrow(() -> new NotFoundException("找不到使用者帳號為 < "+ account+" > 的使用者"));
     }
@@ -39,7 +38,7 @@ public class SingleUserService {
 
 
     public UserDetailResponse getUserDetailByAccount(String account){
-        System.out.println("UserService: getUserByAccount >> "+account);
+        System.out.println("SingleUserService: getUserByAccount >> "+account);
         User user = userRepository.findById(account)
                 .orElseThrow(() -> new NotFoundException("找不到使用者帳號為 < "+ account+" > 的使用者"));
         return UserDetailResponse.fromUser(user);
@@ -47,7 +46,7 @@ public class SingleUserService {
 
 
     public UserOverviewResponse getUserOverviewByAccount(String account){
-        System.out.println("UserService: getUserOverviewByAccount >> "+account);
+        System.out.println("SingleUserService: getUserOverviewByAccount >> "+account);
         User user = userRepository.findById(account)
                 .orElseThrow(() -> new NotFoundException("找不到使用者帳號為 < "+ account+" > 的使用者"));
         return UserOverviewResponse.fromUser(user);
@@ -55,7 +54,7 @@ public class SingleUserService {
 
 
     public UserEditResponse getUserEditByAccount(String account){
-        System.out.println("UserService: getUserEditByAccount >> "+account);
+        System.out.println("SingleUserService: getUserEditByAccount >> "+account);
         User user = userRepository.findById(account)
                 .orElseThrow(() -> new NotFoundException("找不到使用者帳號為 < "+ account+" > 的使用者"));
         return UserEditResponse.fromUser(user);
@@ -63,7 +62,7 @@ public class SingleUserService {
 
 
     public String createUser(UserCreateRequest request){
-        System.out.println("UserService: createUser");
+        System.out.println("SingleUserService: createUser");
 
         UserOverviewResponse user = null;
         try {
@@ -88,7 +87,7 @@ public class SingleUserService {
 
 
     public void updateUserByAccount(String account, UserUpdateRequest request){
-        System.out.println("UserService: updateUserByAccount >> "+account);
+        System.out.println("SingleUserService: updateUserByAccount >> "+account);
         User user = getUserByAccount(account);
 
         user.setName(updateIfNotBlank(user.getName(), request.getName()));
@@ -109,8 +108,28 @@ public class SingleUserService {
 
 
     public void deleteUserByAccount(String account){
-        System.out.println("UserService: deleteUserByAccount >> "+account);
+        System.out.println("SingleUserService: deleteUserByAccount >> "+account);
         User user = getUserByAccount(account);
         userRepository.delete(user);
+    }
+
+
+    public List<ExpoOverviewResponse> getAllExpoOverview(String account){
+        System.out.println("SingleUserService: getAllExpoOverview >> "+account);
+        User user = getUserByAccount(account);
+
+        return user.getExpoList().stream()
+                .map(ExpoOverviewResponse::fromExpo)
+                .toList();
+    }
+
+
+    public List<BoothOverviewResponse> getAllBoothOverview(String account){
+        System.out.println("SingleUserService: getAllBoothOverview >> "+account);
+        User user = getUserByAccount(account);
+
+        return user.getBoothList().stream()
+                .map(BoothOverviewResponse::fromBooth)
+                .toList();
     }
 }

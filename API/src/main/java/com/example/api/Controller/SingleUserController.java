@@ -2,12 +2,11 @@ package com.example.api.Controller;
 
 import com.example.api.DTO.Request.UserCreateRequest;
 import com.example.api.DTO.Request.UserUpdateRequest;
-import com.example.api.DTO.Response.UserDetailResponse;
-import com.example.api.DTO.Response.UserEditResponse;
-import com.example.api.DTO.Response.UserOverviewResponse;
+import com.example.api.DTO.Response.*;
 import com.example.api.Service.SingleUserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -19,6 +18,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @Tag(name = "單一使用者相關", description = "含三種不同範圍的GET")
 @RequestMapping("/user")
@@ -58,7 +59,7 @@ public class SingleUserController {
             @Parameter(description = "使用者帳號", required = true)
             @PathVariable String userAccount
     ){
-        System.out.println("UserController: getUsrDetailByAccount >> "+userAccount);
+        System.out.println("SingleUserController: getUsrDetailByAccount >> "+userAccount);
         UserDetailResponse user = singleUserService.getUserDetailByAccount(userAccount);
         return ResponseEntity.status(HttpStatus.OK).body(user);
     }
@@ -92,7 +93,7 @@ public class SingleUserController {
             @Parameter(description = "使用者帳號", required = true)
             @PathVariable String userAccount
     ){
-        System.out.println("UserController: getUserOverviewByAccount >> "+userAccount);
+        System.out.println("SingleUserController: getUserOverviewByAccount >> "+userAccount);
         UserOverviewResponse user = singleUserService.getUserOverviewByAccount(userAccount);
         return ResponseEntity.status(HttpStatus.OK).body(user);
     }
@@ -125,7 +126,7 @@ public class SingleUserController {
             @Parameter(description = "使用者帳號", required = true)
             @PathVariable String userAccount
     ) {
-        System.out.println("UserService: getUserEditByAccount >> "+userAccount);
+        System.out.println("SingleUserController: getUserEditByAccount >> "+userAccount);
         UserEditResponse user = singleUserService.getUserEditByAccount(userAccount);
         return ResponseEntity.status(HttpStatus.OK).body(user);
 
@@ -156,7 +157,7 @@ public class SingleUserController {
     })
     @PostMapping("")
     public ResponseEntity<UserDetailResponse> createUser(@Valid @RequestBody UserCreateRequest userRequest){
-        System.out.println("UserController: createUser");
+        System.out.println("SingleUserController: createUser");
         String userAccount = singleUserService.createUser(userRequest);
         UserDetailResponse user = singleUserService.getUserDetailByAccount(userAccount);
         return ResponseEntity.status(HttpStatus.CREATED).body(user);
@@ -195,7 +196,7 @@ public class SingleUserController {
             @PathVariable String userAccount,
             @Valid @RequestBody UserUpdateRequest userRequest
     ){
-        System.out.println("UserController: updateUserByAccount >> "+userAccount);
+        System.out.println("SingleUserController: updateUserByAccount >> "+userAccount);
         singleUserService.updateUserByAccount(userAccount, userRequest);
         UserDetailResponse user = singleUserService.getUserDetailByAccount(userAccount);
         return ResponseEntity.status(HttpStatus.OK).body(user);
@@ -222,8 +223,68 @@ public class SingleUserController {
             @Parameter(description = "使用者帳號", required = true)
             @PathVariable String userAccount
     ){
-        System.out.println("UserController: deleteUserByAccount >> "+userAccount);
+        System.out.println("SingleUserController: deleteUserByAccount >> "+userAccount);
         singleUserService.deleteUserByAccount(userAccount);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+    }
+
+
+    @Operation(
+            summary = "獲取所有擁有的展會"
+    )
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "成功獲取所有擁有的展會",
+                    content = @Content(
+                            mediaType = "application/json",
+                            array = @ArraySchema(
+                                    schema = @Schema(implementation = ExpoOverviewResponse.class)
+                            )
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = "500",
+                    description = "伺服器錯誤"
+            )
+    })
+    @GetMapping("/expos/{userAccount}")
+    public ResponseEntity<List<ExpoOverviewResponse>> getAllExpoOverview(
+            @Parameter(description = "使用者帳號", required = true)
+            @RequestParam String userAccount
+    ){
+        System.out.println("SingleUserController: getAllExpoOverview >> "+userAccount);
+        List<ExpoOverviewResponse> expos = singleUserService.getAllExpoOverview(userAccount);
+        return ResponseEntity.status(HttpStatus.OK).body(expos);
+    }
+
+
+    @Operation(
+            summary = "獲取所有擁有的攤位"
+    )
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "成功獲取所有擁有的攤位",
+                    content = @Content(
+                            mediaType = "application/json",
+                            array = @ArraySchema(
+                                    schema = @Schema(implementation = BoothOverviewResponse.class)
+                            )
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = "500",
+                    description = "伺服器錯誤"
+            )
+    })
+    @GetMapping("/booths/{userAccount}")
+    public ResponseEntity<List<BoothOverviewResponse>> getAllBoothOverview(
+            @Parameter(description = "使用者帳號", required = true)
+            @RequestParam String userAccount
+    ){
+        System.out.println("SingleUserController: getAllBoothOverview >> "+userAccount);
+        List<BoothOverviewResponse> booths = singleUserService.getAllBoothOverview(userAccount);
+        return ResponseEntity.status(HttpStatus.OK).body(booths);
     }
 }
