@@ -46,6 +46,9 @@ public class SingleBoothService {
     @Autowired
     private final ContentService contentService;
 
+    @Autowired
+    private final ImageService imageService;
+
 
 
     Booth getBoothByID(Integer boothID) {
@@ -167,8 +170,12 @@ public class SingleBoothService {
     @Transactional
     public void updateBoothByID(Integer boothID, BoothUpdateRequest request){
         System.out.println("SingleBoothService: updateBoothByID >> "+boothID);
-
         Booth booth = getBoothByID(boothID);
+
+        if(booth.getAvatar() != null && request.getAvatar() != null){
+            imageService.deleteImageByName(booth.getAvatar());
+        }
+
         booth.setName(updateIfNotBlank(booth.getName(), request.getName()));
         booth.setAvatar(updateIfNotBlank(booth.getAvatar(), request.getAvatar()));
         booth.setIntroduction(updateIfNotBlank(booth.getIntroduction(), request.getIntroduction()));
@@ -236,6 +243,13 @@ public class SingleBoothService {
     public void deleteBoothByID(Integer boothID) {
         System.out.println("SingleBoothService: deleteBoothByID >> "+boothID);
         Booth booth = getBoothByID(boothID);
+        String avatar = booth.getAvatar();
+        if(avatar != null) imageService.deleteImageByName(avatar);
+
+        for(Content content : booth.getContentList()){
+            String image = content.getImage();
+            if(image != null) imageService.deleteImageByName(image);
+        }
         boothRepository.delete(booth);
     }
 

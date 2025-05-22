@@ -44,6 +44,9 @@ public class SingleExpoService {
     @Autowired
     private final WhiteListService whiteListService;
 
+    @Autowired
+    private final ImageService imageService;
+
 
 
     Expo getExpoByID(Integer expoID){
@@ -178,8 +181,12 @@ public class SingleExpoService {
     @Transactional
     public void updateExpoByID(Integer expoID, ExpoUpdateRequest request){
         System.out.println("SingleExpoService: updateExpoByID >> "+expoID);
-
         Expo expo = getExpoByID(expoID);
+
+        if(expo.getAvatar() != null && request.getAvatar() != null){
+            imageService.deleteImageByName(expo.getAvatar());
+        }
+
         expo.setName(updateIfNotBlank(expo.getName(), request.getName()));
         expo.setAvatar(updateIfNotBlank(expo.getAvatar(), request.getAvatar()));
         expo.setPrice(updateIfNotNull(expo.getPrice(), request.getPrice()));
@@ -270,6 +277,9 @@ public class SingleExpoService {
         for(Booth booth : expo.getBoothList()){
             booth.setExpo(null);
         }
+
+        String image = expo.getAvatar();
+        if(image != null) imageService.deleteImageByName(image);
 
         expoRepository.delete(expo);
     }

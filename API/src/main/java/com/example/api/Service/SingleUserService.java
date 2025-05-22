@@ -120,7 +120,8 @@ public class SingleUserService {
     public void deleteUserByAccount(String account){
         System.out.println("SingleUserService: deleteUserByAccount >> "+account);
         User user = getUserByAccount(account);
-        if(user.getAvatar() != null) imageService.deleteImageByName(user.getAvatar());
+        String image = user.getAvatar();
+        if(image != null) imageService.deleteImageByName(image);
         userRepository.delete(user);
     }
 

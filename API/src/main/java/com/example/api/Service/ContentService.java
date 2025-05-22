@@ -25,6 +25,9 @@ public class ContentService {
     @Autowired
     private final BoothRepository boothRepository;
 
+    @Autowired
+    private final ImageService imageService;
+
 
 
     Content getContentByBoothIDAndNumber(Integer boothID, Integer number) {
@@ -61,6 +64,11 @@ public class ContentService {
     public void updateContentByBoothIDAndNumber(Integer boothID, Integer number, ContentUpdateRequest request){
         System.out.println("ContentService: updateContentByBoothIDAndNumber >> "+boothID+", "+number);
         Content content = getContentByBoothIDAndNumber(boothID, number);
+
+        if(content.getImage() != null && request.getImage() != null){
+            imageService.deleteImageByName(content.getImage());
+        }
+
         content.setTitle(updateIfNotBlank(content.getTitle(), request.getTitle()));
         content.setContent(updateIfNotBlank(content.getContent(), request.getContent()));
         content.setImage(updateIfNotBlank(content.getImage(), request.getImage()));
