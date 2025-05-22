@@ -33,7 +33,7 @@ public class SingleUserController {
     @Operation(
             summary = "獲取使用者資訊(詳細)",
             description = "使用於個人檔案頁面。" +
-                    "取得 1.使用者名稱 2.使用者帳號 3.頭像URL 4.個人簡介 5.背景圖片URL" +
+                    "取得 1.使用者名稱 2.使用者帳號 3.頭像 4.個人簡介 5.背景圖片" +
                     " 7.顯示追蹤者 8.顯示追蹤中 9.顯示參與紀錄 10.顯示進行中的持有展會 11.顯示進行中的持有攤位 12.身分"
     )
     @ApiResponses(value = {
@@ -135,7 +135,7 @@ public class SingleUserController {
 
     @Operation(
             summary = "新增使用者",
-            description = "可輸入欄位 1.使用者名稱 2.使用者帳號 3.密碼 4.電話 5.電子郵箱 6.頭像URL 7.生日(yyyy-MM-dd格式)"
+            description = "可輸入欄位 1.使用者名稱 2.使用者帳號 3.密碼 4.電話 5.電子郵箱 6.頭像 7.生日(yyyy-MM-dd格式)"
     )
     @ApiResponses(value = {
             @ApiResponse(

@@ -2,7 +2,6 @@ package com.example.api.DTO.Request;
 
 import jakarta.validation.constraints.Size;
 import lombok.Data;
-import org.hibernate.validator.constraints.URL;
 
 @Data
 public class ContentUpdateRequest {
@@ -11,6 +10,5 @@ public class ContentUpdateRequest {
 
     private String content;
 
-    @URL(message = "攤位內容圖像不是正確的圖片路徑")
     private String image;
 }

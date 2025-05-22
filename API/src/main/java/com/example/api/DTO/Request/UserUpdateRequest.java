@@ -1,7 +1,6 @@
 package com.example.api.DTO.Request;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonInclude;
 import jakarta.validation.constraints.*;
 import lombok.Data;
 import org.hibernate.validator.constraints.URL;
@@ -19,7 +18,6 @@ public class UserUpdateRequest {
     @Email(message = "請輸入正確的電子郵箱地址")
     private String mail;
 
-    @URL(message = "使用者頭像不是正確的圖片路徑")
     private String avatar;
 
     @Past(message = "生日必須為過去的日期")

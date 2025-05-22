@@ -90,9 +90,14 @@ public class SingleUserService {
     }
 
 
+    @Transactional
     public void updateUserByAccount(String account, UserUpdateRequest request){
         System.out.println("SingleUserService: updateUserByAccount >> "+account);
         User user = getUserByAccount(account);
+
+        if(user.getAvatar() != null && request.getAvatar() != null){
+            imageService.deleteImageByName(user.getAvatar());
+        }
 
         user.setName(updateIfNotBlank(user.getName(), request.getName()));
         user.setTel(updateIfNotBlank(user.getTel(), request.getTel()));
@@ -111,9 +116,11 @@ public class SingleUserService {
     }
 
 
+    @Transactional
     public void deleteUserByAccount(String account){
         System.out.println("SingleUserService: deleteUserByAccount >> "+account);
         User user = getUserByAccount(account);
+        if(user.getAvatar() != null) imageService.deleteImageByName(user.getAvatar());
         userRepository.delete(user);
     }
 
