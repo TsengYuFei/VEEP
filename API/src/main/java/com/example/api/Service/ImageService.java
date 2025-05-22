@@ -1,6 +1,7 @@
 package com.example.api.Service;
 
 import com.example.api.DTO.Response.ImageUploadResponse;
+import com.example.api.Exception.NotFoundException;
 import com.example.api.Exception.UnprocessableEntityException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -51,5 +52,17 @@ public class ImageService {
         response.setName(imageName);
         response.setUrl("/uploads/" + imageName);
         return response;
+    }
+
+
+    public void deleteImageByName(String imageName) {
+        System.out.println("ImageService: deleteImageByName >> "+imageName);
+        if (imageName == null || imageName.trim().isEmpty()) {
+            throw new UnprocessableEntityException("圖片檔名不可為空");
+        }
+
+        File file = new File(Paths.get(uploadDir).toAbsolutePath().toString(), imageName);
+        if (file.exists())  file.delete();
+        else throw new NotFoundException("找不到圖片名稱為 < " + imageName+" > 的圖片");
     }
 }

@@ -11,6 +11,7 @@ import com.mysql.cj.exceptions.ClosedOnExpiredPasswordException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -22,6 +23,9 @@ import static com.example.api.Other.UpdateTool.updateIfNotNull;
 public class SingleUserService {
     @Autowired
     private final UserRepository userRepository;
+
+    @Autowired
+    private final ImageService imageService;
 
 
 

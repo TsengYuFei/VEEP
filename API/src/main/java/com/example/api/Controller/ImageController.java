@@ -17,6 +17,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.Map;
+
 @Tag(name = "單一圖片相關")
 @RequestMapping("/image")
 @RestController
@@ -70,4 +72,31 @@ public class ImageController {
         ImageUploadResponse response = imageService.uploadImage(image);
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
+
+
+    @Operation(summary = "刪除圖片")
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "204",
+                    description = "成功刪除圖片"
+            ),
+            @ApiResponse(
+                    responseCode = "404",
+                    description = "找不到圖片"
+            ),
+            @ApiResponse(
+                    responseCode = "500",
+                    description = "伺服器錯誤"
+            )
+    })
+    @DeleteMapping("")
+    public ResponseEntity<?> deleteImageByName(
+            @Parameter(description = "圖片名稱", required = true)
+            @RequestParam String imageName
+    ) {
+        System.out.println("ImageController: deleteImageByName  >>"+imageName);
+        imageService.deleteImageByName(imageName);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+    }
+
 }
