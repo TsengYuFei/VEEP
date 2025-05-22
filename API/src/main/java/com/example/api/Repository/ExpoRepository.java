@@ -29,7 +29,7 @@ public interface ExpoRepository extends JpaRepository<Expo, Integer> {
     @Query(value = "SELECT expo.* " +
             "FROM expo " +
             "WHERE LOWER(expo.name) LIKE CONCAT ('%', LOWER(:keyword), '%') " +
-            "OR LOWER(expo.introduction LIKE CONCAT ('%', LOWER(:keyword), '%'))"
+            "OR LOWER(expo.introduction) LIKE CONCAT ('%', LOWER(:keyword), '%')"
             , nativeQuery = true)
     List<Expo> findExposByNameAndIntro(@Param("keyword") String keyword);
 }
