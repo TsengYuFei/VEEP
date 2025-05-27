@@ -1,6 +1,7 @@
 package com.example.api.Repository;
 
 import com.example.api.Entity.Booth;
+import com.example.api.Entity.Expo;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -24,4 +25,11 @@ public interface BoothRepository extends JpaRepository<Booth, Integer> {
             "ORDER BY COUNT(tag.tagID) DESC"
             , nativeQuery = true)
     List<Booth> findBoothsByTagsName(@Param("tagsName") String tagsName);
+
+    @Query(value = "SELECT booth.* " +
+            "FROM booth " +
+            "WHERE LOWER(booth.name) LIKE CONCAT ('%', LOWER(:keyword), '%') " +
+            "OR LOWER(booth.introduction) LIKE CONCAT ('%', LOWER(:keyword), '%')"
+            , nativeQuery = true)
+    List<Booth> findBoothsByNameAndIntro(@Param("keyword") String keyword);
 }

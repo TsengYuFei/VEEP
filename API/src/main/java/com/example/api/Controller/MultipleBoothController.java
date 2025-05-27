@@ -1,6 +1,7 @@
 package com.example.api.Controller;
 
 import com.example.api.DTO.Response.BoothOverviewResponse;
+import com.example.api.DTO.Response.ExpoOverviewResponse;
 import com.example.api.Service.MultipleBoothService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -88,13 +89,13 @@ public class MultipleBoothController {
 
 
     @Operation(
-            summary = "獲取有某tag的所有攤位",
+            summary = "以標籤獲取攤位(模糊搜尋)",
             description = "只要符合部分字元即包含，關聯度排序"
     )
     @ApiResponses(value = {
             @ApiResponse(
                     responseCode = "200",
-                    description = "成功獲取含該tag的所有攤位",
+                    description = "成功獲取含該標籤的所有展會",
                     content = @Content(
                             mediaType = "application/json",
                             array = @ArraySchema(
@@ -108,12 +109,43 @@ public class MultipleBoothController {
             )
     })
     @GetMapping("/by_tag")
-    public ResponseEntity<List<BoothOverviewResponse>> getTagBoothOverview(
+    public ResponseEntity<List<BoothOverviewResponse>> getBoothOverviewByTag(
             @Parameter(description = "標籤名稱", required = true)
-            @RequestParam String tagsName
+            @RequestParam String tagName
     ){
-        System.out.println("MultipleBoothController: getTagBoothOverview >> "+tagsName);
-        List<BoothOverviewResponse> booths = multipleBoothService.getTagBoothOverview(tagsName);
+        System.out.println("MultipleBoothController: getBoothOverviewByTag >> "+tagName);
+        List<BoothOverviewResponse> booths = multipleBoothService.getBoothOverviewByTag(tagName);
+        return ResponseEntity.status(HttpStatus.OK).body(booths);
+    }
+
+
+    @Operation(
+            summary = "以攤位名稱及描述獲取攤位(模糊搜尋)",
+            description = "只要符合部分字元即包含，關聯度排序"
+    )
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "成功獲取含該攤位名稱或描述的所有攤位",
+                    content = @Content(
+                            mediaType = "application/json",
+                            array = @ArraySchema(
+                                    schema = @Schema(implementation = BoothOverviewResponse.class)
+                            )
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = "500",
+                    description = "伺服器錯誤"
+            )
+    })
+    @GetMapping("/by_name_and_intro")
+    public ResponseEntity<List<BoothOverviewResponse>> getBoothOverviewByNameAndIntro(
+            @Parameter(description = "搜尋關鍵字", required = true)
+            @RequestParam String keyword
+    ){
+        System.out.println("MultipleBoothController: getBoothOverviewByNameAndIntro >> "+keyword);
+        List<BoothOverviewResponse> booths = multipleBoothService.getBoothOverviewByNameAndIntro(keyword);
         return ResponseEntity.status(HttpStatus.OK).body(booths);
     }
 }

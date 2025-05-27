@@ -78,7 +78,6 @@ public class Booth {
 
     @ManyToOne
     @JoinColumn(name = "owner", nullable = false)
-    @JsonBackReference
     private User owner;
 
     @ManyToOne

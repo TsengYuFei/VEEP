@@ -1,6 +1,7 @@
 package com.example.api.Service;
 
 import com.example.api.DTO.Response.BoothOverviewResponse;
+import com.example.api.DTO.Response.ExpoOverviewResponse;
 import com.example.api.Repository.BoothRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,11 +37,22 @@ public class MultipleBoothService {
     }
 
 
-    public List<BoothOverviewResponse> getTagBoothOverview(String tags){
-        System.out.println("MultipleBoothService: getTagBoothOverview >> "+tags);
-        if(tags == null) return new ArrayList<>();
+    public List<BoothOverviewResponse> getBoothOverviewByTag(String tag){
+        System.out.println("MultipleBoothService: getBoothOverviewByTag >> "+tag);
+        if(tag == null) return new ArrayList<>();
 
-        return boothRepository.findBoothsByTagsName(tags)
+        return boothRepository.findBoothsByTagsName(tag)
+                .stream()
+                .map(BoothOverviewResponse::fromBooth)
+                .toList();
+    }
+
+
+    public List<BoothOverviewResponse> getBoothOverviewByNameAndIntro(String keyword){
+        System.out.println("MultipleBoothService: getBoothOverviewByNameAndIntro >> "+keyword);
+        if(keyword == null) return new ArrayList<>();
+
+        return boothRepository.findBoothsByNameAndIntro(keyword)
                 .stream()
                 .map(BoothOverviewResponse::fromBooth)
                 .toList();

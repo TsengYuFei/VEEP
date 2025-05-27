@@ -110,10 +110,10 @@ public class MultipleExpoController {
     @GetMapping("/by_tag")
     public ResponseEntity<List<ExpoOverviewResponse>> getExpoOverviewByTag(
             @Parameter(description = "標籤名稱", required = true)
-            @RequestParam String tagsName
+            @RequestParam String tagName
     ){
-        System.out.println("MultipleExpoController: getExpoOverviewByTag >> "+tagsName);
-        List<ExpoOverviewResponse> expos = multipleExpoService.getExpoOverviewByTag(tagsName);
+        System.out.println("MultipleExpoController: getExpoOverviewByTag >> "+tagName);
+        List<ExpoOverviewResponse> expos = multipleExpoService.getExpoOverviewByTag(tagName);
         return ResponseEntity.status(HttpStatus.OK).body(expos);
     }
 

@@ -164,7 +164,7 @@ public class SingleExpoController {
 
 
     @Operation(
-            summary = "獲取某所有合作者",
+            summary = "獲取所有合作者",
             description = "合作者可共同編輯此攤位"
     )
     @ApiResponses(value = {

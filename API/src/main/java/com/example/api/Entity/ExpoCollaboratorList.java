@@ -1,6 +1,5 @@
 package com.example.api.Entity;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -22,7 +21,7 @@ public class ExpoCollaboratorList {
     private Integer id;
 
     @OneToOne(mappedBy = "collaborator")  // 被控方加mappingBy
-    @JsonBackReference
+    @JsonIgnore
     private Expo expo;
 
     @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})

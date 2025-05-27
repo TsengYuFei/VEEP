@@ -1,6 +1,5 @@
 package com.example.api.Entity;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -86,6 +85,5 @@ public class Expo {
 
     @ManyToOne
     @JoinColumn(name = "owner", nullable = false)
-    @JsonBackReference
     private User owner;
 }

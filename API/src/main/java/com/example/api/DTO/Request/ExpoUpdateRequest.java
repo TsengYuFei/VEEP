@@ -10,12 +10,12 @@ import java.util.List;
 
 @Data
 public class ExpoUpdateRequest {
-    @Size(min = 1, max = 30, message = "展會名稱長度應在1~30字元之間")
+    @Size(min = 1, max = 30, message = "The expo opening mode cannot be empty.")
     private String name;
 
     private String avatar;
 
-    @PositiveOrZero(message = "展會價錢必須為非負整數")
+    @PositiveOrZero(message = "The expo price must be a non-negative integer.")
     private Integer price;
 
     private String introduction;
@@ -34,8 +34,8 @@ public class ExpoUpdateRequest {
 
     private String accessCode;
 
-    @Min(value = 1, message = "展會同時間最大參與人數至少需一人")
-    @Max(value = 1500, message = "展會同時間最大參與人數至多1500人")
+    @Min(value = 1, message = "The maximum number of participants at a expo at the same time is at least one person.")
+    @Max(value = 1500, message = "The maximum number of participants at the expo at the same time is 500.")
     private Integer maxParticipants;
 
     private Boolean display;

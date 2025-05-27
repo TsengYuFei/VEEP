@@ -37,7 +37,7 @@ public class MultipleExpoService {
 
 
     public List<ExpoOverviewResponse> getExpoOverviewByTag(String tag){
-        System.out.println("MultipleExpoService: getTagExpoOverview >> "+tag);
+        System.out.println("MultipleExpoService: getExpoOverviewByTag >> "+tag);
         if(tag == null) return new ArrayList<>();
 
         return expoRepository.findExposByTagName(tag)

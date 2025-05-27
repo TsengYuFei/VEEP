@@ -10,20 +10,20 @@ import java.util.List;
 
 @Data
 public class ExpoCreateRequest {
-    @Size(min = 1, max = 30, message = "展會名稱長度應在1~30字元之間")
+    @Size(min = 1, max = 30, message = "The expo opening mode cannot be empty.")
     private String name;
 
     private String avatar;
 
-    @NotNull(message = "展會價錢不可為空")
-    @PositiveOrZero(message = "展會價錢必須為非負整數")
+    @NotNull(message = "The expo price cannot be empty.")
+    @PositiveOrZero(message = "The expo price must be a non-negative integer.")
     private Integer price;
 
     private String introduction;
 
     private List<String> tags;
 
-    @NotNull(message = "展會開放模式不可為空")
+    @NotNull(message = "The expo opening mode cannot be empty.")
     private OpenMode openMode;
 
     private Boolean openStatus;
@@ -36,12 +36,12 @@ public class ExpoCreateRequest {
 
     private String accessCode;
 
-    @NotNull(message = "展會同時間最大參與人數不可為空")
-    @Min(value = 1, message = "展會同時間最大參與人數至少需一人")
-    @Max(value = 1500, message = "展會同時間最大參與人數至多1500人")
+    @NotNull(message = "The maximum number of participants at a expo at the same time cannot be empty.")
+    @Min(value = 1, message = "The maximum number of participants at a expo at the same time is at least one person.")
+    @Max(value = 1500, message = "The maximum number of participants at the expo at the same time is 500.")
     private Integer maxParticipants;
 
-    @NotNull(message = "展會是否顯示於總覽頁面不可為空")
+    @NotNull(message = "Whether the expo is displayed on the overview page cannot be empty.")
     private Boolean display;
 
     private List<String> collaborators;

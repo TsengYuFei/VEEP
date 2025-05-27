@@ -12,7 +12,7 @@ import java.util.List;
 
 @Data
 public class BoothUpdateRequest {
-    @Size(min = 1, max = 30, message = "攤位名稱長度應在1~30字元之間")
+    @Size(min = 1, max = 30, message = "The length of the booth name should be between 1 and 30 characters.")
     private String name;
 
     private String avatar;
@@ -31,8 +31,8 @@ public class BoothUpdateRequest {
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime openEnd;
 
-    @Min(value = 1, message = "攤位同時間最大參與人數至少需一人")
-    @Max(value = 500, message = "攤位同時間最大參與人數至多500人")
+    @Min(value = 1, message = "The maximum number of participants at a booth at the same time is at least one person.")
+    @Max(value = 500, message = "The maximum number of participants at the booth at the same time is 500.")
     private Integer maxParticipants;
 
     private Boolean display;

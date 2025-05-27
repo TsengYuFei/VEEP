@@ -5,7 +5,7 @@ import lombok.Data;
 
 @Data
 public class ContentUpdateRequest {
-    @Size(max = 100, message = "攤位內容標題不可超過100字元")
+    @Size(max = 100, message = "The content title should not exceed 100 characters.")
     private String title;
 
     private String content;

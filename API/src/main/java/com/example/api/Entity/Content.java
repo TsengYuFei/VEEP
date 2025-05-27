@@ -1,8 +1,7 @@
 package com.example.api.Entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Max;
-import jakarta.validation.constraints.Min;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -34,5 +33,6 @@ public class Content {
 
     @ManyToOne
     @JoinColumn(name = "boothID", nullable = false)
+    @JsonBackReference
     private Booth booth;
 }
