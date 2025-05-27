@@ -56,6 +56,7 @@ public class MultipleBoothController {
         return ResponseEntity.status(HttpStatus.OK).body(booths);
     }
 
+
     @Operation(
             summary = "獲取所有攤位(概略)-分頁版"
     )
@@ -108,7 +109,7 @@ public class MultipleBoothController {
                     description = "伺服器錯誤"
             )
     })
-    @GetMapping("/by_tag")
+    @GetMapping("/overview/by_tag")
     public ResponseEntity<List<BoothOverviewResponse>> getBoothOverviewByTag(
             @Parameter(description = "標籤名稱", required = true)
             @RequestParam String tagName
@@ -139,13 +140,41 @@ public class MultipleBoothController {
                     description = "伺服器錯誤"
             )
     })
-    @GetMapping("/by_name_and_intro")
+    @GetMapping("/overview/by_name_and_intro")
     public ResponseEntity<List<BoothOverviewResponse>> getBoothOverviewByNameAndIntro(
             @Parameter(description = "搜尋關鍵字", required = true)
             @RequestParam String keyword
     ){
         System.out.println("MultipleBoothController: getBoothOverviewByNameAndIntro >> "+keyword);
         List<BoothOverviewResponse> booths = multipleBoothService.getBoothOverviewByNameAndIntro(keyword);
+        return ResponseEntity.status(HttpStatus.OK).body(booths);
+    }
+
+
+    @Operation(
+            summary = "獲取display為true的所有攤位(概略)",
+            description = "display >>　是否顯示於推薦頁面"
+    )
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "成功display為true的所有攤位(概略)",
+                    content = @Content(
+                            mediaType = "application/json",
+                            array = @ArraySchema(
+                                    schema = @Schema(implementation = BoothOverviewResponse.class)
+                            )
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = "500",
+                    description = "伺服器錯誤"
+            )
+    })
+    @GetMapping("/overview/is_display")
+    public ResponseEntity<List<BoothOverviewResponse>> getDisplayBoothOverview(){
+        System.out.println("BatchBoothController: getDisplayBoothOverview");
+        List<BoothOverviewResponse> booths = multipleBoothService.getDisplayBoothOverview();
         return ResponseEntity.status(HttpStatus.OK).body(booths);
     }
 }

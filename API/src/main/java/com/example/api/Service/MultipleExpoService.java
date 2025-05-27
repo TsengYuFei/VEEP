@@ -1,5 +1,6 @@
 package com.example.api.Service;
 
+import com.example.api.DTO.Response.BoothOverviewResponse;
 import com.example.api.DTO.Response.ExpoOverviewResponse;
 import com.example.api.Repository.ExpoRepository;
 import lombok.RequiredArgsConstructor;
@@ -52,6 +53,15 @@ public class MultipleExpoService {
         if(keyword == null) return new ArrayList<>();
 
         return expoRepository.findExposByNameAndIntro(keyword)
+                .stream()
+                .map(ExpoOverviewResponse::fromExpo)
+                .toList();
+    }
+
+
+    public List<ExpoOverviewResponse> getDisplayExpoOverview(){
+        System.out.println("MultipleExpoService: getDisplayExpoOverview");
+        return  expoRepository.findExposAreDisplay()
                 .stream()
                 .map(ExpoOverviewResponse::fromExpo)
                 .toList();

@@ -1,5 +1,6 @@
 package com.example.api.Controller;
 
+import com.example.api.DTO.Response.BoothOverviewResponse;
 import com.example.api.DTO.Response.ExpoOverviewResponse;
 import com.example.api.Service.MultipleExpoService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -145,6 +146,34 @@ public class MultipleExpoController {
     ){
         System.out.println("MultipleExpoController: getExpoOverviewByNameAndIntro >> "+keyword);
         List<ExpoOverviewResponse> expos = multipleExpoService.getExpoOverviewByNameAndIntro(keyword);
+        return ResponseEntity.status(HttpStatus.OK).body(expos);
+    }
+
+
+    @Operation(
+            summary = "獲取display為true的所有展會(概略)",
+            description = "display >>　是否顯示於推薦頁面"
+    )
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "成功display為true的所有展會(概略)",
+                    content = @Content(
+                            mediaType = "application/json",
+                            array = @ArraySchema(
+                                    schema = @Schema(implementation = ExpoOverviewResponse.class)
+                            )
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = "500",
+                    description = "伺服器錯誤"
+            )
+    })
+    @GetMapping("/overview/is_display")
+    public ResponseEntity<List<ExpoOverviewResponse>> getDisplayExpoOverview(){
+        System.out.println("BatchExpoController: getDisplayExpoOverview");
+        List<ExpoOverviewResponse> expos = multipleExpoService.getDisplayExpoOverview();
         return ResponseEntity.status(HttpStatus.OK).body(expos);
     }
 }

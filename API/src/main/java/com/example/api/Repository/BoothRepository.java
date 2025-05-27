@@ -26,10 +26,18 @@ public interface BoothRepository extends JpaRepository<Booth, Integer> {
             , nativeQuery = true)
     List<Booth> findBoothsByTagsName(@Param("tagsName") String tagsName);
 
+
     @Query(value = "SELECT booth.* " +
             "FROM booth " +
             "WHERE LOWER(booth.name) LIKE CONCAT ('%', LOWER(:keyword), '%') " +
             "OR LOWER(booth.introduction) LIKE CONCAT ('%', LOWER(:keyword), '%')"
             , nativeQuery = true)
     List<Booth> findBoothsByNameAndIntro(@Param("keyword") String keyword);
+
+
+    @Query(value = "SELECT booth.* " +
+            "FROM booth " +
+            "WHERE booth.display is true"
+            , nativeQuery = true)
+    List<Booth> findBoothsAreDisplay();
 }

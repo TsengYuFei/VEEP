@@ -1,5 +1,6 @@
 package com.example.api.Repository;
 
+import com.example.api.Entity.Booth;
 import com.example.api.Entity.Expo;
 import jakarta.validation.constraints.NotNull;
 import org.springframework.data.jpa.repository.EntityGraph;
@@ -26,10 +27,18 @@ public interface ExpoRepository extends JpaRepository<Expo, Integer> {
             , nativeQuery = true)
     List<Expo> findExposByTagName(@Param("tagName") String tagName);
 
+
     @Query(value = "SELECT expo.* " +
             "FROM expo " +
             "WHERE LOWER(expo.name) LIKE CONCAT ('%', LOWER(:keyword), '%') " +
             "OR LOWER(expo.introduction) LIKE CONCAT ('%', LOWER(:keyword), '%')"
             , nativeQuery = true)
     List<Expo> findExposByNameAndIntro(@Param("keyword") String keyword);
+
+
+    @Query(value = "SELECT expo.* " +
+            "FROM expo " +
+            "WHERE expo.display is true"
+            , nativeQuery = true)
+    List<Expo> findExposAreDisplay();
 }

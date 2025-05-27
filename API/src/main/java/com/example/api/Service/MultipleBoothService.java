@@ -57,4 +57,13 @@ public class MultipleBoothService {
                 .map(BoothOverviewResponse::fromBooth)
                 .toList();
     }
+
+
+    public List<BoothOverviewResponse> getDisplayBoothOverview(){
+        System.out.println("MultipleBoothService: getDisplayBoothOverview");
+        return  boothRepository.findBoothsAreDisplay()
+                .stream()
+                .map(BoothOverviewResponse::fromBooth)
+                .toList();
+    }
 }
