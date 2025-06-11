@@ -1,6 +1,5 @@
 package com.example.api.Controller;
 
-import com.example.api.DTO.Request.LoginRequest;
 import com.example.api.DTO.Request.UserCreateRequest;
 import com.example.api.DTO.Request.UserUpdateRequest;
 import com.example.api.DTO.Response.*;
@@ -329,38 +328,5 @@ public class SingleUserController {
         singleUserService.switchRole(userAccount);
         UserOverviewResponse user = singleUserService.getUserOverviewByAccount(userAccount);
         return ResponseEntity.status(HttpStatus.OK).body(user);
-    }
-
-
-    @Operation(
-            summary = "登入"
-    )
-    @ApiResponses(value = {
-            @ApiResponse(
-                    responseCode = "201",
-                    description = "成功登入",
-                    content = @Content(
-                            mediaType = "application/json",
-                            schema = @Schema(implementation = LoginResponse.class)
-                    )
-            ),
-            @ApiResponse(
-                    responseCode = "401",
-                    description = "密碼錯誤"
-            ),
-            @ApiResponse(
-                    responseCode = "404",
-                    description = "找不到使用者"
-            ),
-            @ApiResponse(
-                    responseCode = "500",
-                    description = "伺服器錯誤"
-            )
-    })
-    @PostMapping("/login")
-    public ResponseEntity<?> login(@Valid @RequestBody LoginRequest loginRequest){
-        System.out.println("SingleUserController: login");
-        LoginResponse jwt = singleUserService.login(loginRequest);
-        return ResponseEntity.status(HttpStatus.OK).body(jwt);
     }
 }

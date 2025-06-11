@@ -1,14 +1,11 @@
 package com.example.api.Service;
 
-import com.example.api.DTO.Request.LoginRequest;
 import com.example.api.DTO.Request.UserCreateRequest;
 import com.example.api.DTO.Request.UserUpdateRequest;
 import com.example.api.DTO.Response.*;
 import com.example.api.Entity.Role;
 import com.example.api.Entity.User;
 import com.example.api.Exception.NotFoundException;
-import com.example.api.Exception.UnauthorizedException;
-import com.example.api.Other.JwtUtil;
 import com.example.api.Repository.UserRepository;
 import com.mysql.cj.exceptions.ClosedOnExpiredPasswordException;
 import lombok.RequiredArgsConstructor;
@@ -33,9 +30,6 @@ public class SingleUserService {
 
     @Autowired
     private final PasswordEncoder passwordEncoder;
-
-    @Autowired
-    private JwtUtil jwtUtil;
 
 
 
@@ -164,19 +158,5 @@ public class SingleUserService {
 
         if(user.getRole() == Role.GENERAL) user.setRole(Role.FOUNDER);
         else user.setRole(Role.GENERAL);
-    }
-
-
-    public LoginResponse login(LoginRequest request) {
-        System.out.println("SingleUserService: login");
-
-        User user = userRepository.findByMail(request.getUserAccountOrMail());
-        if(user == null) user = userRepository.findByUserAccount(request.getUserAccountOrMail());
-
-        if(user == null) throw new NotFoundException("Can't find the user with email or user account "+request.getUserAccountOrMail());
-        if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) throw new UnauthorizedException("XX Wrong password XX");
-
-        String token = jwtUtil.generateToken(user.getUserAccount());
-        return new LoginResponse(user.getUserAccount(), token, Role.GENERAL);
     }
 }
