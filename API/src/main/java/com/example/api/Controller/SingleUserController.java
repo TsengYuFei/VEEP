@@ -17,6 +17,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -55,11 +57,12 @@ public class SingleUserController {
             )
     })
     @GetMapping("/detail/{userAccount}")
-    public ResponseEntity<UserDetailResponse> getUsrDetailByAccount(
-            @Parameter(description = "使用者帳號", required = true)
-            @PathVariable String userAccount
-    ){
-        System.out.println("SingleUserController: getUsrDetailByAccount >> "+userAccount);
+    public ResponseEntity<UserDetailResponse> getUsrDetailByAccount(){
+        System.out.print("SingleUserController: getUsrDetailByAccount >> ");
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String userAccount = authentication.getName();
+        System.out.println(userAccount);
+
         UserDetailResponse user = singleUserService.getUserDetailByAccount(userAccount);
         return ResponseEntity.status(HttpStatus.OK).body(user);
     }
@@ -89,11 +92,12 @@ public class SingleUserController {
             )
     })
     @GetMapping("/overview/{userAccount}")
-    public ResponseEntity<UserOverviewResponse> getUserOverviewByAccount(
-            @Parameter(description = "使用者帳號", required = true)
-            @PathVariable String userAccount
-    ){
-        System.out.println("SingleUserController: getUserOverviewByAccount >> "+userAccount);
+    public ResponseEntity<UserOverviewResponse> getUserOverviewByAccount(){
+        System.out.println("SingleUserController: getUserOverviewByAccount >> ");
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String userAccount = authentication.getName();
+        System.out.println(userAccount);
+
         UserOverviewResponse user = singleUserService.getUserOverviewByAccount(userAccount);
         return ResponseEntity.status(HttpStatus.OK).body(user);
     }
@@ -122,11 +126,12 @@ public class SingleUserController {
             )
     })
     @GetMapping("/edit/{userAccount}")
-    public ResponseEntity<UserEditResponse> getUserEditByAccount(
-            @Parameter(description = "使用者帳號", required = true)
-            @PathVariable String userAccount
-    ) {
-        System.out.println("SingleUserController: getUserEditByAccount >> "+userAccount);
+    public ResponseEntity<UserEditResponse> getUserEditByAccount() {
+        System.out.println("SingleUserController: getUserEditByAccount >> ");
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String userAccount = authentication.getName();
+        System.out.println(userAccount);
+
         UserEditResponse user = singleUserService.getUserEditByAccount(userAccount);
         return ResponseEntity.status(HttpStatus.OK).body(user);
 
@@ -191,12 +196,12 @@ public class SingleUserController {
             )
     })
     @PutMapping("/{userAccount}")
-    public ResponseEntity<UserDetailResponse> updateUserByAccount(
-            @Parameter(description = "使用者帳號", required = true)
-            @PathVariable String userAccount,
-            @Valid @RequestBody UserUpdateRequest userRequest
-    ){
-        System.out.println("SingleUserController: updateUserByAccount >> "+userAccount);
+    public ResponseEntity<UserDetailResponse> updateUserByAccount(@Valid @RequestBody UserUpdateRequest userRequest){
+        System.out.println("SingleUserController: updateUserByAccount >> ");
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String userAccount = authentication.getName();
+        System.out.println(userAccount);
+
         singleUserService.updateUserByAccount(userAccount, userRequest);
         UserDetailResponse user = singleUserService.getUserDetailByAccount(userAccount);
         return ResponseEntity.status(HttpStatus.OK).body(user);
@@ -219,11 +224,12 @@ public class SingleUserController {
             )
     })
     @DeleteMapping("/{userAccount}")
-    public ResponseEntity<?> deleteUserByAccount(
-            @Parameter(description = "使用者帳號", required = true)
-            @PathVariable String userAccount
-    ){
-        System.out.println("SingleUserController: deleteUserByAccount >> "+userAccount);
+    public ResponseEntity<?> deleteUserByAccount(){
+        System.out.println("SingleUserController: deleteUserByAccount >> ");
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String userAccount = authentication.getName();
+        System.out.println(userAccount);
+
         singleUserService.deleteUserByAccount(userAccount);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
@@ -253,11 +259,12 @@ public class SingleUserController {
             )
     })
     @GetMapping("/expos/{userAccount}")
-    public ResponseEntity<List<ExpoOverviewResponse>> getAllExpoOverview(
-            @Parameter(description = "使用者帳號", required = true)
-            @RequestParam String userAccount
-    ){
-        System.out.println("SingleUserController: getAllExpoOverview >> "+userAccount);
+    public ResponseEntity<List<ExpoOverviewResponse>> getAllExpoOverview(){
+        System.out.println("SingleUserController: getAllExpoOverview >> ");
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String userAccount = authentication.getName();
+        System.out.println(userAccount);
+
         List<ExpoOverviewResponse> expos = singleUserService.getAllExpoOverview(userAccount);
         return ResponseEntity.status(HttpStatus.OK).body(expos);
     }
@@ -287,11 +294,12 @@ public class SingleUserController {
             )
     })
     @GetMapping("/booths/{userAccount}")
-    public ResponseEntity<List<BoothOverviewResponse>> getAllBoothOverview(
-            @Parameter(description = "使用者帳號", required = true)
-            @RequestParam String userAccount
-    ){
-        System.out.println("SingleUserController: getAllBoothOverview >> "+userAccount);
+    public ResponseEntity<List<BoothOverviewResponse>> getAllBoothOverview(){
+        System.out.println("SingleUserController: getAllBoothOverview >> ");
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String userAccount = authentication.getName();
+        System.out.println(userAccount);
+
         List<BoothOverviewResponse> booths = singleUserService.getAllBoothOverview(userAccount);
         return ResponseEntity.status(HttpStatus.OK).body(booths);
     }
@@ -320,11 +328,12 @@ public class SingleUserController {
             )
     })
     @PutMapping("/switch_role/{userAccount}")
-    public ResponseEntity<UserOverviewResponse> switchRole(
-            @Parameter(description = "使用者帳號", required = true)
-            @PathVariable String userAccount
-    ){
-        System.out.println("SingleUserController: switchRole >> "+userAccount);
+    public ResponseEntity<UserOverviewResponse> switchRole(){
+        System.out.println("SingleUserController: switchRole >> ");
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String userAccount = authentication.getName();
+        System.out.println(userAccount);
+
         singleUserService.switchRole(userAccount);
         UserOverviewResponse user = singleUserService.getUserOverviewByAccount(userAccount);
         return ResponseEntity.status(HttpStatus.OK).body(user);

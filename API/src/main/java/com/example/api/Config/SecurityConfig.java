@@ -1,5 +1,6 @@
-package com.example.api.Other;
+package com.example.api.Config;
 
+import com.example.api.Other.JwtAuthenticationFilter;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;

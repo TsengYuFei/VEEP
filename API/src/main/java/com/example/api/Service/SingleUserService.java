@@ -158,5 +158,7 @@ public class SingleUserService {
 
         if(user.getRole() == Role.GENERAL) user.setRole(Role.FOUNDER);
         else user.setRole(Role.GENERAL);
+
+        userRepository.save(user);
     }
 }
