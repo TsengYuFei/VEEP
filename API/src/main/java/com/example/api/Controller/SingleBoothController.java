@@ -18,6 +18,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -87,13 +89,15 @@ public class SingleBoothController {
     })
     @PostMapping("/{userAccount}/{expoID}")
     public ResponseEntity<BoothEditResponse> createBooth(
-            @Parameter(description = "攤位擁有者的userAccount", required = true)
-            @PathVariable String userAccount,
             @Parameter(description = "攤位所屬展會的ID", required = true)
             @PathVariable Integer expoID,
             @Valid @RequestBody BoothCreateRequest boothRequest
     ){
-        System.out.println("SingleBoothController: createBooth >> "+ userAccount+", "+expoID);
+        System.out.print("SingleBoothController: createBooth >> ");
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String userAccount = authentication.getName();
+        System.out.println(userAccount+", "+expoID);
+
         Integer boothID = singleBoothService.createBooth(userAccount, expoID, boothRequest);
         BoothEditResponse booth = singleBoothService.getBoothEditByID(boothID);
         return ResponseEntity.status(HttpStatus.CREATED).body(booth);

@@ -5,7 +5,6 @@ import com.example.api.DTO.Request.UserUpdateRequest;
 import com.example.api.DTO.Response.*;
 import com.example.api.Service.SingleUserService;
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;

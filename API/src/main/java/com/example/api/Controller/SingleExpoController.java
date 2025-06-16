@@ -19,6 +19,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -87,11 +90,13 @@ public class SingleExpoController {
     })
     @PostMapping("/{userAccount}")
     public ResponseEntity<ExpoEditResponse> createExpo(
-            @Parameter(description = "展會擁有者的userAccount", required = true)
-            @PathVariable String userAccount,
             @Valid @RequestBody ExpoCreateRequest expoCreateRequest
     ){
-        System.out.println("SingleExpoController: createExpo >> "+ userAccount);
+        System.out.print("SingleExpoController: createExpo >> ");
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String userAccount = authentication.getName();
+        System.out.println(userAccount);
+
         Integer expoID = singleExpoService.createExpo(userAccount, expoCreateRequest);
         ExpoEditResponse expo = singleExpoService.getExpoEditByID(expoID);
         return ResponseEntity.status(HttpStatus.CREATED).body(expo);
@@ -124,6 +129,7 @@ public class SingleExpoController {
                     description = "伺服器錯誤"
             )
     })
+    @PreAuthorize("@singleExpoService.checkOwner(#expoID)")
     @PutMapping("/{expoID}")
     public ResponseEntity<ExpoEditResponse> updateExpoByID(
             @Parameter(description = "展會ID", required = true)
@@ -152,6 +158,7 @@ public class SingleExpoController {
                     description = "伺服器錯誤"
             )
     })
+    @PreAuthorize("@singleExpoService.checkOwner(#expoID)")
     @DeleteMapping("/{expoID}")
     public ResponseEntity<?> deleteExpoByID(
             @Parameter(description = "展會ID", required = true)

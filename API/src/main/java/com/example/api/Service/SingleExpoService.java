@@ -7,11 +7,14 @@ import com.example.api.DTO.Response.TagResponse;
 import com.example.api.DTO.Response.UserListResponse;
 import com.example.api.DTO.Response.ExpoEditResponse;
 import com.example.api.Entity.*;
+import com.example.api.Exception.ForibiddenException;
 import com.example.api.Exception.NotFoundException;
 import com.example.api.Exception.UnprocessableEntityException;
 import com.example.api.Repository.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -53,6 +56,18 @@ public class SingleExpoService {
         System.out.println("SingleExpoService: getExpoByID >> "+expoID);
         return expoRepository.findById(expoID)
                 .orElseThrow(() -> new NotFoundException("找不到展會ID為 < "+ expoID+" > 的展會"));
+    }
+
+
+    public void checkOwner(Integer expoID){
+        System.out.println("SingleExpoService: isOwner >> "+expoID);
+        Expo expo = getExpoByID(expoID);
+        String ownerAccount = expo.getOwner().getUserAccount();
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String currentUserAccount = authentication.getName();
+
+        if(!ownerAccount.equals(currentUserAccount)) throw new ForibiddenException("使用者帳號 < "+currentUserAccount+" > 不是展會ID為 < "+expoID+" > 的Owner");
     }
 
 
