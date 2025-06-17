@@ -59,7 +59,7 @@ public class SingleExpoController {
     })
     @PreAuthorize(
             "hasRole('FOUNDER') and " +
-                    "(@singleExpoService.checkOwner(#expoID) or @singleExpoService.checkCollaborator(#expoID))"
+                    "(@singleExpoService.canEdit(#expoID))"
     )
     @GetMapping("/edit/{expoID}")
     public ResponseEntity<ExpoEditResponse> getExpoEditByID(
@@ -136,7 +136,7 @@ public class SingleExpoController {
     })
     @PreAuthorize(
             "hasRole('FOUNDER') and " +
-            "(@singleExpoService.checkOwner(#expoID) or @singleExpoService.checkCollaborator(#expoID))"
+            "(@singleExpoService.canEdit(#expoID))"
     )
     @PutMapping("/{expoID}")
     public ResponseEntity<ExpoEditResponse> updateExpoByID(
@@ -167,7 +167,7 @@ public class SingleExpoController {
             )
     })
     @PreAuthorize(
-            "hasRole('FOUNDER') and @singleExpoService.checkOwner(#expoID)"
+            "hasRole('FOUNDER') and @singleExpoService.isOwner(#expoID)"
     )
     @DeleteMapping("/{expoID}")
     public ResponseEntity<?> deleteExpoByID(

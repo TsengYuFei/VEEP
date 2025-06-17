@@ -5,6 +5,7 @@ import com.example.api.DTO.Response.BoothEditResponse;
 import com.example.api.DTO.Request.BoothCreateRequest;
 import com.example.api.DTO.Response.UserListResponse;
 import com.example.api.Service.SingleBoothService;
+import com.example.api.Service.SingleExpoService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
@@ -59,7 +60,7 @@ public class SingleBoothController {
     })
     @PreAuthorize(
             "hasRole('FOUNDER') and " +
-                    "(@singleBoothService.checkOwner(#boothID) or @singleBoothService.checkCollaborator(#boothID))"
+                    "(@singleBoothService.canEdit(#boothID))"
     )
     @GetMapping("/edit/{boothID}")
     public ResponseEntity<BoothEditResponse> getBoothEditByID(
@@ -138,7 +139,7 @@ public class SingleBoothController {
     })
     @PreAuthorize(
             "hasRole('FOUNDER') and " +
-                    "(@singleBoothService.checkOwner(#boothID) or @singleBoothService.checkCollaborator(#boothID))"
+                    "(@singleBoothService.canEdit(#boothID))"
     )
     @PutMapping("/{boothID}")
     public ResponseEntity<BoothEditResponse> updateBoothByID(
@@ -168,7 +169,8 @@ public class SingleBoothController {
                     description = "伺服器錯誤"
             )
     })
-    @PreAuthorize("hasRole('FOUNDER') and @singleBoothService.checkOwner(#boothID)")
+    @PreAuthorize("hasRole('FOUNDER') and " +
+            "(@singleBoothService.canDelete(#boothID))")
     @DeleteMapping("/{boothID}")
     public ResponseEntity<?> deleteBoothByID(
             @Parameter(description = "攤位ID", required = true)

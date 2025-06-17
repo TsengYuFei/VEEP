@@ -15,6 +15,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @Tag(name = "單一攤位內容相關", description = "每個攤位固定有6個內容，創建booth時會自動建立")
@@ -96,6 +97,10 @@ public class ContentController {
                     description = "伺服器錯誤"
             )
     })
+    @PreAuthorize(
+            "hasRole('FOUNDER') and " +
+                    "(@singleBoothService.canEdit(#boothID))"
+    )
     @PutMapping("/{boothID}/{number}")
     public ResponseEntity<ContentEditResponse> updateContentEditByBoothIDAndNumber(
             @Parameter(description = "攤位ID", required = true)

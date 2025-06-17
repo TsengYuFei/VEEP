@@ -63,8 +63,8 @@ public class SingleBoothService {
     }
 
 
-    public boolean checkOwner(Integer boothID){
-        System.out.println("SingleBoothService: checkOwner >> "+boothID);
+    public boolean isOwner(Integer boothID){
+        System.out.println("SingleBoothService: isOwner >> "+boothID);
         Booth booth = getBoothByID(boothID);
         String ownerAccount = booth.getOwner().getUserAccount();
 
@@ -75,8 +75,8 @@ public class SingleBoothService {
     }
 
 
-    public boolean checkCollaborator(Integer boothID){
-        System.out.println("SingleBoothService: checkCollaborator >> "+boothID);
+    public boolean isCollaborator(Integer boothID){
+        System.out.println("SingleBoothService: isCollaborator >> "+boothID);
         List<User> colList = getAllCollaborator(boothID);
         List<String> colAccounts = multipleUserService.getUsersAccount(colList);
 
@@ -84,6 +84,20 @@ public class SingleBoothService {
         String currentUserAccount = authentication.getName();
 
         return colAccounts.contains(currentUserAccount);
+    }
+
+
+    public boolean canEdit(Integer boothID){
+        System.out.println("SingleBoothService: canEdit >> "+boothID);
+        return isOwner(boothID) || isCollaborator(boothID);
+    }
+
+
+    public boolean canDelete(Integer boothID){
+        System.out.println("SingleBoothService: canDelete >> "+boothID);
+        Booth booth = getBoothByID(boothID);
+        Expo expo = booth.getExpo();
+        return isOwner(boothID) || singleExpoService.canEdit(expo.getExpoID());
     }
 
 

@@ -62,8 +62,8 @@ public class SingleExpoService {
     }
 
 
-    public boolean checkOwner(Integer expoID){
-        System.out.println("SingleExpoService: checkOwner >> "+expoID);
+    public boolean isOwner(Integer expoID){
+        System.out.println("SingleExpoService: isOwner >> "+expoID);
         Expo expo = getExpoByID(expoID);
         String ownerAccount = expo.getOwner().getUserAccount();
 
@@ -74,8 +74,8 @@ public class SingleExpoService {
     }
 
 
-    public boolean checkCollaborator(Integer expoID){
-        System.out.println("SingleExpoService: checkCollaborator >> "+expoID);
+    public boolean isCollaborator(Integer expoID){
+        System.out.println("SingleExpoService: isCollaborator >> "+expoID);
         List<User> colList = getAllCollaborator(expoID);
         List<String> colAccounts = multipleUserService.getUsersAccount(colList);
 
@@ -83,6 +83,12 @@ public class SingleExpoService {
         String currentUserAccount = authentication.getName();
 
         return colAccounts.contains(currentUserAccount);
+    }
+
+
+    public boolean canEdit(Integer expoID){
+        System.out.println("SingleExpoService: canEdit >> "+expoID);
+        return isOwner(expoID) || isCollaborator(expoID);
     }
 
 
