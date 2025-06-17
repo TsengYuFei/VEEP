@@ -4,6 +4,7 @@ import com.example.api.DTO.Request.BoothUpdateRequest;
 import com.example.api.DTO.Response.BoothEditResponse;
 import com.example.api.DTO.Request.BoothCreateRequest;
 import com.example.api.DTO.Response.UserListResponse;
+import com.example.api.Exception.ForibiddenException;
 import com.example.api.Service.SingleBoothService;
 import com.example.api.Service.SingleExpoService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -34,6 +35,8 @@ public class SingleBoothController {
     @Autowired
     private final SingleBoothService singleBoothService;
 
+    @Autowired
+    private final SingleExpoService singleExpoService;
 
 
     @Operation(
@@ -58,10 +61,6 @@ public class SingleBoothController {
                     description = "伺服器錯誤"
             )
     })
-    @PreAuthorize(
-            "hasRole('FOUNDER') and " +
-                    "(@singleBoothService.canEdit(#boothID))"
-    )
     @GetMapping("/edit/{boothID}")
     public ResponseEntity<BoothEditResponse> getBoothEditByID(
             @Parameter(description = "攤位ID", required = true)
@@ -93,17 +92,16 @@ public class SingleBoothController {
                     description = "伺服器錯誤"
             )
     })
-    @PreAuthorize("hasRole('FOUNDER')")
-    @PostMapping("/{expoID}")
+    @PostMapping("/{expoID}/{userAccount}")
     public ResponseEntity<BoothEditResponse> createBooth(
+            @Parameter(description = "使用者帳號(指定Booth的Owner)", required = true)
+            @PathVariable String userAccount,
             @Parameter(description = "攤位所屬展會的ID", required = true)
             @PathVariable Integer expoID,
             @Valid @RequestBody BoothCreateRequest boothRequest
     ){
-        System.out.print("SingleBoothController: createBooth >> ");
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String userAccount = authentication.getName();
-        System.out.println(userAccount+", "+expoID);
+        System.out.println("SingleBoothController: createBooth >> "+expoID);
+        if(!singleExpoService.canEdit(expoID)) throw new ForibiddenException("權限不足，無法新增展會ID為 < "+expoID+" > 的攤位");
 
         Integer boothID = singleBoothService.createBooth(userAccount, expoID, boothRequest);
         BoothEditResponse booth = singleBoothService.getBoothEditByID(boothID);
@@ -137,10 +135,6 @@ public class SingleBoothController {
                     description = "伺服器錯誤"
             )
     })
-    @PreAuthorize(
-            "hasRole('FOUNDER') and " +
-                    "(@singleBoothService.canEdit(#boothID))"
-    )
     @PutMapping("/{boothID}")
     public ResponseEntity<BoothEditResponse> updateBoothByID(
             @Parameter(description = "攤位ID", required = true)
@@ -148,6 +142,8 @@ public class SingleBoothController {
             @Valid @RequestBody BoothUpdateRequest boothRequest
     ){
         System.out.println("SingleBoothController: updateBoothByID >> "+boothID);
+        if(!singleBoothService.canEdit(boothID)) throw new ForibiddenException("權限不足，無法更新攤位ID為 < "+boothID+" > 的攤位資訊");
+
         singleBoothService.updateBoothByID(boothID, boothRequest);
         BoothEditResponse booth = singleBoothService.getBoothEditByID(boothID);
         return ResponseEntity.status(HttpStatus.OK).body(booth);
@@ -169,14 +165,14 @@ public class SingleBoothController {
                     description = "伺服器錯誤"
             )
     })
-    @PreAuthorize("hasRole('FOUNDER') and " +
-            "(@singleBoothService.canDelete(#boothID))")
     @DeleteMapping("/{boothID}")
     public ResponseEntity<?> deleteBoothByID(
             @Parameter(description = "攤位ID", required = true)
             @PathVariable Integer boothID
     ){
         System.out.println("SingleBoothController: deleteBoothByID >> "+boothID);
+        if(!singleBoothService.canDelete(boothID)) throw new ForibiddenException("權限不足，無法刪除攤位ID為 < "+boothID+" > 的攤位");
+
         singleBoothService.deleteBoothByID(boothID);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }

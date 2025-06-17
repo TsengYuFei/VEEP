@@ -2,12 +2,8 @@ package com.example.api.Service;
 
 import com.example.api.DTO.Request.ExpoCreateRequest;
 import com.example.api.DTO.Request.ExpoUpdateRequest;
-import com.example.api.DTO.Response.BoothOverviewResponse;
-import com.example.api.DTO.Response.TagResponse;
-import com.example.api.DTO.Response.UserListResponse;
-import com.example.api.DTO.Response.ExpoEditResponse;
+import com.example.api.DTO.Response.*;
 import com.example.api.Entity.*;
-import com.example.api.Exception.ForibiddenException;
 import com.example.api.Exception.NotFoundException;
 import com.example.api.Exception.UnprocessableEntityException;
 import com.example.api.Repository.*;
@@ -62,33 +58,39 @@ public class SingleExpoService {
     }
 
 
-    public boolean isOwner(Integer expoID){
-        System.out.println("SingleExpoService: isOwner >> "+expoID);
+    public boolean isFounderAndOwner(Integer expoID){
+        System.out.println("SingleExpoService: isFounderAndOwner >> "+expoID);
         Expo expo = getExpoByID(expoID);
         String ownerAccount = expo.getOwner().getUserAccount();
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String currentUserAccount = authentication.getName();
 
-        return ownerAccount.equals(currentUserAccount);
+        UserOverviewResponse userOverview = singleUserService.getUserOverviewByAccount(currentUserAccount);
+        Role role = userOverview.getRole();
+
+        return ownerAccount.equals(currentUserAccount) && role.equals(Role.FOUNDER);
     }
 
 
-    public boolean isCollaborator(Integer expoID){
-        System.out.println("SingleExpoService: isCollaborator >> "+expoID);
+    public boolean isFounderAndCollaborator(Integer expoID){
+        System.out.println("SingleExpoService: isFounderAndCollaborator >> "+expoID);
         List<User> colList = getAllCollaborator(expoID);
         List<String> colAccounts = multipleUserService.getUsersAccount(colList);
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String currentUserAccount = authentication.getName();
 
-        return colAccounts.contains(currentUserAccount);
+        UserOverviewResponse userOverview = singleUserService.getUserOverviewByAccount(currentUserAccount);
+        Role role = userOverview.getRole();
+
+        return colAccounts.contains(currentUserAccount) && role.equals(Role.FOUNDER);
     }
 
 
     public boolean canEdit(Integer expoID){
         System.out.println("SingleExpoService: canEdit >> "+expoID);
-        return isOwner(expoID) || isCollaborator(expoID);
+        return isFounderAndOwner(expoID) || isFounderAndCollaborator(expoID);
     }
 
 

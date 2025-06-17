@@ -28,12 +28,14 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(error, HttpStatus.CONFLICT);
     }
 
-    // 403 - 權限不足
+    // 403 - 權限不足(手動丟)
     @ExceptionHandler(ForibiddenException.class)
     public ResponseEntity<ErrorResponseResponse> handleForbiddenException(ForibiddenException exception) {
         ErrorResponseResponse error = new ErrorResponseResponse("Forbidden", exception.getMessage());
         return new ResponseEntity<>(error, HttpStatus.FORBIDDEN);
     }
+
+    // 403 - 權限不足(Spring Security丟)
     @ExceptionHandler(AccessDeniedException.class)
     public ResponseEntity<ErrorResponseResponse> handleAccessDeniedException(AccessDeniedException exception) {
         ErrorResponseResponse error = new ErrorResponseResponse("Forbidden", "權限不足，禁止存取此資源。");

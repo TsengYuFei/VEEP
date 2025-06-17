@@ -3,6 +3,7 @@ package com.example.api.Controller;
 import com.example.api.DTO.Request.UserCreateRequest;
 import com.example.api.DTO.Request.UserUpdateRequest;
 import com.example.api.DTO.Response.*;
+import com.example.api.Exception.ForibiddenException;
 import com.example.api.Service.SingleUserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -104,7 +105,7 @@ public class SingleUserController {
 
     @Operation(
             summary = "獲取使用者資訊(編輯用)",
-            description = "只能獲取本人，用於個人資料更新頁面。可獲取除了userAccount、password及role外之所有欄位"
+            description = "只能獲取本人，用於個人資料更新頁面。可獲取除了password外之所有欄位"
     )
     @ApiResponses(value = {
             @ApiResponse(
@@ -257,13 +258,13 @@ public class SingleUserController {
                     description = "伺服器錯誤"
             )
     })
-    @PreAuthorize("@singleUserService.isCurrentUser(#userAccount) or @singleUserService.isShowCurrentExpo(#userAccount)")
     @GetMapping("/expos/{userAccount}")
     public ResponseEntity<List<ExpoOverviewResponse>> getAllExpoOverview(
             @Parameter(description = "使用者帳號", required = true)
             @PathVariable String userAccount
     ){
         System.out.println("SingleUserController: getAllExpoOverview >> "+userAccount);
+        if(singleUserService.isNotCurrentUser(userAccount) && !singleUserService.isShowCurrentExpo(userAccount)) throw new ForibiddenException("權限不足，無法查看使用者帳號為 < "+userAccount+" > 的使用者所持有的展會");
         List<ExpoOverviewResponse> expos = singleUserService.getAllExpoOverview(userAccount);
         return ResponseEntity.status(HttpStatus.OK).body(expos);
     }
@@ -292,13 +293,13 @@ public class SingleUserController {
                     description = "伺服器錯誤"
             )
     })
-    @PreAuthorize("@singleUserService.isCurrentUser(#userAccount) or @singleUserService.isShowCurrentBooth(#userAccount)")
     @GetMapping("/booths/{userAccount}")
     public ResponseEntity<List<BoothOverviewResponse>> getAllBoothOverview(
             @Parameter(description = "使用者帳號", required = true)
             @PathVariable String userAccount
     ){
         System.out.println("SingleUserController: getAllBoothOverview >> "+userAccount);
+        if(singleUserService.isNotCurrentUser(userAccount) && !singleUserService.isShowCurrentBooth(userAccount)) throw new ForibiddenException("權限不足，無法查看使用者帳號為 < "+userAccount+" > 的使用者所持有的攤位");
         List<BoothOverviewResponse> booths = singleUserService.getAllBoothOverview(userAccount);
         return ResponseEntity.status(HttpStatus.OK).body(booths);
     }

@@ -5,7 +5,11 @@ import com.example.api.DTO.Response.BoothOverviewResponse;
 import com.example.api.DTO.Response.ExpoEditResponse;
 import com.example.api.DTO.Request.ExpoCreateRequest;
 import com.example.api.DTO.Response.UserListResponse;
+import com.example.api.DTO.Response.UserOverviewResponse;
+import com.example.api.Entity.Role;
+import com.example.api.Exception.ForibiddenException;
 import com.example.api.Service.SingleExpoService;
+import com.example.api.Service.SingleUserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
@@ -34,6 +38,9 @@ public class SingleExpoController {
     @Autowired
     private final SingleExpoService singleExpoService;
 
+    @Autowired
+    private final SingleUserService singleUserService;
+
 
     @Operation(
             summary = "獲取展會資訊(編輯用)",
@@ -57,16 +64,14 @@ public class SingleExpoController {
                     description = "伺服器錯誤"
             )
     })
-    @PreAuthorize(
-            "hasRole('FOUNDER') and " +
-                    "(@singleExpoService.canEdit(#expoID))"
-    )
     @GetMapping("/edit/{expoID}")
     public ResponseEntity<ExpoEditResponse> getExpoEditByID(
             @Parameter(description = "展會ID", required = true)
             @PathVariable Integer expoID
     ){
         System.out.println("SingleExpoController: getExpoEdit >> "+expoID);
+        if(!singleExpoService.canEdit(expoID)) throw new ForibiddenException("權限不足，無法獲取展會ID為 < "+expoID+" > 的展會編輯資訊");
+
         ExpoEditResponse expo = singleExpoService.getExpoEditByID(expoID);
         return ResponseEntity.status(HttpStatus.OK).body(expo);
     }
@@ -92,7 +97,6 @@ public class SingleExpoController {
                     description = "伺服器錯誤"
             )
     })
-    @PreAuthorize("hasRole('FOUNDER')")
     @PostMapping()
     public ResponseEntity<ExpoEditResponse> createExpo(
             @Valid @RequestBody ExpoCreateRequest expoCreateRequest
@@ -101,6 +105,9 @@ public class SingleExpoController {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String userAccount = authentication.getName();
         System.out.println(userAccount);
+
+        UserOverviewResponse userOverview = singleUserService.getUserOverviewByAccount(userAccount);
+        if(!userOverview.getRole().equals(Role.FOUNDER)) throw new ForibiddenException("權限不足，無法創建展會");
 
         Integer expoID = singleExpoService.createExpo(userAccount, expoCreateRequest);
         ExpoEditResponse expo = singleExpoService.getExpoEditByID(expoID);
@@ -134,10 +141,6 @@ public class SingleExpoController {
                     description = "伺服器錯誤"
             )
     })
-    @PreAuthorize(
-            "hasRole('FOUNDER') and " +
-            "(@singleExpoService.canEdit(#expoID))"
-    )
     @PutMapping("/{expoID}")
     public ResponseEntity<ExpoEditResponse> updateExpoByID(
             @Parameter(description = "展會ID", required = true)
@@ -145,6 +148,8 @@ public class SingleExpoController {
             @Valid @RequestBody ExpoUpdateRequest expoRequest
     ){
         System.out.println("SingleExpoController: updateExpoByID >> "+expoID);
+        if(!singleExpoService.canEdit(expoID)) throw new ForibiddenException("權限不足，無法更新展會ID為 < "+expoID+" > 的展會資訊");
+
         singleExpoService.updateExpoByID(expoID, expoRequest);
         ExpoEditResponse expo = singleExpoService.getExpoEditByID(expoID);
         return ResponseEntity.status(HttpStatus.OK).body(expo);
@@ -166,15 +171,13 @@ public class SingleExpoController {
                     description = "伺服器錯誤"
             )
     })
-    @PreAuthorize(
-            "hasRole('FOUNDER') and @singleExpoService.isOwner(#expoID)"
-    )
     @DeleteMapping("/{expoID}")
     public ResponseEntity<?> deleteExpoByID(
             @Parameter(description = "展會ID", required = true)
             @PathVariable Integer expoID
     ){
         System.out.println("SingleExpoController: deleteExpoByID >> "+expoID);
+        if(!singleExpoService.isFounderAndOwner(expoID)) throw new ForibiddenException("權限不足，無法刪除展會ID為 < "+expoID+" > 的展會");
         singleExpoService.deleteExpoByID(expoID);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }

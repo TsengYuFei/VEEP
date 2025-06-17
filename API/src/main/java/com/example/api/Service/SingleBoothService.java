@@ -5,6 +5,7 @@ import com.example.api.DTO.Request.BoothUpdateRequest;
 import com.example.api.DTO.Response.BoothEditResponse;
 import com.example.api.DTO.Response.TagResponse;
 import com.example.api.DTO.Response.UserListResponse;
+import com.example.api.DTO.Response.UserOverviewResponse;
 import com.example.api.Entity.*;
 import com.example.api.Exception.NotFoundException;
 import com.example.api.Exception.UnprocessableEntityException;
@@ -63,33 +64,39 @@ public class SingleBoothService {
     }
 
 
-    public boolean isOwner(Integer boothID){
-        System.out.println("SingleBoothService: isOwner >> "+boothID);
+    public boolean isFounderAndOwner(Integer boothID){
+        System.out.println("SingleBoothService: isFounderAndOwner >> "+boothID);
         Booth booth = getBoothByID(boothID);
         String ownerAccount = booth.getOwner().getUserAccount();
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String currentUserAccount = authentication.getName();
 
-        return ownerAccount.equals(currentUserAccount);
+        UserOverviewResponse userOverview = singleUserService.getUserOverviewByAccount(currentUserAccount);
+        Role role = userOverview.getRole();
+
+        return ownerAccount.equals(currentUserAccount) && role.equals(Role.FOUNDER);
     }
 
 
-    public boolean isCollaborator(Integer boothID){
-        System.out.println("SingleBoothService: isCollaborator >> "+boothID);
+    public boolean isFounderAndCollaborator(Integer boothID){
+        System.out.println("SingleBoothService: isFounderAndCollaborator >> "+boothID);
         List<User> colList = getAllCollaborator(boothID);
         List<String> colAccounts = multipleUserService.getUsersAccount(colList);
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String currentUserAccount = authentication.getName();
 
-        return colAccounts.contains(currentUserAccount);
+        UserOverviewResponse userOverview = singleUserService.getUserOverviewByAccount(currentUserAccount);
+        Role role = userOverview.getRole();
+
+        return colAccounts.contains(currentUserAccount) && role.equals(Role.FOUNDER);
     }
 
 
     public boolean canEdit(Integer boothID){
         System.out.println("SingleBoothService: canEdit >> "+boothID);
-        return isOwner(boothID) || isCollaborator(boothID);
+        return isFounderAndOwner(boothID) || isFounderAndCollaborator(boothID);
     }
 
 
@@ -97,7 +104,7 @@ public class SingleBoothService {
         System.out.println("SingleBoothService: canDelete >> "+boothID);
         Booth booth = getBoothByID(boothID);
         Expo expo = booth.getExpo();
-        return isOwner(boothID) || singleExpoService.canEdit(expo.getExpoID());
+        return isFounderAndOwner(boothID) || singleExpoService.canEdit(expo.getExpoID());
     }
 
 

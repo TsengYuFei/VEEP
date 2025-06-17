@@ -2,7 +2,9 @@ package com.example.api.Controller;
 
 import com.example.api.DTO.Request.ContentUpdateRequest;
 import com.example.api.DTO.Response.ContentEditResponse;
+import com.example.api.Exception.ForibiddenException;
 import com.example.api.Service.ContentService;
+import com.example.api.Service.SingleBoothService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -25,6 +27,9 @@ import org.springframework.web.bind.annotation.*;
 public class ContentController {
     @Autowired
     private final ContentService contentService;
+
+    @Autowired
+    private final SingleBoothService singleBoothService;
 
 
 
@@ -97,10 +102,6 @@ public class ContentController {
                     description = "伺服器錯誤"
             )
     })
-    @PreAuthorize(
-            "hasRole('FOUNDER') and " +
-                    "(@singleBoothService.canEdit(#boothID))"
-    )
     @PutMapping("/{boothID}/{number}")
     public ResponseEntity<ContentEditResponse> updateContentEditByBoothIDAndNumber(
             @Parameter(description = "攤位ID", required = true)
@@ -110,6 +111,8 @@ public class ContentController {
             @Valid @RequestBody ContentUpdateRequest contentRequest
     ){
         System.out.println("ContentController: updateContentEditByBoothIDAndNumber >> "+boothID+", "+number);
+        if(!singleBoothService.canEdit(boothID)) throw new ForibiddenException("權限不足，無法更新攤位ID為 < "+boothID+" > 攤位的第 < "+number+" > 號內容資訊");
+
         contentService.updateContentByBoothIDAndNumber(boothID, number, contentRequest);
         ContentEditResponse content = contentService.getContentEditByBoothIDAndNumber(boothID, number);
         return ResponseEntity.status(HttpStatus.OK).body(content);

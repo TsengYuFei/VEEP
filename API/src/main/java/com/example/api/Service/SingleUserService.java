@@ -47,11 +47,11 @@ public class SingleUserService {
     }
 
 
-    public boolean isCurrentUser(String account){
+    public boolean isNotCurrentUser(String account){
         System.out.println("SingleUserService: isCurrentUser >> "+account);
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String currentAccount = authentication.getName();
-        return account.equals(currentAccount);
+        return !account.equals(currentAccount);
     }
 
 
