@@ -10,6 +10,8 @@ import com.example.api.Repository.UserRepository;
 import com.mysql.cj.exceptions.ClosedOnExpiredPasswordException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -42,6 +44,28 @@ public class SingleUserService {
 
     List<User> getAllUserByAccount(List<String> accounts){
         return userRepository.findAllById(accounts);
+    }
+
+
+    public boolean isCurrentUser(String account){
+        System.out.println("SingleUserService: isCurrentUser >> "+account);
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String currentAccount = authentication.getName();
+        return account.equals(currentAccount);
+    }
+
+
+    public boolean isShowCurrentExpo(String account){
+        System.out.println("SingleUserService: isShowCurrentExpo >> "+account);
+        User user = getUserByAccount(account);
+        return user.getShowCurrentExpo();
+    }
+
+
+    public boolean isShowCurrentBooth(String account){
+        System.out.println("SingleUserService: isShowCurrentBooth >> "+account);
+        User user = getUserByAccount(account);
+        return user.getShowCurrentBooth();
     }
 
 

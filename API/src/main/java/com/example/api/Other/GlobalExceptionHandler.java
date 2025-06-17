@@ -35,8 +35,9 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(error, HttpStatus.FORBIDDEN);
     }
     @ExceptionHandler(AccessDeniedException.class)
-    public ResponseEntity<String> handleAccessDeniedException(AccessDeniedException ex) {
-        return ResponseEntity.status(HttpStatus.FORBIDDEN).body("權限不足，禁止存取此資源。");
+    public ResponseEntity<ErrorResponseResponse> handleAccessDeniedException(AccessDeniedException exception) {
+        ErrorResponseResponse error = new ErrorResponseResponse("Forbidden", "權限不足，禁止存取此資源。");
+        return new ResponseEntity<>(error, HttpStatus.FORBIDDEN);
     }
 
     // 404 - 找不到
