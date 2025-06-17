@@ -93,7 +93,7 @@ public class SingleExpoController {
             )
     })
     @PreAuthorize("hasRole('FOUNDER')")
-    @PostMapping("/{userAccount}")
+    @PostMapping()
     public ResponseEntity<ExpoEditResponse> createExpo(
             @Valid @RequestBody ExpoCreateRequest expoCreateRequest
     ){

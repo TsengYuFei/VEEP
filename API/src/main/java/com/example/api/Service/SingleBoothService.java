@@ -11,6 +11,8 @@ import com.example.api.Exception.UnprocessableEntityException;
 import com.example.api.Repository.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -49,12 +51,39 @@ public class SingleBoothService {
     @Autowired
     private final ImageService imageService;
 
+    @Autowired
+    private final MultipleUserService multipleUserService;
+
 
 
     Booth getBoothByID(Integer boothID) {
         System.out.println("SingleBoothService: getBoothByID >> "+boothID);
         return boothRepository.findById(boothID)
                 .orElseThrow(() -> new NotFoundException("找不到攤位ID為 < "+ boothID+" > 的攤位"));
+    }
+
+
+    public boolean checkOwner(Integer boothID){
+        System.out.println("SingleBoothService: checkOwner >> "+boothID);
+        Booth booth = getBoothByID(boothID);
+        String ownerAccount = booth.getOwner().getUserAccount();
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String currentUserAccount = authentication.getName();
+
+        return ownerAccount.equals(currentUserAccount);
+    }
+
+
+    public boolean checkCollaborator(Integer boothID){
+        System.out.println("SingleBoothService: checkCollaborator >> "+boothID);
+        List<User> colList = getAllCollaborator(boothID);
+        List<String> colAccounts = multipleUserService.getUsersAccount(colList);
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String currentUserAccount = authentication.getName();
+
+        return colAccounts.contains(currentUserAccount);
     }
 
 
@@ -254,14 +283,24 @@ public class SingleBoothService {
     }
 
 
-    public List<UserListResponse> getAllCollaborator(Integer boothID){
+    private List<User> getAllCollaborator(Integer boothID){
         System.out.println("SingleBoothService: getAllCollaborator >> "+boothID);
+        Booth booth = getBoothByID(boothID);
+        Set<User> users = booth.getCollaborator().getCollaborators();
+
+        return (users != null && !users.isEmpty())?
+                new ArrayList<>(users) : new ArrayList<>();
+    }
+
+
+    public List<UserListResponse> getAllColList(Integer boothID){
+        System.out.println("SingleBoothService: getAllColList >> "+boothID);
         Booth booth = getBoothByID(boothID);
         List<UserListResponse> response;
 
-        Set<User> cols = booth.getCollaborator().getCollaborators();
-        if(cols != null && !cols.isEmpty()) {
-            response = cols.stream()
+        Set<User> users = booth.getCollaborator().getCollaborators();
+        if(users != null && !users.isEmpty()) {
+            response = users.stream()
                     .map(UserListResponse::fromUser)
                     .toList();
         }else response = new ArrayList<>();

@@ -18,6 +18,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
@@ -56,6 +57,10 @@ public class SingleBoothController {
                     description = "伺服器錯誤"
             )
     })
+    @PreAuthorize(
+            "hasRole('FOUNDER') and " +
+                    "(@singleBoothService.checkOwner(#boothID) or @singleBoothService.checkCollaborator(#boothID))"
+    )
     @GetMapping("/edit/{boothID}")
     public ResponseEntity<BoothEditResponse> getBoothEditByID(
             @Parameter(description = "攤位ID", required = true)
@@ -87,7 +92,8 @@ public class SingleBoothController {
                     description = "伺服器錯誤"
             )
     })
-    @PostMapping("/{userAccount}/{expoID}")
+    @PreAuthorize("hasRole('FOUNDER')")
+    @PostMapping("/{expoID}")
     public ResponseEntity<BoothEditResponse> createBooth(
             @Parameter(description = "攤位所屬展會的ID", required = true)
             @PathVariable Integer expoID,
@@ -130,6 +136,10 @@ public class SingleBoothController {
                     description = "伺服器錯誤"
             )
     })
+    @PreAuthorize(
+            "hasRole('FOUNDER') and " +
+                    "(@singleBoothService.checkOwner(#boothID) or @singleBoothService.checkCollaborator(#boothID))"
+    )
     @PutMapping("/{boothID}")
     public ResponseEntity<BoothEditResponse> updateBoothByID(
             @Parameter(description = "攤位ID", required = true)
@@ -158,6 +168,7 @@ public class SingleBoothController {
                     description = "伺服器錯誤"
             )
     })
+    @PreAuthorize("hasRole('FOUNDER') and @singleBoothService.checkOwner(#boothID)")
     @DeleteMapping("/{boothID}")
     public ResponseEntity<?> deleteBoothByID(
             @Parameter(description = "攤位ID", required = true)
@@ -195,7 +206,7 @@ public class SingleBoothController {
             @PathVariable Integer boothID
     ){
         System.out.println("SingleBoothController: getAllCollaborator >> "+boothID);
-        List<UserListResponse> collaborator = singleBoothService.getAllCollaborator(boothID);
+        List<UserListResponse> collaborator = singleBoothService.getAllColList(boothID);
         return ResponseEntity.status(HttpStatus.OK).body(collaborator);
     }
 

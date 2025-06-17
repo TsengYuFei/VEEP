@@ -326,7 +326,7 @@ public class SingleExpoService {
 
 
     public List<UserListResponse> getAllColList(Integer expoID){
-        System.out.println("SingleExpoService: getAllCollaboratorList >> "+expoID);
+        System.out.println("SingleExpoService: getAllColList >> "+expoID);
         Expo expo = getExpoByID(expoID);
         List<UserListResponse> response;
 
