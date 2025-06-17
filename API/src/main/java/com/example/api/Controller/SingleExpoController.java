@@ -57,6 +57,10 @@ public class SingleExpoController {
                     description = "伺服器錯誤"
             )
     })
+    @PreAuthorize(
+            "hasRole('FOUNDER') and " +
+                    "(@singleExpoService.checkOwner(#expoID) or @singleExpoService.checkCollaborator(#expoID))"
+    )
     @GetMapping("/edit/{expoID}")
     public ResponseEntity<ExpoEditResponse> getExpoEditByID(
             @Parameter(description = "展會ID", required = true)
@@ -88,6 +92,7 @@ public class SingleExpoController {
                     description = "伺服器錯誤"
             )
     })
+    @PreAuthorize("hasRole('FOUNDER')")
     @PostMapping("/{userAccount}")
     public ResponseEntity<ExpoEditResponse> createExpo(
             @Valid @RequestBody ExpoCreateRequest expoCreateRequest
@@ -129,7 +134,10 @@ public class SingleExpoController {
                     description = "伺服器錯誤"
             )
     })
-    @PreAuthorize("@singleExpoService.checkOwner(#expoID)")
+    @PreAuthorize(
+            "hasRole('FOUNDER') and " +
+            "(@singleExpoService.checkOwner(#expoID) or @singleExpoService.checkCollaborator(#expoID))"
+    )
     @PutMapping("/{expoID}")
     public ResponseEntity<ExpoEditResponse> updateExpoByID(
             @Parameter(description = "展會ID", required = true)
@@ -158,7 +166,9 @@ public class SingleExpoController {
                     description = "伺服器錯誤"
             )
     })
-    @PreAuthorize("@singleExpoService.checkOwner(#expoID)")
+    @PreAuthorize(
+            "hasRole('FOUNDER') and @singleExpoService.checkOwner(#expoID)"
+    )
     @DeleteMapping("/{expoID}")
     public ResponseEntity<?> deleteExpoByID(
             @Parameter(description = "展會ID", required = true)
@@ -191,12 +201,12 @@ public class SingleExpoController {
             )
     })
     @GetMapping("/collaborator/{expoID}")
-    public ResponseEntity<List<UserListResponse>> getAllCollaborator(
+    public ResponseEntity<List<UserListResponse>> getAllColList(
             @Parameter(description = "展會ID", required = true)
             @PathVariable Integer expoID
     ){
-        System.out.println("SingleExpoController: getAllCollaborator >> "+expoID);
-        List<UserListResponse> collaborator = singleExpoService.getAllCollaborator(expoID);
+        System.out.println("SingleExpoController: getAllColList >> "+expoID);
+        List<UserListResponse> collaborator = singleExpoService.getAllColList(expoID);
         return ResponseEntity.status(HttpStatus.OK).body(collaborator);
     }
 

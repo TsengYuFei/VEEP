@@ -1,6 +1,5 @@
 package com.example.api.Controller;
 
-import com.example.api.DTO.Response.BoothOverviewResponse;
 import com.example.api.DTO.Response.ExpoOverviewResponse;
 import com.example.api.Service.MultipleExpoService;
 import io.swagger.v3.oas.annotations.Operation;

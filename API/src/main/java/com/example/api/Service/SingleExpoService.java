@@ -36,6 +36,9 @@ public class SingleExpoService {
     private final SingleUserService singleUserService;
 
     @Autowired
+    private final MultipleUserService multipleUserService;
+
+    @Autowired
     private final ExpoColListService colListService;
 
     @Autowired
@@ -59,15 +62,27 @@ public class SingleExpoService {
     }
 
 
-    public void checkOwner(Integer expoID){
-        System.out.println("SingleExpoService: isOwner >> "+expoID);
+    public boolean checkOwner(Integer expoID){
+        System.out.println("SingleExpoService: checkOwner >> "+expoID);
         Expo expo = getExpoByID(expoID);
         String ownerAccount = expo.getOwner().getUserAccount();
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String currentUserAccount = authentication.getName();
 
-        if(!ownerAccount.equals(currentUserAccount)) throw new ForibiddenException("使用者帳號 < "+currentUserAccount+" > 不是展會ID為 < "+expoID+" > 的Owner");
+        return ownerAccount.equals(currentUserAccount);
+    }
+
+
+    public boolean checkCollaborator(Integer expoID){
+        System.out.println("SingleExpoService: checkCollaborator >> "+expoID);
+        List<User> colList = getAllCollaborator(expoID);
+        List<String> colAccounts = multipleUserService.getUsersAccount(colList);
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String currentUserAccount = authentication.getName();
+
+        return colAccounts.contains(currentUserAccount);
     }
 
 
@@ -300,8 +315,18 @@ public class SingleExpoService {
     }
 
 
-    public List<UserListResponse> getAllCollaborator(Integer expoID){
+    private List<User> getAllCollaborator(Integer expoID){
         System.out.println("SingleExpoService: getAllCollaborator >> "+expoID);
+        Expo expo = getExpoByID(expoID);
+        Set<User> users = expo.getCollaborator().getCollaborators();
+
+        return (users != null && !users.isEmpty())?
+                new ArrayList<>(users) : new ArrayList<>();
+    }
+
+
+    public List<UserListResponse> getAllColList(Integer expoID){
+        System.out.println("SingleExpoService: getAllCollaboratorList >> "+expoID);
         Expo expo = getExpoByID(expoID);
         List<UserListResponse> response;
 

@@ -10,6 +10,8 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
+import java.nio.file.AccessDeniedException;
+
 @ControllerAdvice
 public class GlobalExceptionHandler {
     // 400 - 格式請求錯誤、欄位缺失、不合法等
@@ -31,6 +33,10 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ErrorResponseResponse> handleForbiddenException(ForibiddenException exception) {
         ErrorResponseResponse error = new ErrorResponseResponse("Forbidden", exception.getMessage());
         return new ResponseEntity<>(error, HttpStatus.FORBIDDEN);
+    }
+    @ExceptionHandler(AccessDeniedException.class)
+    public ResponseEntity<String> handleAccessDeniedException(AccessDeniedException ex) {
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body("權限不足，禁止存取此資源。");
     }
 
     // 404 - 找不到
