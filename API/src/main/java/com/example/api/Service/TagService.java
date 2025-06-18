@@ -13,7 +13,7 @@ public class TagService {
     private final TagRepository tagRepository;
 
     Tag getTagByName(String name){
-        return  tagRepository.findByName(name);
+        return tagRepository.findByName(name);
     }
 
     Tag addTagIfNotExist(String name){

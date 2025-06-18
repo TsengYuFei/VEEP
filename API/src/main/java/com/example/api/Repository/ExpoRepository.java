@@ -1,6 +1,5 @@
 package com.example.api.Repository;
 
-import com.example.api.Entity.Booth;
 import com.example.api.Entity.Expo;
 import jakarta.validation.constraints.NotNull;
 import org.springframework.data.jpa.repository.EntityGraph;

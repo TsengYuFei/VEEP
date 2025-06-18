@@ -2,6 +2,7 @@ package com.example.api.DTO.Request;
 
 import com.example.api.Entity.OpenMode;
 import com.fasterxml.jackson.annotation.JsonFormat;
+import jakarta.validation.constraints.FutureOrPresent;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.Size;
@@ -25,9 +26,11 @@ public class BoothUpdateRequest {
 
     private Boolean openStatus;
 
+    @FutureOrPresent(message = "The start time of the booth cannot be in the past.")
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime openStart;
 
+    @FutureOrPresent(message = "The end time of the booth cannot be in the past.")
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime openEnd;
 

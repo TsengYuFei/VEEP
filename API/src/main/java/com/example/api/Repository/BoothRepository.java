@@ -1,7 +1,6 @@
 package com.example.api.Repository;
 
 import com.example.api.Entity.Booth;
-import com.example.api.Entity.Expo;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;

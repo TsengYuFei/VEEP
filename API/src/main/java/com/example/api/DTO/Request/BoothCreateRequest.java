@@ -24,9 +24,11 @@ public class BoothCreateRequest {
 
     private Boolean openStatus;
 
+    @FutureOrPresent(message = "The start time of the booth cannot be in the past.")
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime openStart;
 
+    @FutureOrPresent(message = "The end time of the booth cannot be in the past.")
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime openEnd;
 

@@ -2,6 +2,7 @@ package com.example.api.Service;
 
 import com.example.api.DTO.Request.LoginRequest;
 import com.example.api.DTO.Response.LoginResponse;
+import com.example.api.Entity.RefreshToken;
 import com.example.api.Entity.Role;
 import com.example.api.Entity.User;
 import com.example.api.Exception.NotFoundException;
@@ -23,7 +24,10 @@ public class LoginService {
     private final PasswordEncoder passwordEncoder;
 
     @Autowired
-    private JwtUtil jwtUtil;
+    private final JwtUtil jwtUtil;
+
+    @Autowired
+    private final RefreshTokenService refreshTokenService;
 
 
 
@@ -36,7 +40,9 @@ public class LoginService {
         if(user == null) throw new NotFoundException("Can't find the user with email or user account < "+request.getUserAccountOrMail()+" >");
         if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) throw new UnauthorizedException("XX Wrong password XX");
 
-        String token = jwtUtil.generateToken(user.getUserAccount());
-        return new LoginResponse(user.getUserAccount(), token, Role.GENERAL);
+        String accessToken = jwtUtil.generateToken(user.getUserAccount());
+        RefreshToken refreshToken = refreshTokenService.createOrUpdateToken(user.getUserAccount());
+
+        return new LoginResponse(user.getUserAccount(), accessToken, refreshToken.getToken(), Role.GENERAL);
     }
 }

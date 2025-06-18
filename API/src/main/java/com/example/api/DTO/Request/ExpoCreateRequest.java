@@ -28,9 +28,11 @@ public class ExpoCreateRequest {
 
     private Boolean openStatus;
 
+    @FutureOrPresent(message = "The start time of the expo cannot be in the past.")
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime openStart;
 
+    @FutureOrPresent(message = "The end time of the expo cannot be in the past.")
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime openEnd;
 

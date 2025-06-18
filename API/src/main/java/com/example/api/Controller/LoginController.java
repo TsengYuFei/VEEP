@@ -55,9 +55,9 @@ public class LoginController {
             )
     })
     @PostMapping
-    public ResponseEntity<?> login(@Valid @RequestBody LoginRequest loginRequest){
+    public ResponseEntity<LoginResponse> login(@Valid @RequestBody LoginRequest loginRequest){
         System.out.println("LoginController: login");
-        LoginResponse jwt = loginService.login(loginRequest);
-        return ResponseEntity.status(HttpStatus.CREATED).body(jwt);
+        LoginResponse response = loginService.login(loginRequest);
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 }

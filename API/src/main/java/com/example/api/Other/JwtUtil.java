@@ -1,6 +1,7 @@
 package com.example.api.Other;
 
 import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -12,7 +13,11 @@ import java.util.Date;
 public class JwtUtil {
 
     private final SecretKey key;
-    private final long EXPIRATION_TIME = 86400000;  // 24hr
+    // 30 mins
+    public static final long ACCESS_TOKEN_VALIDITY_MINUTES = 30;
+
+    // 7 days
+    public static final long REFRESH_TOKEN_VALIDITY_MINUTES = 60 * 24 * 7;
 
     public JwtUtil(@Value("${jwt.secret}") String jwtSecret) {
         this.key = Keys.hmacShaKeyFor(jwtSecret.getBytes());
@@ -22,8 +27,18 @@ public class JwtUtil {
         return Jwts.builder()
                 .setSubject(account)
                 .setIssuedAt(new Date())
-                .setExpiration(new Date(System.currentTimeMillis() + EXPIRATION_TIME))
+                .setExpiration(new Date(System.currentTimeMillis() + ACCESS_TOKEN_VALIDITY_MINUTES))
                 .signWith(key)
+                .compact();
+    }
+
+
+    public String generateRefreshToken(String account) {
+        return Jwts.builder()
+                .setSubject(account)
+                .setIssuedAt(new Date())
+                .setExpiration(new Date(System.currentTimeMillis() + REFRESH_TOKEN_VALIDITY_MINUTES))
+                .signWith(key, SignatureAlgorithm.HS256)
                 .compact();
     }
 
