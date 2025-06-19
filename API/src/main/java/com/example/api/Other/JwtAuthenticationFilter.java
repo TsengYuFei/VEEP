@@ -32,6 +32,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         String header = request.getHeader("Authorization");
         if(header == null || !header.startsWith("Bearer ")) {
+            System.out.println("JWT Debug: 沒有 Authorization 或格式錯誤");
             filterChain.doFilter(request, response);
             return;
         }
@@ -42,6 +43,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         try {
             userAccount = jwtUtil.getUserAccountFromToken(token);
         } catch (Exception e) {
+            System.out.println("JWT Debug: 解析Token失敗");
             filterChain.doFilter(request, response);
             return;
         }
@@ -53,7 +55,12 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             if(jwtUtil.legalToken(token, userDetails.getUsername())){
                 UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
                 SecurityContextHolder.getContext().setAuthentication(authToken);
+                System.out.println("JWT Debug: 成功驗證，用戶：" + userAccount + " 角色：" + userDetails.getAuthorities());
+            } else {
+                System.out.println("JWT Debug: Token非法");
             }
+        } else {
+            System.out.println("JWT Debug: userAccount為空或已認證");
         }
 
         filterChain.doFilter(request, response);

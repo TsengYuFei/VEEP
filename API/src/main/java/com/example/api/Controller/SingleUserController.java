@@ -264,7 +264,6 @@ public class SingleUserController {
             @PathVariable String userAccount
     ){
         System.out.println("SingleUserController: getAllExpoOverview >> "+userAccount);
-        if(singleUserService.isNotCurrentUser(userAccount) && !singleUserService.isShowCurrentExpo(userAccount)) throw new ForibiddenException("權限不足，無法查看使用者帳號為 < "+userAccount+" > 的使用者所持有的展會");
         List<ExpoOverviewResponse> expos = singleUserService.getAllExpoOverview(userAccount);
         return ResponseEntity.status(HttpStatus.OK).body(expos);
     }
@@ -299,7 +298,6 @@ public class SingleUserController {
             @PathVariable String userAccount
     ){
         System.out.println("SingleUserController: getAllBoothOverview >> "+userAccount);
-        if(singleUserService.isNotCurrentUser(userAccount) && !singleUserService.isShowCurrentBooth(userAccount)) throw new ForibiddenException("權限不足，無法查看使用者帳號為 < "+userAccount+" > 的使用者所持有的攤位");
         List<BoothOverviewResponse> booths = singleUserService.getAllBoothOverview(userAccount);
         return ResponseEntity.status(HttpStatus.OK).body(booths);
     }

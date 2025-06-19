@@ -5,6 +5,7 @@ import com.example.api.DTO.Request.UserUpdateRequest;
 import com.example.api.DTO.Response.*;
 import com.example.api.Entity.Role;
 import com.example.api.Entity.User;
+import com.example.api.Entity.UserRole;
 import com.example.api.Exception.NotFoundException;
 import com.example.api.Repository.UserRepository;
 import com.mysql.cj.exceptions.ClosedOnExpiredPasswordException;
@@ -32,6 +33,12 @@ public class SingleUserService {
 
     @Autowired
     private final PasswordEncoder passwordEncoder;
+
+    @Autowired
+    private final RoleService roleService;
+
+    @Autowired
+    private final UserRoleService userRoleService;
 
 
 
@@ -73,7 +80,13 @@ public class SingleUserService {
         System.out.println("SingleUserService: getUserByAccount >> "+account);
         User user = userRepository.findById(account)
                 .orElseThrow(() -> new NotFoundException("找不到使用者帳號為 < "+ account+" > 的使用者"));
-        return UserDetailResponse.fromUser(user);
+
+        UserDetailResponse response =  UserDetailResponse.fromUser(user);
+        UserRole userRole = userRoleService.getUserRoleByUser(user);
+        String roleName = userRole.getRole().getName();
+        response.setRoleName(roleName);
+
+        return response;
     }
 
 
@@ -81,7 +94,13 @@ public class SingleUserService {
         System.out.println("SingleUserService: getUserOverviewByAccount >> "+account);
         User user = userRepository.findById(account)
                 .orElseThrow(() -> new NotFoundException("找不到使用者帳號為 < "+ account+" > 的使用者"));
-        return UserOverviewResponse.fromUser(user);
+
+        UserOverviewResponse response =  UserOverviewResponse.fromUser(user);
+        UserRole userRole = userRoleService.getUserRoleByUser(user);
+        String roleName = userRole.getRole().getName();
+        response.setRoleName(roleName);
+
+        return response;
     }
 
 
@@ -89,7 +108,13 @@ public class SingleUserService {
         System.out.println("SingleUserService: getUserEditByAccount >> "+account);
         User user = userRepository.findById(account)
                 .orElseThrow(() -> new NotFoundException("找不到使用者帳號為 < "+ account+" > 的使用者"));
-        return UserEditResponse.fromUser(user);
+
+        UserEditResponse response =  UserEditResponse.fromUser(user);
+        UserRole userRole = userRoleService.getUserRoleByUser(user);
+        String roleName = userRole.getRole().getName();
+        response.setRoleName(roleName);
+
+        return response;
     }
 
 
@@ -113,9 +138,17 @@ public class SingleUserService {
         newUser.setMail(request.getMail());
         newUser.setAvatar(updateIfNotBlank(null, request.getAvatar()));
         newUser.setBirthday(request.getBirthday());
-        newUser.setRole(request.getRole());
 
         userRepository.save(newUser);
+
+        // 設定初始role
+        Role generalRole = roleService.getRoleByName("GENERAL");
+        UserRole userRole = new UserRole();
+        userRole.setRole(generalRole);
+        userRole.setUser(newUser);
+
+        userRoleService.saveUserRole(userRole);
+
         return newUser.getUserAccount();
     }
 
@@ -179,10 +212,13 @@ public class SingleUserService {
     public void switchRole(String account){
         System.out.println("SingleUserService: switchRole >> "+account);
         User user = getUserByAccount(account);
+        UserRole userRole = userRoleService.getUserRoleByUser(user);
 
-        if(user.getRole() == Role.GENERAL) user.setRole(Role.FOUNDER);
-        else user.setRole(Role.GENERAL);
+        String roleName = userRole.getRole().getName();
+        String newRoleName = roleName.equals("GENERAL")? "FOUNDER": "GENERAL";
+        Role newRole = roleService.getRoleByName(newRoleName);
 
-        userRepository.save(user);
+        userRole.setRole(newRole);
+        userRoleService.saveUserRole(userRole);
     }
 }

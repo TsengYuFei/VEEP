@@ -1,6 +1,7 @@
 package com.example.api.Service;
 
 import com.example.api.Entity.User;
+import com.example.api.Entity.UserRole;
 import com.example.api.Exception.NotFoundException;
 import com.example.api.Repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -16,6 +17,9 @@ public class MyUserDetailService implements UserDetailsService {
     @Autowired
     private final UserRepository userRepository;
 
+    @Autowired
+    private final UserRoleService userRoleService;
+
 
 
     // 回傳Spring Security認得的格式
@@ -24,10 +28,13 @@ public class MyUserDetailService implements UserDetailsService {
         User user = userRepository.findById(account)
                 .orElseThrow(() -> new NotFoundException("找不到使用者帳號為 < "+ account+" > 的使用者"));
 
+        UserRole userRole = userRoleService.getUserRoleByUser(user);
+        String roleName = userRole.getRole().getName();
+
         return org.springframework.security.core.userdetails.User
                 .withUsername(account)
                 .password(user.getPassword())
-                .authorities("ROLE_"+user.getRole().toString())
+                .authorities("ROLE_"+roleName)
                 .build();
     }
 }

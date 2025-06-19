@@ -3,7 +3,6 @@ package com.example.api.Service;
 import com.example.api.DTO.Request.LoginRequest;
 import com.example.api.DTO.Response.LoginResponse;
 import com.example.api.Entity.RefreshToken;
-import com.example.api.Entity.Role;
 import com.example.api.Entity.User;
 import com.example.api.Exception.NotFoundException;
 import com.example.api.Exception.UnauthorizedException;
@@ -43,6 +42,6 @@ public class LoginService {
         String accessToken = jwtUtil.generateToken(user.getUserAccount());
         RefreshToken refreshToken = refreshTokenService.createOrUpdateToken(user.getUserAccount());
 
-        return new LoginResponse(user.getUserAccount(), accessToken, refreshToken.getToken(), Role.GENERAL);
+        return new LoginResponse(user.getUserAccount(), accessToken, refreshToken.getToken());
     }
 }

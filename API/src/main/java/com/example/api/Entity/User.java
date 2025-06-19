@@ -61,10 +61,6 @@ public class User{
     @Column(name = "showCurrentBooth", nullable = false)
     private Boolean showCurrentBooth = true;
 
-    @Enumerated(EnumType.STRING)
-    @Column(name = "role", nullable = false)
-    private Role role = Role.GENERAL;
-
     @OneToMany(mappedBy = "owner", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonManagedReference
     private List<Booth> boothList = new ArrayList<>();

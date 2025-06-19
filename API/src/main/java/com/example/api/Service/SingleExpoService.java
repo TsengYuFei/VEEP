@@ -58,40 +58,40 @@ public class SingleExpoService {
     }
 
 
-    public boolean isFounderAndOwner(Integer expoID){
-        System.out.println("SingleExpoService: isFounderAndOwner >> "+expoID);
-        Expo expo = getExpoByID(expoID);
-        String ownerAccount = expo.getOwner().getUserAccount();
-
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String currentUserAccount = authentication.getName();
-
-        UserOverviewResponse userOverview = singleUserService.getUserOverviewByAccount(currentUserAccount);
-        Role role = userOverview.getRole();
-
-        return ownerAccount.equals(currentUserAccount) && role.equals(Role.FOUNDER);
-    }
-
-
-    public boolean isFounderAndCollaborator(Integer expoID){
-        System.out.println("SingleExpoService: isFounderAndCollaborator >> "+expoID);
-        List<User> colList = getAllCollaborator(expoID);
-        List<String> colAccounts = multipleUserService.getUsersAccount(colList);
-
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String currentUserAccount = authentication.getName();
-
-        UserOverviewResponse userOverview = singleUserService.getUserOverviewByAccount(currentUserAccount);
-        Role role = userOverview.getRole();
-
-        return colAccounts.contains(currentUserAccount) && role.equals(Role.FOUNDER);
-    }
+//    public boolean isFounderAndOwner(Integer expoID){
+//        System.out.println("SingleExpoService: isFounderAndOwner >> "+expoID);
+//        Expo expo = getExpoByID(expoID);
+//        String ownerAccount = expo.getOwner().getUserAccount();
+//
+//        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+//        String currentUserAccount = authentication.getName();
+//
+//        UserOverviewResponse userOverview = singleUserService.getUserOverviewByAccount(currentUserAccount);
+//        RoleService role = userOverview.getRole();
+//
+//        return ownerAccount.equals(currentUserAccount) && role.equals(RoleService.FOUNDER);
+//    }
 
 
-    public boolean canEdit(Integer expoID){
-        System.out.println("SingleExpoService: canEdit >> "+expoID);
-        return isFounderAndOwner(expoID) || isFounderAndCollaborator(expoID);
-    }
+//    public boolean isFounderAndCollaborator(Integer expoID){
+//        System.out.println("SingleExpoService: isFounderAndCollaborator >> "+expoID);
+//        List<User> colList = getAllCollaborator(expoID);
+//        List<String> colAccounts = multipleUserService.getUsersAccount(colList);
+//
+//        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+//        String currentUserAccount = authentication.getName();
+//
+//        UserOverviewResponse userOverview = singleUserService.getUserOverviewByAccount(currentUserAccount);
+//        RoleService role = userOverview.getRole();
+//
+//        return colAccounts.contains(currentUserAccount) && role.equals(RoleService.FOUNDER);
+//    }
+
+
+//    public boolean canEdit(Integer expoID){
+//        System.out.println("SingleExpoService: canEdit >> "+expoID);
+//        return isFounderAndOwner(expoID) || isFounderAndCollaborator(expoID);
+//    }
 
 
     public ExpoEditResponse getExpoEditByID(Integer expoID) {

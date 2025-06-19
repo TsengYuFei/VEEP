@@ -64,48 +64,48 @@ public class SingleBoothService {
     }
 
 
-    public boolean isFounderAndOwner(Integer boothID){
-        System.out.println("SingleBoothService: isFounderAndOwner >> "+boothID);
-        Booth booth = getBoothByID(boothID);
-        String ownerAccount = booth.getOwner().getUserAccount();
-
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String currentUserAccount = authentication.getName();
-
-        UserOverviewResponse userOverview = singleUserService.getUserOverviewByAccount(currentUserAccount);
-        Role role = userOverview.getRole();
-
-        return ownerAccount.equals(currentUserAccount) && role.equals(Role.FOUNDER);
-    }
-
-
-    public boolean isFounderAndCollaborator(Integer boothID){
-        System.out.println("SingleBoothService: isFounderAndCollaborator >> "+boothID);
-        List<User> colList = getAllCollaborator(boothID);
-        List<String> colAccounts = multipleUserService.getUsersAccount(colList);
-
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String currentUserAccount = authentication.getName();
-
-        UserOverviewResponse userOverview = singleUserService.getUserOverviewByAccount(currentUserAccount);
-        Role role = userOverview.getRole();
-
-        return colAccounts.contains(currentUserAccount) && role.equals(Role.FOUNDER);
-    }
+//    public boolean isFounderAndOwner(Integer boothID){
+//        System.out.println("SingleBoothService: isFounderAndOwner >> "+boothID);
+//        Booth booth = getBoothByID(boothID);
+//        String ownerAccount = booth.getOwner().getUserAccount();
+//
+//        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+//        String currentUserAccount = authentication.getName();
+//
+//        UserOverviewResponse userOverview = singleUserService.getUserOverviewByAccount(currentUserAccount);
+//        RoleService role = userOverview.getRole();
+//
+//        return ownerAccount.equals(currentUserAccount) && role.equals(RoleService.FOUNDER);
+//    }
 
 
-    public boolean canEdit(Integer boothID){
-        System.out.println("SingleBoothService: canEdit >> "+boothID);
-        return isFounderAndOwner(boothID) || isFounderAndCollaborator(boothID);
-    }
+//    public boolean isFounderAndCollaborator(Integer boothID){
+//        System.out.println("SingleBoothService: isFounderAndCollaborator >> "+boothID);
+//        List<User> colList = getAllCollaborator(boothID);
+//        List<String> colAccounts = multipleUserService.getUsersAccount(colList);
+//
+//        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+//        String currentUserAccount = authentication.getName();
+//
+//        UserOverviewResponse userOverview = singleUserService.getUserOverviewByAccount(currentUserAccount);
+//        RoleService role = userOverview.getRole();
+//
+//        return colAccounts.contains(currentUserAccount) && role.equals(RoleService.FOUNDER);
+//    }
 
 
-    public boolean canDelete(Integer boothID){
-        System.out.println("SingleBoothService: canDelete >> "+boothID);
-        Booth booth = getBoothByID(boothID);
-        Expo expo = booth.getExpo();
-        return isFounderAndOwner(boothID) || singleExpoService.canEdit(expo.getExpoID());
-    }
+//    public boolean canEdit(Integer boothID){
+//        System.out.println("SingleBoothService: canEdit >> "+boothID);
+//        return isFounderAndOwner(boothID) || isFounderAndCollaborator(boothID);
+//    }
+
+
+//    public boolean canDelete(Integer boothID){
+//        System.out.println("SingleBoothService: canDelete >> "+boothID);
+//        Booth booth = getBoothByID(boothID);
+//        Expo expo = booth.getExpo();
+//        return isFounderAndOwner(boothID) || singleExpoService.canEdit(expo.getExpoID());
+//    }
 
 
     public BoothEditResponse getBoothEditByID(Integer boothID) {

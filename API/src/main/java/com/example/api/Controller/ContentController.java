@@ -111,7 +111,6 @@ public class ContentController {
             @Valid @RequestBody ContentUpdateRequest contentRequest
     ){
         System.out.println("ContentController: updateContentEditByBoothIDAndNumber >> "+boothID+", "+number);
-        if(!singleBoothService.canEdit(boothID)) throw new ForibiddenException("權限不足，無法更新攤位ID為 < "+boothID+" > 攤位的第 < "+number+" > 號內容資訊");
 
         contentService.updateContentByBoothIDAndNumber(boothID, number, contentRequest);
         ContentEditResponse content = contentService.getContentEditByBoothIDAndNumber(boothID, number);

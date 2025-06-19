@@ -101,7 +101,6 @@ public class SingleBoothController {
             @Valid @RequestBody BoothCreateRequest boothRequest
     ){
         System.out.println("SingleBoothController: createBooth >> "+expoID);
-        if(!singleExpoService.canEdit(expoID)) throw new ForibiddenException("權限不足，無法新增展會ID為 < "+expoID+" > 的攤位");
 
         Integer boothID = singleBoothService.createBooth(userAccount, expoID, boothRequest);
         BoothEditResponse booth = singleBoothService.getBoothEditByID(boothID);
@@ -142,7 +141,6 @@ public class SingleBoothController {
             @Valid @RequestBody BoothUpdateRequest boothRequest
     ){
         System.out.println("SingleBoothController: updateBoothByID >> "+boothID);
-        if(!singleBoothService.canEdit(boothID)) throw new ForibiddenException("權限不足，無法更新攤位ID為 < "+boothID+" > 的攤位資訊");
 
         singleBoothService.updateBoothByID(boothID, boothRequest);
         BoothEditResponse booth = singleBoothService.getBoothEditByID(boothID);
@@ -171,7 +169,6 @@ public class SingleBoothController {
             @PathVariable Integer boothID
     ){
         System.out.println("SingleBoothController: deleteBoothByID >> "+boothID);
-        if(!singleBoothService.canDelete(boothID)) throw new ForibiddenException("權限不足，無法刪除攤位ID為 < "+boothID+" > 的攤位");
 
         singleBoothService.deleteBoothByID(boothID);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();

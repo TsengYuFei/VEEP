@@ -1,7 +1,6 @@
 package com.example.api.Other;
 
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -27,7 +26,7 @@ public class JwtUtil {
         return Jwts.builder()
                 .setSubject(account)
                 .setIssuedAt(new Date())
-                .setExpiration(new Date(System.currentTimeMillis() + ACCESS_TOKEN_VALIDITY_MINUTES))
+                .setExpiration(new Date(System.currentTimeMillis() + ACCESS_TOKEN_VALIDITY_MINUTES * 60 * 1000))
                 .signWith(key)
                 .compact();
     }
@@ -37,20 +36,35 @@ public class JwtUtil {
         return Jwts.builder()
                 .setSubject(account)
                 .setIssuedAt(new Date())
-                .setExpiration(new Date(System.currentTimeMillis() + REFRESH_TOKEN_VALIDITY_MINUTES))
+                .setExpiration(new Date(System.currentTimeMillis() + REFRESH_TOKEN_VALIDITY_MINUTES * 60 * 1000))
                 .signWith(key, SignatureAlgorithm.HS256)
                 .compact();
     }
 
 
     public String getUserAccountFromToken(String token) {
-        return Jwts.parserBuilder()
-                .setSigningKey(key)
-                .build()
-                .parseClaimsJws(token)
-                .getBody()
-                .getSubject();
+        try {
+            Claims claims = Jwts.parser()
+                    .setSigningKey(key)
+                    .parseClaimsJws(token)
+                    .getBody();
+            System.out.println("JWT Debug: Claims 內容：" + claims);
+            return claims.getSubject(); // userAccount
+        } catch (ExpiredJwtException e) {
+            System.out.println("JWT Debug: Token 過期");
+            throw e;
+        } catch (SignatureException e) {
+            System.out.println("JWT Debug: 簽名錯誤");
+            throw e;
+        } catch (MalformedJwtException e) {
+            System.out.println("JWT Debug: Token 格式錯誤");
+            throw e;
+        } catch (Exception e) {
+            System.out.println("JWT Debug: 其他錯誤：" + e.getMessage());
+            throw e;
+        }
     }
+
 
 
     public boolean legalToken(String token, String account) {

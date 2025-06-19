@@ -1,6 +1,5 @@
 package com.example.api.DTO.Request;
 
-import com.example.api.Entity.Role;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.validation.constraints.*;
 import lombok.Data;
@@ -34,7 +33,4 @@ public class UserCreateRequest {
     @Past(message = "生日必須為過去的日期")
     @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDate birthday;
-
-    @NotNull(message = "The user role cannot be empty.")
-    private Role role;
 }

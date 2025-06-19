@@ -1,6 +1,5 @@
 package com.example.api.DTO.Response;
 
-import com.example.api.Entity.Role;
 import com.example.api.Entity.User;
 import lombok.Data;
 import org.springframework.stereotype.Component;
@@ -23,7 +22,7 @@ public class UserEditResponse {
     private Boolean showHistory;
     private Boolean showCurrentExpo;
     private Boolean showCurrentBooth;
-    private Role role;
+    private String roleName;
 
     public static UserEditResponse fromUser(User user) {
         UserEditResponse response = new UserEditResponse();
@@ -41,7 +40,6 @@ public class UserEditResponse {
         response.showHistory = user.getShowHistory();
         response.showCurrentExpo = user.getShowCurrentExpo();
         response.showCurrentBooth = user.getShowCurrentBooth();
-        response.role = user.getRole();
 
         return response;
     }
