@@ -48,7 +48,7 @@ public class JwtUtil {
                     .setSigningKey(key)
                     .parseClaimsJws(token)
                     .getBody();
-            System.out.println("JWT Debug: Claims 內容：" + claims);
+//            System.out.println("JWT Debug: Claims 內容：" + claims);
             return claims.getSubject(); // userAccount
         } catch (ExpiredJwtException e) {
             System.out.println("JWT Debug: Token 過期");

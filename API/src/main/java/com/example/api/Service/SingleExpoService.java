@@ -282,13 +282,16 @@ public class SingleExpoService {
     }
 
 
-    private List<User> getAllCollaborator(Integer expoID){
+    public List<String> getAllColAccountList(Integer expoID){
         System.out.println("SingleExpoService: getAllCollaborator >> "+expoID);
         Expo expo = getExpoByID(expoID);
         Set<User> users = expo.getCollaborator().getCollaborators();
 
         return (users != null && !users.isEmpty())?
-                new ArrayList<>(users) : new ArrayList<>();
+                users.stream()
+                        .map(User::getUserAccount)
+                        .toList()
+                : new ArrayList<>();
     }
 
 

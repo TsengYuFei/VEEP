@@ -127,7 +127,7 @@ public class SingleUserController {
     })
     @GetMapping("/edit")
     public ResponseEntity<UserEditResponse> getUserEditByAccount() {
-        System.out.println("SingleUserController: getUserEditByAccount >> ");
+        System.out.print("SingleUserController: getUserEditByAccount >> ");
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String userAccount = authentication.getName();
         System.out.println(userAccount);
@@ -327,7 +327,7 @@ public class SingleUserController {
     })
     @PutMapping("/switch_role")
     public ResponseEntity<UserOverviewResponse> switchRole(){
-        System.out.println("SingleUserController: switchRole >> ");
+        System.out.print("SingleUserController: switchRole >> ");
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String userAccount = authentication.getName();
         System.out.println(userAccount);

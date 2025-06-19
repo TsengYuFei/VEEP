@@ -2,9 +2,12 @@ package com.example.api.Other;
 
 import com.example.api.DTO.Response.ErrorResponseResponse;
 import com.example.api.Exception.*;
+import org.springframework.core.Ordered;
+import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.security.authorization.AuthorizationDeniedException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -13,6 +16,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import java.nio.file.AccessDeniedException;
 
 @ControllerAdvice
+@Order(Ordered.HIGHEST_PRECEDENCE)
 public class GlobalExceptionHandler {
     // 400 - 格式請求錯誤、欄位缺失、不合法等
     @ExceptionHandler(BadRequestException.class)
@@ -36,8 +40,8 @@ public class GlobalExceptionHandler {
     }
 
     // 403 - 權限不足(Spring Security丟)
-    @ExceptionHandler(AccessDeniedException.class)
-    public ResponseEntity<ErrorResponseResponse> handleAccessDeniedException(AccessDeniedException exception) {
+    @ExceptionHandler({AccessDeniedException.class, AuthorizationDeniedException.class})
+    public ResponseEntity<ErrorResponseResponse> handleAccessDeniedException(Exception exception) {
         ErrorResponseResponse error = new ErrorResponseResponse("Forbidden", "權限不足，禁止存取此資源。");
         return new ResponseEntity<>(error, HttpStatus.FORBIDDEN);
     }
@@ -90,6 +94,14 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorResponseResponse> handle(Exception exception) {
+        exception.printStackTrace();  // 看完整堆疊
+        System.out.println("GlobalExceptionHandler 捕捉到 Exception: " + exception.getClass().getName());
+
+        if (exception instanceof AccessDeniedException) {
+            ErrorResponseResponse error = new ErrorResponseResponse("Forbidden", "權限不足，禁止存取此資源。");
+            return new ResponseEntity<>(error, HttpStatus.FORBIDDEN);
+        }
+
         ErrorResponseResponse error = new ErrorResponseResponse("Internal Server Error", exception.getMessage());
         return new ResponseEntity<>(error, HttpStatus.INTERNAL_SERVER_ERROR);
     }

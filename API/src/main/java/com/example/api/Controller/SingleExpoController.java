@@ -5,6 +5,7 @@ import com.example.api.DTO.Response.BoothOverviewResponse;
 import com.example.api.DTO.Response.ExpoEditResponse;
 import com.example.api.DTO.Request.ExpoCreateRequest;
 import com.example.api.DTO.Response.UserListResponse;
+import com.example.api.Security.ExpoSecurity;
 import com.example.api.Service.SingleExpoService;
 import com.example.api.Service.SingleUserService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -20,6 +21,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
@@ -33,6 +35,9 @@ import java.util.List;
 public class SingleExpoController {
     @Autowired
     private final SingleExpoService singleExpoService;
+
+    @Autowired
+    private final ExpoSecurity expoSecurity;
 
 
 
@@ -90,6 +95,7 @@ public class SingleExpoController {
                     description = "伺服器錯誤"
             )
     })
+    @PreAuthorize("hasRole('FOUNDER')")
     @PostMapping()
     public ResponseEntity<ExpoEditResponse> createExpo(
             @Valid @RequestBody ExpoCreateRequest expoCreateRequest
@@ -131,6 +137,7 @@ public class SingleExpoController {
                     description = "伺服器錯誤"
             )
     })
+    @PreAuthorize("hasRole('FOUNDER') and @expoSecurity.isCollaborator(#expoID)")
     @PutMapping("/{expoID}")
     public ResponseEntity<ExpoEditResponse> updateExpoByID(
             @Parameter(description = "展會ID", required = true)
@@ -160,6 +167,7 @@ public class SingleExpoController {
                     description = "伺服器錯誤"
             )
     })
+    @PreAuthorize("hasRole('FOUNDER') and @expoSecurity.isOwner(#expoID)")
     @DeleteMapping("/{expoID}")
     public ResponseEntity<?> deleteExpoByID(
             @Parameter(description = "展會ID", required = true)
