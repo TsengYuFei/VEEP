@@ -5,15 +5,12 @@ import com.example.api.DTO.Request.BoothUpdateRequest;
 import com.example.api.DTO.Response.BoothEditResponse;
 import com.example.api.DTO.Response.TagResponse;
 import com.example.api.DTO.Response.UserListResponse;
-import com.example.api.DTO.Response.UserOverviewResponse;
 import com.example.api.Entity.*;
 import com.example.api.Exception.NotFoundException;
 import com.example.api.Exception.UnprocessableEntityException;
 import com.example.api.Repository.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -52,9 +49,6 @@ public class SingleBoothService {
     @Autowired
     private final ImageService imageService;
 
-    @Autowired
-    private final MultipleUserService multipleUserService;
-
 
 
     Booth getBoothByID(Integer boothID) {
@@ -62,50 +56,6 @@ public class SingleBoothService {
         return boothRepository.findById(boothID)
                 .orElseThrow(() -> new NotFoundException("找不到攤位ID為 < "+ boothID+" > 的攤位"));
     }
-
-
-//    public boolean isFounderAndOwner(Integer boothID){
-//        System.out.println("SingleBoothService: isFounderAndOwner >> "+boothID);
-//        Booth booth = getBoothByID(boothID);
-//        String ownerAccount = booth.getOwner().getUserAccount();
-//
-//        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-//        String currentUserAccount = authentication.getName();
-//
-//        UserOverviewResponse userOverview = singleUserService.getUserOverviewByAccount(currentUserAccount);
-//        RoleService role = userOverview.getRole();
-//
-//        return ownerAccount.equals(currentUserAccount) && role.equals(RoleService.FOUNDER);
-//    }
-
-
-//    public boolean isFounderAndCollaborator(Integer boothID){
-//        System.out.println("SingleBoothService: isFounderAndCollaborator >> "+boothID);
-//        List<User> colList = getAllCollaborator(boothID);
-//        List<String> colAccounts = multipleUserService.getUsersAccount(colList);
-//
-//        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-//        String currentUserAccount = authentication.getName();
-//
-//        UserOverviewResponse userOverview = singleUserService.getUserOverviewByAccount(currentUserAccount);
-//        RoleService role = userOverview.getRole();
-//
-//        return colAccounts.contains(currentUserAccount) && role.equals(RoleService.FOUNDER);
-//    }
-
-
-//    public boolean canEdit(Integer boothID){
-//        System.out.println("SingleBoothService: canEdit >> "+boothID);
-//        return isFounderAndOwner(boothID) || isFounderAndCollaborator(boothID);
-//    }
-
-
-//    public boolean canDelete(Integer boothID){
-//        System.out.println("SingleBoothService: canDelete >> "+boothID);
-//        Booth booth = getBoothByID(boothID);
-//        Expo expo = booth.getExpo();
-//        return isFounderAndOwner(boothID) || singleExpoService.canEdit(expo.getExpoID());
-//    }
 
 
     public BoothEditResponse getBoothEditByID(Integer boothID) {

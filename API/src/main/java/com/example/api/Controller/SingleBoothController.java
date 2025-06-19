@@ -35,8 +35,6 @@ public class SingleBoothController {
     @Autowired
     private final SingleBoothService singleBoothService;
 
-    @Autowired
-    private final SingleExpoService singleExpoService;
 
 
     @Operation(
@@ -92,15 +90,16 @@ public class SingleBoothController {
                     description = "伺服器錯誤"
             )
     })
-    @PostMapping("/{expoID}/{userAccount}")
+    @PostMapping("/{expoID}")
     public ResponseEntity<BoothEditResponse> createBooth(
-            @Parameter(description = "使用者帳號(指定Booth的Owner)", required = true)
-            @PathVariable String userAccount,
             @Parameter(description = "攤位所屬展會的ID", required = true)
             @PathVariable Integer expoID,
             @Valid @RequestBody BoothCreateRequest boothRequest
     ){
-        System.out.println("SingleBoothController: createBooth >> "+expoID);
+        System.out.print("SingleBoothController: createBooth >> ");
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String userAccount = authentication.getName();
+        System.out.println(userAccount);
 
         Integer boothID = singleBoothService.createBooth(userAccount, expoID, boothRequest);
         BoothEditResponse booth = singleBoothService.getBoothEditByID(boothID);

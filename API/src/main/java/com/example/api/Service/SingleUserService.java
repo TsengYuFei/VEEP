@@ -78,8 +78,7 @@ public class SingleUserService {
 
     public UserDetailResponse getUserDetailByAccount(String account){
         System.out.println("SingleUserService: getUserByAccount >> "+account);
-        User user = userRepository.findById(account)
-                .orElseThrow(() -> new NotFoundException("找不到使用者帳號為 < "+ account+" > 的使用者"));
+        User user = getUserByAccount(account);
 
         UserDetailResponse response =  UserDetailResponse.fromUser(user);
         UserRole userRole = userRoleService.getUserRoleByUser(user);
@@ -92,8 +91,7 @@ public class SingleUserService {
 
     public UserOverviewResponse getUserOverviewByAccount(String account){
         System.out.println("SingleUserService: getUserOverviewByAccount >> "+account);
-        User user = userRepository.findById(account)
-                .orElseThrow(() -> new NotFoundException("找不到使用者帳號為 < "+ account+" > 的使用者"));
+        User user = getUserByAccount(account);
 
         UserOverviewResponse response =  UserOverviewResponse.fromUser(user);
         UserRole userRole = userRoleService.getUserRoleByUser(user);
@@ -106,8 +104,7 @@ public class SingleUserService {
 
     public UserEditResponse getUserEditByAccount(String account){
         System.out.println("SingleUserService: getUserEditByAccount >> "+account);
-        User user = userRepository.findById(account)
-                .orElseThrow(() -> new NotFoundException("找不到使用者帳號為 < "+ account+" > 的使用者"));
+        User user = getUserByAccount(account);
 
         UserEditResponse response =  UserEditResponse.fromUser(user);
         UserRole userRole = userRoleService.getUserRoleByUser(user);

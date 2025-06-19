@@ -5,8 +5,6 @@ import com.example.api.DTO.Response.BoothOverviewResponse;
 import com.example.api.DTO.Response.ExpoEditResponse;
 import com.example.api.DTO.Request.ExpoCreateRequest;
 import com.example.api.DTO.Response.UserListResponse;
-import com.example.api.DTO.Response.UserOverviewResponse;
-import com.example.api.Exception.ForibiddenException;
 import com.example.api.Service.SingleExpoService;
 import com.example.api.Service.SingleUserService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -36,8 +34,6 @@ public class SingleExpoController {
     @Autowired
     private final SingleExpoService singleExpoService;
 
-    @Autowired
-    private final SingleUserService singleUserService;
 
 
     @Operation(
@@ -102,8 +98,6 @@ public class SingleExpoController {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String userAccount = authentication.getName();
         System.out.println(userAccount);
-
-        UserOverviewResponse userOverview = singleUserService.getUserOverviewByAccount(userAccount);
 
         Integer expoID = singleExpoService.createExpo(userAccount, expoCreateRequest);
         ExpoEditResponse expo = singleExpoService.getExpoEditByID(expoID);
