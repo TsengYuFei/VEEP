@@ -41,7 +41,6 @@ public class ExpoSecurity {
     }
 
 
-
     public boolean isCollaborator(Integer expoID){
         System.out.println("ExpoSecurity: isCollaborator >> "+expoID);
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();

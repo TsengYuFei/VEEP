@@ -90,6 +90,7 @@ public class SingleBoothController {
                     description = "伺服器錯誤"
             )
     })
+    @PreAuthorize("hasRole('FOUNDER')")
     @PostMapping("/{expoID}")
     public ResponseEntity<BoothEditResponse> createBooth(
             @Parameter(description = "攤位所屬展會的ID", required = true)
@@ -133,6 +134,7 @@ public class SingleBoothController {
                     description = "伺服器錯誤"
             )
     })
+    @PreAuthorize("hasRole('FOUNDER') and @boothSecurity.isCollaborator(#boothID)")
     @PutMapping("/{boothID}")
     public ResponseEntity<BoothEditResponse> updateBoothByID(
             @Parameter(description = "攤位ID", required = true)
@@ -162,6 +164,7 @@ public class SingleBoothController {
                     description = "伺服器錯誤"
             )
     })
+    @PreAuthorize("hasRole('FOUNDER') and @boothSecurity.isOwner(#boothID)")
     @DeleteMapping("/{boothID}")
     public ResponseEntity<?> deleteBoothByID(
             @Parameter(description = "攤位ID", required = true)

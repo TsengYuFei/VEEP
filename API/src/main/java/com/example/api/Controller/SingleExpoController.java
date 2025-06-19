@@ -36,9 +36,6 @@ public class SingleExpoController {
     @Autowired
     private final SingleExpoService singleExpoService;
 
-    @Autowired
-    private final ExpoSecurity expoSecurity;
-
 
 
     @Operation(

@@ -254,13 +254,29 @@ public class SingleBoothService {
     }
 
 
-    private List<User> getAllCollaborator(Integer boothID){
-        System.out.println("SingleBoothService: getAllCollaborator >> "+boothID);
+    public List<String> getAllColAccountList(Integer boothID){
+        System.out.println("SingleBoothService: getAllColAccountList >> "+boothID);
         Booth booth = getBoothByID(boothID);
         Set<User> users = booth.getCollaborator().getCollaborators();
 
         return (users != null && !users.isEmpty())?
-                new ArrayList<>(users) : new ArrayList<>();
+                users.stream()
+                        .map(User::getUserAccount)
+                        .toList()
+                : new ArrayList<>();
+    }
+
+
+    public List<String> getAllStaffAccountList(Integer boothID){
+        System.out.println("SingleBoothService: getAllStaffAccountList >> "+boothID);
+        Booth booth = getBoothByID(boothID);
+        Set<User> users = booth.getStaff().getStaffs();
+
+        return (users != null && !users.isEmpty())?
+                users.stream()
+                        .map(User::getUserAccount)
+                        .toList()
+                : new ArrayList<>();
     }
 
 
