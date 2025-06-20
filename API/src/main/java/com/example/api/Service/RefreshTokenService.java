@@ -8,6 +8,7 @@ import com.example.api.Repository.RefreshTokenRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
@@ -69,5 +70,12 @@ public class RefreshTokenService {
     public void saveToken(RefreshToken token){
         System.out.println("RefreshTokenService: saveToken >> "+token);
         refreshTokenRepository.save(token);
+    }
+
+
+    @Transactional
+    public void deleteTokenByToken(String token){
+        System.out.println("RefreshTokenService: deleteTokenByToken >> "+token);
+        refreshTokenRepository.deleteByToken(token);
     }
 }

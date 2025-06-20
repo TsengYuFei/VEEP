@@ -1,6 +1,7 @@
 package com.example.api.Controller;
 
 import com.example.api.DTO.Request.LoginRequest;
+import com.example.api.DTO.Request.LogoutRequest;
 import com.example.api.DTO.Response.LoginResponse;
 import com.example.api.Service.LoginService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -19,8 +20,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-@Tag(name = "登入")
-@RequestMapping("/login")
+@Tag(name = "登入登出")
+@RequestMapping("/account")
 @RestController
 @RequiredArgsConstructor
 public class LoginController {
@@ -54,10 +55,31 @@ public class LoginController {
                     description = "伺服器錯誤"
             )
     })
-    @PostMapping
+    @PostMapping("/login")
     public ResponseEntity<LoginResponse> login(@Valid @RequestBody LoginRequest loginRequest){
         System.out.println("LoginController: login");
         LoginResponse response = loginService.login(loginRequest);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
+    }
+
+
+    @Operation(
+            summary = "登出"
+    )
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "204",
+                    description = "成功登出"
+            ),
+            @ApiResponse(
+                    responseCode = "500",
+                    description = "伺服器錯誤"
+            )
+    })
+    @PostMapping("/logout")
+    public ResponseEntity<?> logout(@Valid @RequestBody LogoutRequest logoutRequest){
+        System.out.println("LoginController: logout");
+        loginService.logout(logoutRequest);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 }

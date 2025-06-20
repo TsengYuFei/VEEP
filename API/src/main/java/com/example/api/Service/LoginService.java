@@ -1,6 +1,7 @@
 package com.example.api.Service;
 
 import com.example.api.DTO.Request.LoginRequest;
+import com.example.api.DTO.Request.LogoutRequest;
 import com.example.api.DTO.Response.LoginResponse;
 import com.example.api.Entity.RefreshToken;
 import com.example.api.Entity.User;
@@ -43,5 +44,11 @@ public class LoginService {
         RefreshToken refreshToken = refreshTokenService.createOrUpdateToken(user.getUserAccount());
 
         return new LoginResponse(user.getUserAccount(), accessToken, refreshToken.getToken());
+    }
+
+
+    public void logout(LogoutRequest request){
+        System.out.println("LoginService: logout");
+        refreshTokenService.deleteTokenByToken(request.getRefreshToken());
     }
 }
