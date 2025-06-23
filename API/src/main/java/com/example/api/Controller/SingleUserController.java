@@ -3,6 +3,7 @@ package com.example.api.Controller;
 import com.example.api.DTO.Request.UserCreateRequest;
 import com.example.api.DTO.Request.UserUpdateRequest;
 import com.example.api.DTO.Response.*;
+import com.example.api.Entity.User;
 import com.example.api.Exception.ForibiddenException;
 import com.example.api.Service.SingleUserService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -160,7 +161,7 @@ public class SingleUserController {
                     description = "伺服器錯誤"
             )
     })
-    @PostMapping()
+    @PostMapping("/create")
     public ResponseEntity<UserDetailResponse> createUser(@Valid @RequestBody UserCreateRequest userRequest){
         System.out.println("SingleUserController: createUser");
         String userAccount = singleUserService.createUser(userRequest);
@@ -195,7 +196,7 @@ public class SingleUserController {
                     description = "伺服器錯誤"
             )
     })
-    @PutMapping()
+    @PutMapping("/update")
     public ResponseEntity<UserDetailResponse> updateUserByAccount(@Valid @RequestBody UserUpdateRequest userRequest){
         System.out.println("SingleUserController: updateUserByAccount >> ");
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -223,7 +224,7 @@ public class SingleUserController {
                     description = "伺服器錯誤"
             )
     })
-    @DeleteMapping()
+    @DeleteMapping("/delete")
     public ResponseEntity<?> deleteUserByAccount(){
         System.out.println("SingleUserController: deleteUserByAccount >> ");
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -335,5 +336,30 @@ public class SingleUserController {
         singleUserService.switchRole(userAccount);
         UserOverviewResponse user = singleUserService.getUserOverviewByAccount(userAccount);
         return ResponseEntity.status(HttpStatus.OK).body(user);
+    }
+
+
+    @Operation(
+            summary = "信箱驗證"
+    )
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "驗證成功，啟用帳號"
+            ),
+            @ApiResponse(
+                    responseCode = "400",
+                    description = "驗證失敗，無效的驗證碼"
+            ),
+            @ApiResponse(
+                    responseCode = "500",
+                    description = "伺服器錯誤"
+            )
+    })
+    @GetMapping("/verify")
+    public ResponseEntity<?> verifyUser(@RequestParam("code") String code){
+        System.out.println("SingleUserController: verifyUser >> "+code);
+        singleUserService.verifyUser(code);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 }

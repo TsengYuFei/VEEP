@@ -61,6 +61,12 @@ public class User{
     @Column(name = "showCurrentBooth", nullable = false)
     private Boolean showCurrentBooth = true;
 
+    @Column(name = "verificationCode")
+    private String verificationCode;
+
+    @Column(name = "isVerified", nullable = false)
+    private Boolean isVerified = false;
+
     @OneToMany(mappedBy = "owner", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonManagedReference
     private List<Booth> boothList = new ArrayList<>();

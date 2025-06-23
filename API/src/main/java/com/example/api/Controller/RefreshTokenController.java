@@ -37,7 +37,10 @@ public class RefreshTokenController {
 
 
 
-    @Operation(summary = "更新token")
+    @Operation(
+            summary = "更新token",
+            description = "更新db中的refresh token(有效7 days)，並給一組新的access token(有效30 mins)"
+    )
     @ApiResponses(value = {
             @ApiResponse(
                     responseCode = "201",

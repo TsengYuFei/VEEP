@@ -31,7 +31,8 @@ public class LoginController {
 
 
     @Operation(
-            summary = "登入"
+            summary = "登入",
+            description = "新增refresh token至db中"
     )
     @ApiResponses(value = {
             @ApiResponse(
@@ -64,7 +65,8 @@ public class LoginController {
 
 
     @Operation(
-            summary = "登出"
+            summary = "登出",
+            description = "刪除db中的refresh token"
     )
     @ApiResponses(value = {
             @ApiResponse(

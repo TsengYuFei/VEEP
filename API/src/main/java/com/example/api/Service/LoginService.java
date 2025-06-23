@@ -18,7 +18,7 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class LoginService {
     @Autowired
-    private final UserRepository userRepository;
+    private final SingleUserService singleUserService;
 
     @Autowired
     private final PasswordEncoder passwordEncoder;
@@ -34,11 +34,9 @@ public class LoginService {
     public LoginResponse login(LoginRequest request) {
         System.out.println("LoginService: login");
 
-        User user = userRepository.findByMail(request.getUserAccountOrMail());
-        if(user == null) user = userRepository.findByUserAccount(request.getUserAccountOrMail());
-
-        if(user == null) throw new NotFoundException("Can't find the user with email or user account < "+request.getUserAccountOrMail()+" >");
+        User user = singleUserService.getUserByAccountOrMail(request.getUserAccountOrMail());
         if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) throw new UnauthorizedException("XX Wrong password XX");
+        if(!user.getIsVerified()) throw new UnauthorizedException("Please complete the email verification first.");
 
         String accessToken = jwtUtil.generateToken(user.getUserAccount());
         RefreshToken refreshToken = refreshTokenService.createOrUpdateToken(user.getUserAccount());

@@ -18,6 +18,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
 
 import static com.example.api.Other.UpdateTool.updateIfNotBlank;
 import static com.example.api.Other.UpdateTool.updateIfNotNull;
@@ -40,12 +42,31 @@ public class SingleUserService {
     @Autowired
     private final UserRoleService userRoleService;
 
+    @Autowired
+    private final EmailService emailService;
+
 
 
     User getUserByAccount(String account){
         System.out.println("SingleUserService: getUserByAccount >> "+account);
         return userRepository.findById(account)
                 .orElseThrow(() -> new NotFoundException("找不到使用者帳號為 < "+ account+" > 的使用者"));
+    }
+
+
+    User getUserByAccountOrMail(String input){
+        System.out.println("SingleUserService: getUserByAccountOrMail >> "+input);
+        Optional<User> byAccount = userRepository.findById(input);
+        Optional<User> byMail = userRepository.findByMail(input);
+        return byAccount.or(() -> byMail)
+                .orElseThrow(() -> new NotFoundException("找不到使用者帳號或電子郵箱為 < "+ input+" > 的使用者"));
+    }
+
+
+    User getUserByVerificationCode(String code){
+        System.out.println("SingleUserService: getUserByVerificationCode >> "+code);
+        return userRepository.findByVerificationCode(code)
+                .orElseThrow(() -> new NotFoundException("找不到驗證碼為 < "+ code+" > 的使用者"));
     }
 
 
@@ -126,6 +147,7 @@ public class SingleUserService {
         if(user != null) throw new ClosedOnExpiredPasswordException("已存在使用者帳號為 < "+ request.getUserAccount()+" > 的使用者");
 
         String encodedPassword = passwordEncoder.encode(request.getPassword());
+        String randomCode = UUID.randomUUID().toString();
 
         User newUser = new User();
         newUser.setName(request.getName());
@@ -135,6 +157,8 @@ public class SingleUserService {
         newUser.setMail(request.getMail());
         newUser.setAvatar(updateIfNotBlank(null, request.getAvatar()));
         newUser.setBirthday(request.getBirthday());
+        newUser.setVerificationCode(randomCode);
+        newUser.setIsVerified(false);
 
         userRepository.save(newUser);
 
@@ -146,6 +170,7 @@ public class SingleUserService {
 
         userRoleService.saveUserRole(userRole);
 
+        emailService.sendEmail(newUser.getMail(), randomCode);
         return newUser.getUserAccount();
     }
 
@@ -217,5 +242,15 @@ public class SingleUserService {
 
         userRole.setRole(newRole);
         userRoleService.saveUserRole(userRole);
+    }
+
+
+    public void verifyUser(String code){
+        System.out.println("SingleUserService: verifyUser >> "+code);
+        User user = getUserByVerificationCode(code);
+
+        user.setVerificationCode(null);
+        user.setIsVerified(true);
+        userRepository.save(user);
     }
 }

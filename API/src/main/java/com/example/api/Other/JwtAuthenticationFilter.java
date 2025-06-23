@@ -32,7 +32,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         String header = request.getHeader("Authorization");
         if(header == null || !header.startsWith("Bearer ")) {
-            System.out.println("JWT Debug: 沒有 Authorization 或格式錯誤");
+//            System.out.println("JWT Debug: 沒有 Authorization 或格式錯誤");
             filterChain.doFilter(request, response);
             return;
         }
