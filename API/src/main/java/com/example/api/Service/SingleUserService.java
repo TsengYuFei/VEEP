@@ -170,7 +170,7 @@ public class SingleUserService {
 
         userRoleService.saveUserRole(userRole);
 
-        emailService.sendEmail(newUser.getMail(), randomCode);
+        emailService.sendEmail(newUser.getMail(), randomCode, newUser.getName());
         return newUser.getUserAccount();
     }
 

@@ -141,7 +141,7 @@ public class SingleUserController {
 
     @Operation(
             summary = "新增使用者",
-            description = "可輸入欄位 1.使用者名稱 2.使用者帳號 3.密碼 4.電話 5.電子郵箱 6.頭像 7.生日(yyyy-MM-dd格式)"
+            description = "會自動寄送驗證信。可輸入欄位 1.使用者名稱 2.使用者帳號 3.密碼 4.電話 5.電子郵箱 6.頭像 7.生日(yyyy-MM-dd格式)"
     )
     @ApiResponses(value = {
             @ApiResponse(
