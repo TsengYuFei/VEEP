@@ -1,5 +1,6 @@
 package com.example.api.Service;
 
+import com.example.api.DTO.Request.ChangePasswordRequest;
 import com.example.api.DTO.Request.ResetPasswordRequest;
 import com.example.api.DTO.Request.UserCreateRequest;
 import com.example.api.DTO.Request.UserUpdateRequest;
@@ -277,6 +278,21 @@ public class SingleUserService {
         String encodedPassword = passwordEncoder.encode(newPassword);
         user.setPassword(encodedPassword);
         user.setResetPasswordToken(null);
+        userRepository.save(user);
+    }
+
+
+    public void changePassword(String account, ChangePasswordRequest request){
+        System.out.println("SingleUserService: changePassword >> "+account);
+        String oldPassword = request.getOldPassword();
+        String newPassword = request.getNewPassword();
+
+        User user = getUserByAccount(account);
+        if (!passwordEncoder.matches(oldPassword, user.getPassword())) throw new UnauthorizedException("XX Wrong password XX");
+        if (oldPassword.equals(newPassword)) throw new BadRequestException("The new password cannot be the same as the old password.");
+
+        String encodedPassword = passwordEncoder.encode(newPassword);
+        user.setPassword(encodedPassword);
         userRepository.save(user);
     }
 }

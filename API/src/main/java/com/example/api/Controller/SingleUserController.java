@@ -1,5 +1,6 @@
 package com.example.api.Controller;
 
+import com.example.api.DTO.Request.ChangePasswordRequest;
 import com.example.api.DTO.Request.ResetPasswordRequest;
 import com.example.api.DTO.Request.UserCreateRequest;
 import com.example.api.DTO.Request.UserUpdateRequest;
@@ -366,7 +367,8 @@ public class SingleUserController {
 
 
     @Operation(
-            summary = "重設密碼"
+            summary = "重設密碼",
+            description = "用於忘記密碼"
     )
     @ApiResponses(value = {
             @ApiResponse(
@@ -382,10 +384,39 @@ public class SingleUserController {
                     description = "伺服器錯誤"
             )
     })
-    @PutMapping("/reset_password")
+    @PutMapping("/password/reset")
     public ResponseEntity<?> resetPassword(@Valid @RequestBody ResetPasswordRequest request){
         System.out.println("SingleUserController: resetPassword");
         singleUserService.resetPassword(request);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+    }
+
+
+    @Operation(
+            summary = "修改密碼"
+    )
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "密碼修改成功"
+            ),
+            @ApiResponse(
+                    responseCode = "401",
+                    description = "密碼錯誤，修改失敗"
+            ),
+            @ApiResponse(
+                    responseCode = "500",
+                    description = "伺服器錯誤"
+            )
+    })
+    @PutMapping("/password/change")
+    public ResponseEntity<?> changePassword(@Valid @RequestBody ChangePasswordRequest request){
+        System.out.print("SingleUserController: changePassword >> ");
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String userAccount = authentication.getName();
+        System.out.println(userAccount);
+
+        singleUserService.changePassword(userAccount, request);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 }

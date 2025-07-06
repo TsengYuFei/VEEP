@@ -68,7 +68,7 @@ public class EmailService {
         System.out.println("EmailService: sendResetPasswordEmail >> " + toEmail);
         String subject = "Reset Your XBITURAL Password";
         String senderName = "XBITURAL Team";
-        String resetURL = siteURL + "/user/reset_password?token=" + token;
+        String resetURL = siteURL + "/user/password/reset/page?token=" + token;
 
         String content = "<p>Dear " + userName + ",</p>"
                 + "<p>We received a request to reset your <strong>XBITURAL</strong> account password.</p>"
