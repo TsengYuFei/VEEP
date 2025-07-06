@@ -41,6 +41,7 @@ public class SecurityConfig {
                                 "/user/verify",
                                 "/mail/resend/verification/**",
                                 "/token/refresh",
+                                "/uploads/**",
                                 "/swagger-ui/**",
                                 "/v3/api-docs/**"
                         ).permitAll()
