@@ -1,5 +1,6 @@
 package com.example.api.Controller;
 
+import com.example.api.DTO.Request.ResetPasswordRequest;
 import com.example.api.DTO.Request.UserCreateRequest;
 import com.example.api.DTO.Request.UserUpdateRequest;
 import com.example.api.DTO.Response.*;
@@ -360,6 +361,31 @@ public class SingleUserController {
     public ResponseEntity<?> verifyUser(@RequestParam("code") String code){
         System.out.println("SingleUserController: verifyUser >> "+code);
         singleUserService.verifyUser(code);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+    }
+
+
+    @Operation(
+            summary = "重設密碼"
+    )
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "密碼重設成功"
+            ),
+            @ApiResponse(
+                    responseCode = "400",
+                    description = "密碼重設失敗，token無效"
+            ),
+            @ApiResponse(
+                    responseCode = "500",
+                    description = "伺服器錯誤"
+            )
+    })
+    @PutMapping("/reset_password")
+    public ResponseEntity<?> resetPassword(@Valid @RequestBody ResetPasswordRequest request){
+        System.out.println("SingleUserController: resetPassword");
+        singleUserService.resetPassword(request);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 }

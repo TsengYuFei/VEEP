@@ -1,12 +1,15 @@
 package com.example.api.Service;
 
+import com.example.api.DTO.Request.ResetPasswordRequest;
 import com.example.api.DTO.Request.UserCreateRequest;
 import com.example.api.DTO.Request.UserUpdateRequest;
 import com.example.api.DTO.Response.*;
 import com.example.api.Entity.Role;
 import com.example.api.Entity.User;
 import com.example.api.Entity.UserRole;
+import com.example.api.Exception.BadRequestException;
 import com.example.api.Exception.NotFoundException;
+import com.example.api.Exception.UnauthorizedException;
 import com.example.api.Repository.UserRepository;
 import com.mysql.cj.exceptions.ClosedOnExpiredPasswordException;
 import lombok.RequiredArgsConstructor;
@@ -67,6 +70,13 @@ public class SingleUserService {
         System.out.println("SingleUserService: getUserByVerificationCode >> "+code);
         return userRepository.findByVerificationCode(code)
                 .orElseThrow(() -> new NotFoundException("找不到驗證碼為 < "+ code+" > 的使用者"));
+    }
+
+
+    User getUserByRestPasswordToken(String token){
+        System.out.println("SingleUserService: getUserByRestPasswordToken >> "+token);
+        return userRepository.findByResetPasswordToken(token)
+                .orElseThrow(() -> new NotFoundException("找不到reset password token為 < "+ token+" > 的使用者"));
     }
 
 
@@ -157,6 +167,7 @@ public class SingleUserService {
         newUser.setMail(request.getMail());
         newUser.setAvatar(updateIfNotBlank(null, request.getAvatar()));
         newUser.setBirthday(request.getBirthday());
+        newUser.setResetPasswordToken(null);
         newUser.setVerificationCode(randomCode);
         newUser.setIsVerified(false);
 
@@ -170,7 +181,7 @@ public class SingleUserService {
 
         userRoleService.saveUserRole(userRole);
 
-        emailService.sendEmail(newUser.getMail(), randomCode, newUser.getName());
+        emailService.sendVerificationEmail(newUser.getMail(), randomCode, newUser.getName());
         return newUser.getUserAccount();
     }
 
@@ -251,6 +262,21 @@ public class SingleUserService {
 
         user.setVerificationCode(null);
         user.setIsVerified(true);
+        userRepository.save(user);
+    }
+
+
+    public void resetPassword(ResetPasswordRequest request){
+        System.out.println("SingleUserService: resetPassword");
+        String token = request.getToken();
+        String newPassword = request.getPassword();
+
+        User user = getUserByRestPasswordToken(token);
+        if (passwordEncoder.matches(newPassword, user.getPassword())) throw new BadRequestException("The new password cannot be the same as the old password.");
+
+        String encodedPassword = passwordEncoder.encode(newPassword);
+        user.setPassword(encodedPassword);
+        user.setResetPasswordToken(null);
         userRepository.save(user);
     }
 }

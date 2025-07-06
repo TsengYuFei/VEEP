@@ -61,6 +61,9 @@ public class User{
     @Column(name = "showCurrentBooth", nullable = false)
     private Boolean showCurrentBooth = true;
 
+    @Column(name = "resetPasswordToken")
+    private String resetPasswordToken;
+
     @Column(name = "verificationCode")
     private String verificationCode;
 

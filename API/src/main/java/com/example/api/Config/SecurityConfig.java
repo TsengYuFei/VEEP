@@ -39,7 +39,7 @@ public class SecurityConfig {
                                 "/account/login",
                                 "/user/create",
                                 "/user/verify",
-                                "/mail/resend/**",
+                                "/mail/resend/verification/**",
                                 "/token/refresh",
                                 "/swagger-ui/**",
                                 "/v3/api-docs/**"

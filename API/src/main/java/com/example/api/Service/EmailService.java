@@ -31,8 +31,8 @@ public class EmailService {
 
 
 
-    public void sendEmail(String toEmail, String code, String userName){
-        System.out.println("EmailService: sendEmail >> " + toEmail);
+    public void sendVerificationEmail(String toEmail, String code, String userName){
+        System.out.println("EmailService: sendVerificationEmail >> " + toEmail);
         String subject = "Please Verify Your Email Address for XBITURAL";
         String senderName = "XBITURAL Team";
         String verifyURL = siteURL + "/user/verify?code=" + code;
@@ -64,8 +64,53 @@ public class EmailService {
     }
 
 
-    public void resendEmail(String account){
-        System.out.println("EmailService: resendEmail >> " + account);
+    public void sendResetPasswordEmail(String toEmail, String token, String userName){
+        System.out.println("EmailService: sendResetPasswordEmail >> " + toEmail);
+        String subject = "Reset Your XBITURAL Password";
+        String senderName = "XBITURAL Team";
+        String resetURL = siteURL + "/user/reset_password?token=" + token;
+
+        String content = "<p>Dear " + userName + ",</p>"
+                + "<p>We received a request to reset your <strong>XBITURAL</strong> account password.</p>"
+                + "<p>To reset your password, click the link below:</p>"
+                + "<p><a href=\"" + resetURL + "\">Reset My Password</a></p>"
+                + "<br>"
+                + "<p>If you did not request this, please ignore this email. This link will expire shortly.</p>"
+                + "<br>"
+                + "<p>Best regards,</p>"
+                + "<p>The XBITURAL Team</p>";
+
+        try {
+            MimeMessage message = mailSender.createMimeMessage();
+            MimeMessageHelper helper = new MimeMessageHelper(message);
+
+            helper.setFrom(myMail, senderName);
+            helper.setTo(toEmail);
+            helper.setSubject(subject);
+            helper.setText(content, true);
+
+            mailSender.send(message);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+
+
+    public void resetPasswordEmail(String account){
+        System.out.println("EmailService: resetPasswordEmail >> "+account);
+        User user = userRepository.findById(account)
+                .orElseThrow(() -> new NotFoundException("找不到使用者帳號為 < "+ account+" > 的使用者"));
+
+        String randomCode = UUID.randomUUID().toString();
+        user.setResetPasswordToken(randomCode);
+        userRepository.save(user);
+        sendResetPasswordEmail(user.getMail(), randomCode, user.getName());
+    }
+
+
+    public void resendVerificationEmail(String account){
+        System.out.println("EmailService: resendVerificationEmail >> " + account);
         User user = userRepository.findById(account)
                 .orElseThrow(() -> new NotFoundException("找不到使用者帳號為 < "+ account+" > 的使用者"));
         if(user.getIsVerified()) throw new BadRequestException("User of user account < "+account+" > has already been verified.");
@@ -73,6 +118,6 @@ public class EmailService {
         String randomCode = UUID.randomUUID().toString();
         user.setVerificationCode(randomCode);
         userRepository.save(user);
-        sendEmail(user.getMail(), randomCode, user.getName());
+        sendVerificationEmail(user.getMail(), randomCode, user.getName());
     }
 }
