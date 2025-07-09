@@ -50,7 +50,10 @@ public class EmailController {
     }
 
 
-    @Operation(summary = "寄送重設密碼信")
+    @Operation(
+            summary = "寄送重設密碼信",
+            description = "用於忘記密碼"
+    )
     @ApiResponses(value = {
             @ApiResponse(
                     responseCode = "201",
@@ -65,14 +68,14 @@ public class EmailController {
                     description = "伺服器錯誤"
             )
     })
-    @PostMapping("/send/reset_password")
-    public ResponseEntity<?> resetPasswordEmail(){
-        System.out.print("EmailController: resetPasswordEmail >> ");
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String userAccount = authentication.getName();
-        System.out.println(userAccount);
+    @PostMapping("/send/reset_password/{mail}")
+    public ResponseEntity<?> resetPasswordEmail(
+            @Parameter(description = "電子郵箱", required = true)
+            @PathVariable String mail
+    ){
+        System.out.println("EmailController: resetPasswordEmail >> "+mail);
 
-        emailService.resetPasswordEmail(userAccount);
+        emailService.resetPasswordEmail(mail);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 }

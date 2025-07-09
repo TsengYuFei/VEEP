@@ -97,10 +97,10 @@ public class EmailService {
 
 
 
-    public void resetPasswordEmail(String account){
-        System.out.println("EmailService: resetPasswordEmail >> "+account);
-        User user = userRepository.findById(account)
-                .orElseThrow(() -> new NotFoundException("找不到使用者帳號為 < "+ account+" > 的使用者"));
+    public void resetPasswordEmail(String mail){
+        System.out.println("EmailService: resetPasswordEmail >> "+mail);
+        User user = userRepository.findByMail(mail)
+                .orElseThrow(() -> new NotFoundException("找不到電子郵箱為 < "+ mail+" > 的使用者"));
 
         String randomCode = UUID.randomUUID().toString();
         user.setResetPasswordToken(randomCode);

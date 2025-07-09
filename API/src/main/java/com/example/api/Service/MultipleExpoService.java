@@ -1,6 +1,5 @@
 package com.example.api.Service;
 
-import com.example.api.DTO.Response.BoothOverviewResponse;
 import com.example.api.DTO.Response.ExpoOverviewResponse;
 import com.example.api.Repository.ExpoRepository;
 import lombok.RequiredArgsConstructor;
