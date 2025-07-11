@@ -2,10 +2,7 @@ package com.example.api.Controller;
 
 import com.example.api.DTO.Request.SendMessageRequest;
 import com.example.api.DTO.Request.UserCreateRequest;
-import com.example.api.DTO.Response.ExpoOverviewResponse;
-import com.example.api.DTO.Response.MessageResponse;
-import com.example.api.DTO.Response.UserDetailResponse;
-import com.example.api.DTO.Response.UserEditResponse;
+import com.example.api.DTO.Response.*;
 import com.example.api.Service.MessageService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -87,10 +84,10 @@ public class MessageController {
                     description = "伺服器錯誤"
             )
     })
-    @GetMapping("/conversation")
+    @GetMapping("/conversation/{targetAccount}")
     public ResponseEntity<List<MessageResponse>> getConversation(
             @Parameter(description = "使用者帳號", required = true)
-            @RequestParam String targetAccount,
+            @PathVariable String targetAccount,
             @Parameter(description = "頁數(第幾頁)", required = true)
             @RequestParam(defaultValue = "0") Integer page,
             @Parameter(description = "數量(一頁幾筆資料)", required = true)
@@ -99,10 +96,49 @@ public class MessageController {
         System.out.print("MessageController: getConversation >> ");
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String userAccount = authentication.getName();
-        System.out.println(userAccount);
+        System.out.println(userAccount+", "+targetAccount);
 
         List<MessageResponse> messageList = messageService.getConversation(userAccount, targetAccount, page, size);
         return ResponseEntity.status(HttpStatus.OK).body(messageList);
 
+    }
+
+
+    @Operation(
+            summary = "獲取未讀訊息數",
+            description = "針對單一使用者，非全部"
+    )
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "成功取得未讀訊息數",
+                    content = @Content(
+                            mediaType = "application/json",
+                            array = @ArraySchema(
+                                    schema = @Schema(implementation = UnreadMessageResponse.class)
+                            )
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = "404",
+                    description = "找不到使用者"
+            ),
+            @ApiResponse(
+                    responseCode = "500",
+                    description = "伺服器錯誤"
+            )
+    })
+    @GetMapping("/unread/count/{targetAccount}")
+    public ResponseEntity<UnreadMessageResponse> getUnreadCount(
+            @Parameter(description = "使用者帳號", required = true)
+            @PathVariable String targetAccount
+    ){
+        System.out.print("MessageController: getUnreadCount >> ");
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String userAccount = authentication.getName();
+        System.out.println(userAccount+", "+targetAccount);
+
+        UnreadMessageResponse response = messageService.getUnreadCount(userAccount, targetAccount);
+        return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 }

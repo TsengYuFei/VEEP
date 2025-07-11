@@ -19,4 +19,14 @@ public interface MessageRepository  extends JpaRepository<Message, Integer> {
             @Param("userAccountA") String userAccountA,
             @Param("userAccountB") String userAccountB,
             Pageable pageable);
+
+    @Query(value = "SELECT count(*) "+
+            "FROM message m "+
+            "WHERE m.isRead = False "+
+            "AND m.senderAccount = :targetAccount " +
+            "AND m.receiverAccount = :currentAccount"
+            , nativeQuery = true)
+    Integer getUnreadCountByAccount(
+            @Param("currentAccount") String currentAccount,
+            @Param("targetAccount") String targetAccount);
 }

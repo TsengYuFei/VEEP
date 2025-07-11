@@ -2,8 +2,11 @@ package com.example.api.Service;
 
 import com.example.api.DTO.Request.SendMessageRequest;
 import com.example.api.DTO.Response.MessageResponse;
+import com.example.api.DTO.Response.UnreadMessageResponse;
 import com.example.api.Entity.Message;
+import com.example.api.Entity.Role;
 import com.example.api.Entity.User;
+import com.example.api.Entity.UserRole;
 import com.example.api.Repository.MessageRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,6 +51,7 @@ public class MessageService {
         messagingTemplate.convertAndSend("/server/messages/"+receiver.getUserAccount(), response);
     }
 
+
     public List<MessageResponse> getConversation(String currentAccount, String targetAccount, Integer page, Integer size){
         System.out.println("MessageService: getConversation >> "+currentAccount+", "+targetAccount);
         singleUserService.getUserByAccount(targetAccount);
@@ -58,5 +62,14 @@ public class MessageService {
                 .map(MessageResponse::fromMessage)
                 .toList();
 
+    }
+
+
+    public UnreadMessageResponse getUnreadCount(String currentAccount, String targetAccount){
+        System.out.println("MessageService: getUnreadCount >> "+currentAccount+", "+targetAccount);
+        singleUserService.getUserByAccount(targetAccount);
+
+        Integer count = messageRepository.getUnreadCountByAccount(currentAccount, targetAccount);
+        return new UnreadMessageResponse(targetAccount, count);
     }
 }
