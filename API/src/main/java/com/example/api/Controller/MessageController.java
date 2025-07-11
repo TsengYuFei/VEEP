@@ -174,4 +174,41 @@ public class MessageController {
         messageService.readUnread(userAccount, targetAccount);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
+
+
+    @Operation(
+            summary = "獲取聊天室清單",
+            description = "有聊過天的所有人"
+    )
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "成功取得聊天室清單",
+                    content = @Content(
+                            mediaType = "application/json",
+                            array = @ArraySchema(
+                                    schema = @Schema(implementation = MessageListResponse.class)
+                            )
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = "500",
+                    description = "伺服器錯誤"
+            )
+    })
+    @GetMapping("/list")
+    public ResponseEntity<List<MessageListResponse>> getChatList(
+            @Parameter(description = "頁數(第幾頁)", required = true)
+            @RequestParam(defaultValue = "0") Integer page,
+            @Parameter(description = "數量(一頁幾筆資料)", required = true)
+            @RequestParam(defaultValue = "15") Integer size
+    ){
+        System.out.print("MessageController: getChatList >> ");
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String userAccount = authentication.getName();
+        System.out.println(userAccount);
+
+        List<MessageListResponse> response = messageService.getChatList(userAccount, page, size);
+        return ResponseEntity.status(HttpStatus.OK).body(response);
+    }
 }

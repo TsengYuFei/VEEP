@@ -1,16 +1,15 @@
 package com.example.api.Service;
 
 import com.example.api.DTO.Request.SendMessageRequest;
+import com.example.api.DTO.Response.MessageListResponse;
+import com.example.api.DTO.Response.MessageListView;
 import com.example.api.DTO.Response.MessageResponse;
 import com.example.api.DTO.Response.UnreadMessageResponse;
 import com.example.api.Entity.Message;
-import com.example.api.Entity.Role;
 import com.example.api.Entity.User;
-import com.example.api.Entity.UserRole;
 import com.example.api.Repository.MessageRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -49,6 +48,11 @@ public class MessageService {
 
         System.out.println("WebSocket 推送到 /server/messages/" + receiver.getUserAccount());
         messagingTemplate.convertAndSend("/server/messages/"+receiver.getUserAccount(), response);
+
+        String receiverAccount = receiver.getUserAccount();
+        UnreadMessageResponse unreadResponse = getUnreadCount(senderAccount, receiverAccount);
+        System.out.println("WebSocket 推送到 /server/unread/" + receiver.getUserAccount());
+        messagingTemplate.convertAndSend("/server/unread/"+receiver.getUserAccount(), unreadResponse);
     }
 
 
@@ -78,5 +82,15 @@ public class MessageService {
         System.out.println("MessageService: getUnreadMessage >> "+currentAccount+", "+targetAccount);
         singleUserService.getUserByAccount(targetAccount);
         messageRepository.readUnreadByAccount(currentAccount, targetAccount);
+    }
+
+
+    public List<MessageListResponse> getChatList(String userAccount, Integer page, Integer size){
+        System.out.println("MessageService: getChatList >> "+userAccount);
+        Pageable pageable = PageRequest.of(page, size, Sort.by("latestTime").descending());
+        return messageRepository.getChatList(userAccount, pageable)
+                .stream()
+                .map(MessageListResponse::fromMessageView)
+                .toList();
     }
 }

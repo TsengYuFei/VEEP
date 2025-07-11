@@ -1,5 +1,7 @@
 package com.example.api.Repository;
 
+import com.example.api.DTO.Response.MessageListResponse;
+import com.example.api.DTO.Response.MessageListView;
 import com.example.api.Entity.Message;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -24,6 +26,7 @@ public interface MessageRepository  extends JpaRepository<Message, Integer> {
             @Param("userAccountB") String userAccountB,
             Pageable pageable);
 
+
     @Query(value = "SELECT count(*) "+
             "FROM message m "+
             "WHERE m.isRead = False "+
@@ -33,6 +36,7 @@ public interface MessageRepository  extends JpaRepository<Message, Integer> {
     Integer getUnreadCountByAccount(
             @Param("currentAccount") String currentAccount,
             @Param("targetAccount") String targetAccount);
+
 
     @Modifying
     @Transactional
@@ -45,4 +49,63 @@ public interface MessageRepository  extends JpaRepository<Message, Integer> {
     int readUnreadByAccount(
             @Param("currentAccount") String currentAccount,
             @Param("targetAccount") String targetAccount);
+
+
+    @Query(
+        value = """
+            SELECT
+                CASE
+                    WHEN m.senderAccount = :currentAccount THEN m.receiverAccount
+                    ELSE m.senderAccount
+                END AS targetAccount,
+    
+                CASE
+                    WHEN m.senderAccount = :currentAccount THEN ru.name
+                    ELSE su.name
+                END AS targetName,
+    
+                CASE
+                    WHEN m.senderAccount = :currentAccount THEN ru.avatar
+                    ELSE su.avatar
+                END AS targetAvatar,
+    
+                MAX(m.send_at) AS latestTime,
+    
+                SUBSTRING_INDEX(
+                    SUBSTRING_INDEX(
+                        GROUP_CONCAT(m.message ORDER BY m.send_at DESC SEPARATOR '||'), '||', 1
+                    ), '||', -1
+                ) AS latestMessage,
+    
+                SUM(CASE
+                    WHEN m.isRead = false AND m.receiverAccount = :currentAccount THEN 1
+                    ELSE 0
+                END) AS unreadCount
+    
+            FROM message m
+            JOIN user su ON m.senderAccount = su.userAccount
+            JOIN user ru ON m.receiverAccount = ru.userAccount
+    
+            WHERE m.senderAccount = :currentAccount OR m.receiverAccount = :currentAccount
+    
+            GROUP BY targetAccount, targetName, targetAvatar
+            ORDER BY latestTime DESC
+            """,
+                countQuery = """
+            SELECT COUNT(*) FROM (
+                SELECT 1
+                FROM message m
+                JOIN user su ON m.senderAccount = su.userAccount
+                JOIN user ru ON m.receiverAccount = ru.userAccount
+                WHERE m.senderAccount = :currentAccount OR m.receiverAccount = :currentAccount
+                GROUP BY
+                    CASE WHEN m.senderAccount = :currentAccount THEN m.receiverAccount ELSE m.senderAccount END,
+                    CASE WHEN m.senderAccount = :currentAccount THEN ru.name ELSE su.name END,
+                    CASE WHEN m.senderAccount = :currentAccount THEN ru.avatar ELSE su.avatar END
+            ) AS count_table
+        """,nativeQuery = true)
+    Page<MessageListView> getChatList(
+            @Param("currentAccount") String currentAccount,
+            Pageable pageable
+    );
 }
