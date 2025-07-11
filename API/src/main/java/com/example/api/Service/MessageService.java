@@ -72,4 +72,16 @@ public class MessageService {
         Integer count = messageRepository.getUnreadCountByAccount(currentAccount, targetAccount);
         return new UnreadMessageResponse(targetAccount, count);
     }
+
+
+    public void readUnread(String currentAccount, String targetAccount){
+        System.out.println("MessageService: getUnreadMessage >> "+currentAccount+", "+targetAccount);
+        singleUserService.getUserByAccount(targetAccount);
+
+        List<Message> unreadMessage = messageRepository.findUnreadByAccount(currentAccount, targetAccount);
+        for(Message message: unreadMessage){
+            message.setIsRead(true);
+            messageRepository.save(message);
+        }
+    }
 }

@@ -8,6 +8,8 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 @Repository
 public interface MessageRepository  extends JpaRepository<Message, Integer> {
     @Query(value = "SELECT m.* "+
@@ -27,6 +29,16 @@ public interface MessageRepository  extends JpaRepository<Message, Integer> {
             "AND m.receiverAccount = :currentAccount"
             , nativeQuery = true)
     Integer getUnreadCountByAccount(
+            @Param("currentAccount") String currentAccount,
+            @Param("targetAccount") String targetAccount);
+
+    @Query(value = "SELECT m.* "+
+            "FROM message m "+
+            "WHERE m.isRead = False "+
+            "AND m.senderAccount = :targetAccount " +
+            "AND m.receiverAccount = :currentAccount"
+            , nativeQuery = true)
+    List<Message> findUnreadByAccount(
             @Param("currentAccount") String currentAccount,
             @Param("targetAccount") String targetAccount);
 }

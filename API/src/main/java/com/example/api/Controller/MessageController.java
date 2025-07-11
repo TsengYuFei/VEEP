@@ -62,7 +62,7 @@ public class MessageController {
 
     @Operation(
             summary = "獲取聊天紀錄",
-            description = "用於一對一聊天室"
+            description = "用於一對一聊天室，最後傳送的訊息會在最前面"
     )
     @ApiResponses(value = {
             @ApiResponse(
@@ -140,5 +140,38 @@ public class MessageController {
 
         UnreadMessageResponse response = messageService.getUnreadCount(userAccount, targetAccount);
         return ResponseEntity.status(HttpStatus.OK).body(response);
+    }
+
+
+    @Operation(
+            summary = "已讀訊息",
+            description = "將某聊天室中所有未讀訊息改為已讀"
+    )
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "成功已讀訊息"
+            ),
+            @ApiResponse(
+                    responseCode = "404",
+                    description = "找不到使用者"
+            ),
+            @ApiResponse(
+                    responseCode = "500",
+                    description = "伺服器錯誤"
+            )
+    })
+    @PutMapping("/read/{targetAccount}")
+    public ResponseEntity<?> readUnread(
+            @Parameter(description = "使用者帳號", required = true)
+            @PathVariable String targetAccount
+    ){
+        System.out.print("MessageController: readUnread >> ");
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String userAccount = authentication.getName();
+        System.out.println(userAccount+", "+targetAccount);
+
+        messageService.readUnread(userAccount, targetAccount);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 }
