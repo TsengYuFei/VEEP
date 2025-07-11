@@ -77,11 +77,6 @@ public class MessageService {
     public void readUnread(String currentAccount, String targetAccount){
         System.out.println("MessageService: getUnreadMessage >> "+currentAccount+", "+targetAccount);
         singleUserService.getUserByAccount(targetAccount);
-
-        List<Message> unreadMessage = messageRepository.findUnreadByAccount(currentAccount, targetAccount);
-        for(Message message: unreadMessage){
-            message.setIsRead(true);
-            messageRepository.save(message);
-        }
+        messageRepository.readUnreadByAccount(currentAccount, targetAccount);
     }
 }

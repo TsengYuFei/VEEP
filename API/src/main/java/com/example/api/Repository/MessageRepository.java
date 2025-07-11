@@ -4,9 +4,11 @@ import com.example.api.Entity.Message;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -32,13 +34,15 @@ public interface MessageRepository  extends JpaRepository<Message, Integer> {
             @Param("currentAccount") String currentAccount,
             @Param("targetAccount") String targetAccount);
 
-    @Query(value = "SELECT m.* "+
-            "FROM message m "+
-            "WHERE m.isRead = False "+
-            "AND m.senderAccount = :targetAccount " +
-            "AND m.receiverAccount = :currentAccount"
+    @Modifying
+    @Transactional
+    @Query(value = "UPDATE message "+
+            "SET isRead = True "+
+            "WHERE isRead = False "+
+            "AND senderAccount = :targetAccount " +
+            "AND receiverAccount = :currentAccount"
             , nativeQuery = true)
-    List<Message> findUnreadByAccount(
+    int readUnreadByAccount(
             @Param("currentAccount") String currentAccount,
             @Param("targetAccount") String targetAccount);
 }
