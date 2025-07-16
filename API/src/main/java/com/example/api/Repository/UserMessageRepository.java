@@ -1,8 +1,7 @@
 package com.example.api.Repository;
 
-import com.example.api.DTO.Response.MessageListResponse;
 import com.example.api.DTO.Response.MessageListView;
-import com.example.api.Entity.Message;
+import com.example.api.Entity.UserMessage;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -12,23 +11,21 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
-
 @Repository
-public interface MessageRepository  extends JpaRepository<Message, Integer> {
+public interface UserMessageRepository extends JpaRepository<UserMessage, Integer> {
     @Query(value = "SELECT m.* "+
-            "FROM message m "+
+            "FROM user_message m "+
             "WHERE (m.senderAccount = :userAccountA AND m.receiverAccount = :userAccountB) "+
             "OR (m.senderAccount = :userAccountB AND m.receiverAccount = :userAccountA) "
             ,nativeQuery = true)
-    Page<Message> findConversation(
+    Page<UserMessage> findConversation(
             @Param("userAccountA") String userAccountA,
             @Param("userAccountB") String userAccountB,
             Pageable pageable);
 
 
     @Query(value = "SELECT count(*) "+
-            "FROM message m "+
+            "FROM user_message m "+
             "WHERE m.isRead = False "+
             "AND m.senderAccount = :targetAccount " +
             "AND m.receiverAccount = :currentAccount"
@@ -40,7 +37,7 @@ public interface MessageRepository  extends JpaRepository<Message, Integer> {
 
     @Modifying
     @Transactional
-    @Query(value = "UPDATE message "+
+    @Query(value = "UPDATE user_message "+
             "SET isRead = True "+
             "WHERE isRead = False "+
             "AND senderAccount = :targetAccount " +
@@ -82,7 +79,7 @@ public interface MessageRepository  extends JpaRepository<Message, Integer> {
                     ELSE 0
                 END) AS unreadCount
     
-            FROM message m
+            FROM user_message m
             JOIN user su ON m.senderAccount = su.userAccount
             JOIN user ru ON m.receiverAccount = ru.userAccount
     
@@ -94,7 +91,7 @@ public interface MessageRepository  extends JpaRepository<Message, Integer> {
                 countQuery = """
             SELECT COUNT(*) FROM (
                 SELECT 1
-                FROM message m
+                FROM user_message m
                 JOIN user su ON m.senderAccount = su.userAccount
                 JOIN user ru ON m.receiverAccount = ru.userAccount
                 WHERE m.senderAccount = :currentAccount OR m.receiverAccount = :currentAccount

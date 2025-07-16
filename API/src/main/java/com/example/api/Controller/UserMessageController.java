@@ -1,9 +1,8 @@
 package com.example.api.Controller;
 
 import com.example.api.DTO.Request.SendMessageRequest;
-import com.example.api.DTO.Request.UserCreateRequest;
 import com.example.api.DTO.Response.*;
-import com.example.api.Service.MessageService;
+import com.example.api.Service.UserMessageService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
@@ -27,9 +26,9 @@ import java.util.List;
 @RequestMapping("/message")
 @RestController
 @RequiredArgsConstructor
-public class MessageController {
+public class UserMessageController {
     @Autowired
-    private final MessageService messageService;
+    private final UserMessageService userMessageService;
 
 
 
@@ -55,7 +54,7 @@ public class MessageController {
         String userAccount = authentication.getName();
         System.out.println(userAccount);
 
-        messageService.sendMessage(userAccount, request);
+        userMessageService.sendMessage(userAccount, request);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
@@ -98,7 +97,7 @@ public class MessageController {
         String userAccount = authentication.getName();
         System.out.println(userAccount+", "+targetAccount);
 
-        List<MessageResponse> messageList = messageService.getConversation(userAccount, targetAccount, page, size);
+        List<MessageResponse> messageList = userMessageService.getConversation(userAccount, targetAccount, page, size);
         return ResponseEntity.status(HttpStatus.OK).body(messageList);
 
     }
@@ -138,7 +137,7 @@ public class MessageController {
         String userAccount = authentication.getName();
         System.out.println(userAccount+", "+targetAccount);
 
-        UnreadMessageResponse response = messageService.getUnreadCount(userAccount, targetAccount);
+        UnreadMessageResponse response = userMessageService.getUnreadCount(userAccount, targetAccount);
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
@@ -171,7 +170,7 @@ public class MessageController {
         String userAccount = authentication.getName();
         System.out.println(userAccount+", "+targetAccount);
 
-        messageService.readUnread(userAccount, targetAccount);
+        userMessageService.readUnread(userAccount, targetAccount);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
@@ -208,7 +207,7 @@ public class MessageController {
         String userAccount = authentication.getName();
         System.out.println(userAccount);
 
-        List<MessageListResponse> response = messageService.getChatList(userAccount, page, size);
+        List<MessageListResponse> response = userMessageService.getChatList(userAccount, page, size);
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 }

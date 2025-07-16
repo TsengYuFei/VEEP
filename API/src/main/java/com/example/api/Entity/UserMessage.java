@@ -11,8 +11,8 @@ import java.time.LocalDateTime;
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "message")
-public class Message {
+@Table(name = "user_message")
+public class UserMessage {
 
     @Id
     @Column(name = "messageID", nullable = false)

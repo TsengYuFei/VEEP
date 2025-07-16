@@ -1,6 +1,6 @@
 package com.example.api.DTO.Response;
 
-import com.example.api.Entity.Message;
+import com.example.api.Entity.UserMessage;
 import lombok.Data;
 
 import java.time.LocalDateTime;
@@ -13,13 +13,13 @@ public class MessageResponse {
     private LocalDateTime sendAt;
     private Boolean isRead;
 
-    public static MessageResponse fromMessage(Message message) {
+    public static MessageResponse fromMessage(UserMessage userMessage) {
         MessageResponse response = new MessageResponse();
-        response.setSenderAccount(message.getSender().getUserAccount());
-        response.setReceiverAccount(message.getReceiver().getUserAccount());
-        response.setMessage(message.getMessage());
-        response.setSendAt(message.getSendAt());
-        response.setIsRead(message.getIsRead());
+        response.setSenderAccount(userMessage.getSender().getUserAccount());
+        response.setReceiverAccount(userMessage.getReceiver().getUserAccount());
+        response.setMessage(userMessage.getMessage());
+        response.setSendAt(userMessage.getSendAt());
+        response.setIsRead(userMessage.getIsRead());
         return response;
     }
 }
