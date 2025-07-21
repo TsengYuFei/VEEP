@@ -358,10 +358,14 @@ public class SingleUserController {
                     description = "伺服器錯誤"
             )
     })
-    @GetMapping("/verify")
-    public ResponseEntity<?> verifyUser(@RequestParam("code") String code){
-        System.out.println("SingleUserController: verifyUser >> "+code);
-        singleUserService.verifyUser(code);
+    @GetMapping("/verify/{userAccount}")
+    public ResponseEntity<?> verifyUser(
+            @Parameter(description = "使用者帳號", required = true)
+            @PathVariable String userAccount,
+            @RequestParam("code") Integer code
+    ){
+        System.out.println("SingleUserController: verifyUser >> "+userAccount+", "+code);
+        singleUserService.verifyUser(userAccount,code);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 

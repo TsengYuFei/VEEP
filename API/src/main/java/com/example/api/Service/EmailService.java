@@ -31,16 +31,15 @@ public class EmailService {
 
 
 
-    public void sendVerificationEmail(String toEmail, String code, String userName){
+    public void sendVerificationEmail(String toEmail, Integer code, String userName){
         System.out.println("EmailService: sendVerificationEmail >> " + toEmail);
         String subject = "Please Verify Your Email Address for XBITURAL";
         String senderName = "XBITURAL Team";
-        String verifyURL = siteURL + "/user/verify?code=" + code;
 
         String content = "<p>Dear " + userName + ",</p>"
                 + "<p>Thank you for joining <strong>XBITURAL</strong>!</p>"
-                + "<p>To complete your registration and activate your account, please verify your email address by clicking the link below:</p>"
-                + "<p><a href=\"" + verifyURL + "\">Verify My Account</a></p>"
+                + "<p>To complete your registration and activate your account, please verify your email address by number below:</p>"
+                + "<p><strong>"+code+"</strong></p>"
                 + "<br>"
                 + "<p>If you did not create an XBITURAL account, you can safely ignore this email. Your account will not be activated without verification.</p>"
                 + "<p>If you have any questions or need assistance, feel free to contact our support team at any time.</p>"
@@ -115,7 +114,7 @@ public class EmailService {
                 .orElseThrow(() -> new NotFoundException("找不到使用者帳號為 < "+ account+" > 的使用者"));
         if(user.getIsVerified()) throw new BadRequestException("User of user account < "+account+" > has already been verified.");
 
-        String randomCode = UUID.randomUUID().toString();
+        Integer randomCode = (int)(Math.random() * 1000000);
         user.setVerificationCode(randomCode);
         userRepository.save(user);
         sendVerificationEmail(user.getMail(), randomCode, user.getName());

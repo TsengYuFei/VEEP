@@ -8,10 +8,7 @@ import com.example.api.DTO.Response.*;
 import com.example.api.Entity.Role;
 import com.example.api.Entity.User;
 import com.example.api.Entity.UserRole;
-import com.example.api.Exception.BadRequestException;
-import com.example.api.Exception.NotFoundException;
-import com.example.api.Exception.UnauthorizedException;
-import com.example.api.Exception.UserAlreadyExistsException;
+import com.example.api.Exception.*;
 import com.example.api.Repository.UserRepository;
 import com.mysql.cj.exceptions.ClosedOnExpiredPasswordException;
 import lombok.RequiredArgsConstructor;
@@ -65,13 +62,6 @@ public class SingleUserService {
         Optional<User> byMail = userRepository.findByMail(input);
         return byAccount.or(() -> byMail)
                 .orElseThrow(() -> new NotFoundException("找不到使用者帳號或電子郵箱為 < "+ input+" > 的使用者"));
-    }
-
-
-    User getUserByVerificationCode(String code){
-        System.out.println("SingleUserService: getUserByVerificationCode >> "+code);
-        return userRepository.findByVerificationCode(code)
-                .orElseThrow(() -> new NotFoundException("找不到驗證碼為 < "+ code+" > 的使用者"));
     }
 
 
@@ -164,7 +154,7 @@ public class SingleUserService {
         if(user != null) throw new UserAlreadyExistsException("已存在電子郵箱為< "+request.getMail()+" >的使用者");
 
         String encodedPassword = passwordEncoder.encode(request.getPassword());
-        String randomCode = UUID.randomUUID().toString();
+        Integer randomCode = (int)(Math.random() * 1000000);
 
         User newUser = new User();
         newUser.setName(request.getName());
@@ -263,13 +253,15 @@ public class SingleUserService {
     }
 
 
-    public void verifyUser(String code){
-        System.out.println("SingleUserService: verifyUser >> "+code);
-        User user = getUserByVerificationCode(code);
-
-        user.setVerificationCode(null);
-        user.setIsVerified(true);
-        userRepository.save(user);
+    public void verifyUser(String account, Integer code){
+        System.out.println("SingleUserService: verifyUser >> "+account+", "+code);
+        User user = getUserByAccount(account);
+        if(user.getIsVerified()) throw new ConflictException("使用者帳號 < "+account+" > 已完成信箱驗證");
+        else if(user.getVerificationCode().equals(code)) {
+            user.setVerificationCode(null);
+            user.setIsVerified(true);
+            userRepository.save(user);
+        }else throw new BadRequestException("XX 驗證碼錯誤 XX");
     }
 
 

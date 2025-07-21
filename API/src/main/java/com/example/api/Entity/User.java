@@ -65,7 +65,7 @@ public class User{
     private String resetPasswordToken;
 
     @Column(name = "verificationCode")
-    private String verificationCode;
+    private Integer verificationCode;
 
     @Column(name = "isVerified", nullable = false)
     private Boolean isVerified = false;

@@ -38,7 +38,7 @@ public class SecurityConfig {
                         .requestMatchers(
                                 "/account/login",
                                 "/user/create",
-                                "/user/verify",
+                                "/user/verify/**",
                                 "/user/password/reset",
                                 "/mail/**",
                                 "/token/refresh",
