@@ -11,6 +11,7 @@ import com.example.api.Entity.UserRole;
 import com.example.api.Exception.BadRequestException;
 import com.example.api.Exception.NotFoundException;
 import com.example.api.Exception.UnauthorizedException;
+import com.example.api.Exception.UserAlreadyExistsException;
 import com.example.api.Repository.UserRepository;
 import com.mysql.cj.exceptions.ClosedOnExpiredPasswordException;
 import lombok.RequiredArgsConstructor;
@@ -151,11 +152,16 @@ public class SingleUserService {
     public String createUser(UserCreateRequest request){
         System.out.println("SingleUserService: createUser");
 
-        UserOverviewResponse user = null;
+        User user = null;
         try {
-            user = getUserOverviewByAccount(request.getUserAccount());
+            user = getUserByAccountOrMail(request.getUserAccount());
         }catch (NotFoundException ignored){}
-        if(user != null) throw new ClosedOnExpiredPasswordException("已存在使用者帳號為 < "+ request.getUserAccount()+" > 的使用者");
+        if(user != null) throw new UserAlreadyExistsException("已存在使用者帳號為 < "+ request.getUserAccount()+" > 的使用者");
+
+        try {
+            user = getUserByAccountOrMail(request.getMail());
+        }catch (NotFoundException ignored){}
+        if(user != null) throw new UserAlreadyExistsException("已存在電子郵箱為< "+request.getMail()+" >的使用者");
 
         String encodedPassword = passwordEncoder.encode(request.getPassword());
         String randomCode = UUID.randomUUID().toString();
