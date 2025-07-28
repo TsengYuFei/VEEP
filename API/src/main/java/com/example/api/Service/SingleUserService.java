@@ -98,6 +98,13 @@ public class SingleUserService {
         return user.getShowCurrentBooth();
     }
 
+    public String getUserRoleName(String account){
+        System.out.println("SingleUserService: isShowCurrentBooth >> "+account);
+        User user = getUserByAccount(account);
+        UserRole userRole = userRoleService.getUserRoleByUser(user);
+        return userRole.getRole().getName();
+    }
+
 
     public UserDetailResponse getUserDetailByAccount(String account){
         System.out.println("SingleUserService: getUserByAccount >> "+account);
@@ -117,8 +124,7 @@ public class SingleUserService {
         User user = getUserByAccount(account);
 
         UserOverviewResponse response =  UserOverviewResponse.fromUser(user);
-        UserRole userRole = userRoleService.getUserRoleByUser(user);
-        String roleName = userRole.getRole().getName();
+        String roleName = getUserRoleName(account);
         response.setRoleName(roleName);
 
         return response;
@@ -130,8 +136,7 @@ public class SingleUserService {
         User user = getUserByAccount(account);
 
         UserEditResponse response =  UserEditResponse.fromUser(user);
-        UserRole userRole = userRoleService.getUserRoleByUser(user);
-        String roleName = userRole.getRole().getName();
+        String roleName = getUserRoleName(account);
         response.setRoleName(roleName);
 
         return response;

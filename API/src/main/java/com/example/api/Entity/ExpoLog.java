@@ -60,8 +60,10 @@ public class ExpoLog {
     @PrePersist
     protected void onCreate() {
         enterAt = LocalDateTime.now();
-        if(hasUsedAi == null) hasUsedAi = false;
-        if(aiMessageCount == null) aiMessageCount = 0;
+        exitAt = null;
+        lastActiveAt = null;
+        hasUsedAi = false;
+        aiMessageCount = 0;
         if(isOwner == null) isOwner = false;
         if(isCollaborator == null) isCollaborator = false;
         if(isWhiteListed == null) isWhiteListed = false;

@@ -8,7 +8,6 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @Data
-@Component
 public class ExpoEditResponse {
     private Integer expoID;
     private String owner;
