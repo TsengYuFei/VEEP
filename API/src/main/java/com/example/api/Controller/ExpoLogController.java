@@ -2,8 +2,6 @@ package com.example.api.Controller;
 
 import com.example.api.DTO.Response.ExpoLogCreateResponse;
 import com.example.api.DTO.Response.ExpoLogResponse;
-import com.example.api.DTO.Response.UserDetailResponse;
-import com.example.api.DTO.Response.UserEditResponse;
 import com.example.api.Service.ExpoLogService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -100,11 +98,11 @@ public class ExpoLogController {
     }
 
 
-    @Operation(summary = "刪除展會log")
+    @Operation(summary = "刪除單筆log")
     @ApiResponses(value = {
             @ApiResponse(
                     responseCode = "204",
-                    description = "成功刪除展會log"
+                    description = "成功刪除單筆log"
             ),
             @ApiResponse(
                     responseCode = "404",
@@ -116,15 +114,42 @@ public class ExpoLogController {
             )
     })
     @PreAuthorize("hasRole('FOUNDER') and (@expoSecurity.isOwner(#expoID) or @expoSecurity.isCollaborator(#expoID))")
-    @DeleteMapping("/delete/{sessionID}")
+    @DeleteMapping("/delete/{expoID}/{sessionID}")
     public ResponseEntity<?> deleteExpoLogBySessionID(
             @Parameter(description = "展會ID", required = true)
             @PathVariable Integer expoID,
             @Parameter(description = "展會log的Session ID", required = true)
             @PathVariable String sessionID
     ){
-        System.out.println("ExpoLogController: deleteExpoLogBySessionID>> "+sessionID);
-        expoLogService.deleteExpoLog(sessionID);
+        System.out.println("ExpoLogController: deleteExpoLogBySessionID>> "+expoID+", "+sessionID);
+        expoLogService.deleteExpoLogBySessionID(sessionID);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+    }
+
+
+    @Operation(summary = "刪除某展會的所有log")
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "204",
+                    description = "成功刪除某展會的所有log"
+            ),
+            @ApiResponse(
+                    responseCode = "404",
+                    description = "找不到展會"
+            ),
+            @ApiResponse(
+                    responseCode = "500",
+                    description = "伺服器錯誤"
+            )
+    })
+    @PreAuthorize("hasRole('FOUNDER') and (@expoSecurity.isOwner(#expoID) or @expoSecurity.isCollaborator(#expoID))")
+    @DeleteMapping("/delete/{expoID}")
+    public ResponseEntity<?> deleteExpoLogByExponID(
+            @Parameter(description = "展會ID", required = true)
+            @PathVariable Integer expoID
+    ){
+        System.out.println("ExpoLogController: deleteExpoLogByExponID>> "+expoID);
+        expoLogService.deleteExpoLogByExpoID(expoID);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 }

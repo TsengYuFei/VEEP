@@ -9,4 +9,5 @@ import java.util.Optional;
 @Repository
 public interface ExpoLogRepository extends JpaRepository<ExpoLog, Integer> {
     Optional<ExpoLog> findBySessionID(String sessionID);
+    void deleteByExpo_ExpoID(Integer expoExpoID);
 }

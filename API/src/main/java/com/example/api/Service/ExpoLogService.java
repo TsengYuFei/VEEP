@@ -3,7 +3,6 @@ package com.example.api.Service;
 
 import com.example.api.DTO.Response.ExpoLogCreateResponse;
 import com.example.api.DTO.Response.ExpoLogResponse;
-import com.example.api.DTO.Response.ExpoOverviewResponse;
 import com.example.api.Entity.Expo;
 import com.example.api.Entity.ExpoLog;
 import com.example.api.Entity.User;
@@ -14,7 +13,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -67,9 +65,18 @@ public class ExpoLogService {
     }
 
 
-    public void deleteExpoLog(String sessionID){
-        System.out.println("ExpoLogService: getExpoLog>> "+sessionID);
+    @Transactional
+    public void deleteExpoLogBySessionID(String sessionID){
+        System.out.println("ExpoLogService: deleteExpoLogBySessionID>> "+sessionID);
         ExpoLog expoLog = getExpoLogBySessionID(sessionID);
         expoLogRepository.delete(expoLog);
+    }
+
+
+    @Transactional
+    public void deleteExpoLogByExpoID(Integer expoID){
+        System.out.println("ExpoLogService: deleteExpoLogByExpoID>> "+expoID);
+        Expo expo = singleExpoService.getExpoByID(expoID);
+        expoLogRepository.deleteByExpo_ExpoID(expoID);
     }
 }
