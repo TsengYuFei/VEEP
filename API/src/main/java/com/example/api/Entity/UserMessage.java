@@ -27,7 +27,7 @@ public class UserMessage {
     private LocalDateTime sendAt;
 
     @Column(name = "isRead", nullable = false)
-    private Boolean isRead = false;
+    private Boolean isRead;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "senderAccount", nullable = false)
@@ -41,5 +41,6 @@ public class UserMessage {
     @PrePersist
     protected void onCreate() {
         sendAt = LocalDateTime.now();
+        if(isRead == null) isRead = false;
     }
 }

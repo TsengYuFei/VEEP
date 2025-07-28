@@ -28,7 +28,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@Tag(name = "單一使用者相關", description = "含三種不同範圍的GET")
+@Tag(name = "使用者相關", description = "含三種不同範圍的GET")
 @RequestMapping("/user")
 @RestController
 @RequiredArgsConstructor

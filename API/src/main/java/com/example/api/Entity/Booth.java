@@ -26,7 +26,7 @@ public class Booth {
     private Integer boothID;
 
     @Column(name = "name", length = 30)
-    private String name = "Booth";
+    private String name;
 
     @Column(name = "avatar")
     private String avatar;
@@ -37,10 +37,10 @@ public class Booth {
 
     @Enumerated(EnumType.STRING)
     @Column(name = "openMode", nullable = false)
-    private OpenMode openMode = OpenMode.MANUAL;
+    private OpenMode openMode;
 
     @Column(name = "openStatus")
-    private Boolean openStatus = false;
+    private Boolean openStatus;
 
     @Column(name = "openStart")
     private LocalDateTime openStart;
@@ -49,10 +49,10 @@ public class Booth {
     private LocalDateTime openEnd;
 
     @Column(name = "maxParticipants", nullable = false)
-    private Integer maxParticipants = 1;
+    private Integer maxParticipants;
 
     @Column(name = "display", nullable = false)
-    private Boolean display = true;
+    private Boolean display;
 
     @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "collaborator", nullable = false, unique = true)  // 主控方加JoinColumn
@@ -86,4 +86,14 @@ public class Booth {
     private Expo expo;
 
     // 攤位的位置編號(搭配UI地圖用)要加在這裡
+
+
+    @PrePersist
+    protected void onCreate() {
+        if(name == null) name = "Booth";
+        if(openMode == null) openMode = OpenMode.MANUAL;
+        if(maxParticipants == null) maxParticipants = 1;
+        if(openStatus == null) openStatus = false;
+        if(display == null) display = true;
+    }
 }

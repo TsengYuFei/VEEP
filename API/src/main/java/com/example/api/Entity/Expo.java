@@ -26,13 +26,13 @@ public class Expo {
     private Integer expoID;
 
     @Column(name = "name", length = 30)
-    private String name = "Exhibition";
+    private String name;
 
     @Column(name = "avatar")
     private String avatar;
 
     @Column(name = "price", nullable = false)
-    private Integer price = 0;
+    private Integer price;
 
     @Lob
     @Column(name = "introduction")
@@ -40,10 +40,10 @@ public class Expo {
 
     @Enumerated(EnumType.STRING)
     @Column(name = "openMode", nullable = false)
-    private OpenMode openMode = OpenMode.MANUAL;
+    private OpenMode openMode;
 
     @Column(name = "openStatus")
-    private Boolean openStatus = false;
+    private Boolean openStatus;
 
     @Column(name = "openStart")
     private LocalDateTime openStart;
@@ -55,10 +55,10 @@ public class Expo {
     private String accessCode;
 
     @Column(name = "maxParticipants", nullable = false)
-    private Integer maxParticipants = 50;
+    private Integer maxParticipants;
 
     @Column(name = "display", nullable = false)
-    private Boolean display = true;
+    private Boolean display;
 
     @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "collaborator", nullable = false, unique = true)  // 主控方加JoinColumn
@@ -87,4 +87,15 @@ public class Expo {
     @ManyToOne
     @JoinColumn(name = "owner", nullable = false)
     private User owner;
+
+
+    @PrePersist
+    protected void onCreate() {
+        if(name == null) name = "Exhibition";
+        if(price == null) price = 0;
+        if(openMode == null) openMode = OpenMode.MANUAL;
+        if(openStatus == null) openStatus = false;
+        if(maxParticipants == null) maxParticipants = 50;
+        if(display == null) display = true;
+    }
 }

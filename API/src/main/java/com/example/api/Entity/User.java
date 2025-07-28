@@ -47,19 +47,19 @@ public class User{
     private String background;
 
     @Column(name = "showFollowers", nullable = false)
-    private Boolean showFollowers = true;
+    private Boolean showFollowers;
 
     @Column(name = "showFollowing", nullable = false)
-    private Boolean showFollowing = true;
+    private Boolean showFollowing;
 
     @Column(name = "showHistory", nullable = false)
-    private Boolean showHistory = false;
+    private Boolean showHistory;
 
     @Column(name = "showCurrentExpo", nullable = false)
-    private Boolean showCurrentExpo = true;
+    private Boolean showCurrentExpo;
 
     @Column(name = "showCurrentBooth", nullable = false)
-    private Boolean showCurrentBooth = true;
+    private Boolean showCurrentBooth;
 
     @Column(name = "resetPasswordToken")
     private String resetPasswordToken;
@@ -68,7 +68,7 @@ public class User{
     private Integer verificationCode;
 
     @Column(name = "isVerified", nullable = false)
-    private Boolean isVerified = false;
+    private Boolean isVerified;
 
     @OneToMany(mappedBy = "owner", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonManagedReference
@@ -77,4 +77,16 @@ public class User{
     @OneToMany(mappedBy = "owner", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonManagedReference
     private List<Expo> expoList = new ArrayList<>();
+
+
+    @PrePersist
+    protected void onCreate() {
+        if(showFollowers == null) showFollowers = true;
+        if(showFollowing == null) showFollowing = true;
+        if(showHistory == null) showHistory = false;
+        if(showCurrentExpo == null) showCurrentExpo = true;
+        if(showCurrentBooth == null) showCurrentBooth = true;
+        if(isVerified == null) isVerified = false;
+    }
+
 }

@@ -15,7 +15,6 @@ public class ExpoCreateRequest {
 
     private String avatar;
 
-    @NotNull(message = "The expo price cannot be empty.")
     @PositiveOrZero(message = "The expo price must be a non-negative integer.")
     private Integer price;
 
@@ -23,7 +22,6 @@ public class ExpoCreateRequest {
 
     private List<String> tags;
 
-    @NotNull(message = "The expo opening mode cannot be empty.")
     private OpenMode openMode;
 
     private Boolean openStatus;
@@ -38,12 +36,10 @@ public class ExpoCreateRequest {
 
     private String accessCode;
 
-    @NotNull(message = "The maximum number of participants at a expo at the same time cannot be empty.")
     @Min(value = 1, message = "The maximum number of participants at a expo at the same time is at least one person.")
     @Max(value = 1500, message = "The maximum number of participants at the expo at the same time is 500.")
     private Integer maxParticipants;
 
-    @NotNull(message = "Whether the expo is displayed on the overview page cannot be empty.")
     private Boolean display;
 
     private List<String> collaborators;
