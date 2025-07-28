@@ -2,15 +2,19 @@ package com.example.api.Service;
 
 
 import com.example.api.DTO.Response.ExpoLogCreateResponse;
+import com.example.api.DTO.Response.ExpoLogResponse;
+import com.example.api.DTO.Response.ExpoOverviewResponse;
 import com.example.api.Entity.Expo;
 import com.example.api.Entity.ExpoLog;
 import com.example.api.Entity.User;
+import com.example.api.Exception.NotFoundException;
 import com.example.api.Repository.ExpoLogRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -24,6 +28,7 @@ public class ExpoLogService {
 
     @Autowired
     private final SingleUserService singleUserService;
+
 
 
     @Transactional
@@ -44,5 +49,20 @@ public class ExpoLogService {
 
         expoLogRepository.save(expoLog);
         return new ExpoLogCreateResponse(sessionID);
+    }
+
+
+    public ExpoLog getExpoLogBySessionID(String sessionID){
+        System.out.println("ExpoLogService: getExpoLog>> "+sessionID);
+        return expoLogRepository.findBySessionID(sessionID)
+                .orElseThrow(() -> new NotFoundException("找不到Session ID為 < "+ sessionID+" > 的展會log"));
+
+    }
+
+
+    public ExpoLogResponse getExpoLogResponse(String sessionID){
+        System.out.println("ExpoLogService: getExpoLogResponse>> "+sessionID);
+        ExpoLog expoLog = getExpoLogBySessionID(sessionID);
+        return ExpoLogResponse.fromExpoLog(expoLog);
     }
 }

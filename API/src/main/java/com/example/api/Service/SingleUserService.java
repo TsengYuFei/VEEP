@@ -98,6 +98,7 @@ public class SingleUserService {
         return user.getShowCurrentBooth();
     }
 
+
     public String getUserRoleName(String account){
         System.out.println("SingleUserService: isShowCurrentBooth >> "+account);
         User user = getUserByAccount(account);
