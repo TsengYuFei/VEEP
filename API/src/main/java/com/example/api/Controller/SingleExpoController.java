@@ -5,9 +5,7 @@ import com.example.api.DTO.Response.BoothOverviewResponse;
 import com.example.api.DTO.Response.ExpoEditResponse;
 import com.example.api.DTO.Request.ExpoCreateRequest;
 import com.example.api.DTO.Response.UserListResponse;
-import com.example.api.Security.ExpoSecurity;
 import com.example.api.Service.SingleExpoService;
-import com.example.api.Service.SingleUserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
@@ -134,7 +132,7 @@ public class SingleExpoController {
                     description = "伺服器錯誤"
             )
     })
-    @PreAuthorize("hasRole('FOUNDER') and @expoSecurity.isCollaborator(#expoID)")
+    @PreAuthorize("hasRole('FOUNDER') and (@expoSecurity.isOwner(#expoID) or @expoSecurity.isCollaborator(#expoID))")
     @PutMapping("/{expoID}")
     public ResponseEntity<ExpoEditResponse> updateExpoByID(
             @Parameter(description = "展會ID", required = true)

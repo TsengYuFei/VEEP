@@ -42,11 +42,21 @@ public class ExpoSecurity {
 
 
     public boolean isCollaborator(Integer expoID){
-        System.out.println("ExpoSecurity: isCollaborator >> "+expoID);
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String currentAccount = authentication.getName();
+        System.out.println("ExpoSecurity: isCollaborator >> " + expoID);
+        try {
+            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+            if (authentication == null || !authentication.isAuthenticated()) {
+                System.out.println("ExpoSecurity: 未登入或驗證失敗");
+                return false;
+            }
+            String currentAccount = authentication.getName();
 
-        List<String> colAccountList = singleExpoService.getAllColAccountList(expoID);
-        return colAccountList.contains(currentAccount);
+            List<String> colAccountList = singleExpoService.getAllColAccountList(expoID);
+            if (colAccountList == null) return false;
+            return colAccountList.contains(currentAccount);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
     }
 }

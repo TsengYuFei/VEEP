@@ -41,20 +41,40 @@ public class BoothSecurity {
 
     public boolean isCollaborator(Integer boothID){
         System.out.println("BoothSecurity: isCollaborator >> "+boothID);
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String currentAccount = authentication.getName();
+        try {
+            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+            if (authentication == null || !authentication.isAuthenticated()) {
+                System.out.println("BoothSecurity: 未登入或驗證失敗");
+                return false;
+            }
+            String currentAccount = authentication.getName();
 
-        List<String> colAccountList = singleBoothService.getAllColAccountList(boothID);
-        return colAccountList.contains(currentAccount);
+            List<String> colAccountList = singleBoothService.getAllColAccountList(boothID);
+            if (colAccountList == null) return false;
+            return colAccountList.contains(currentAccount);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
     }
 
 
     public boolean isStaff(Integer boothID){
         System.out.println("BoothSecurity: isStaff >> "+boothID);
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String currentAccount = authentication.getName();
+        try {
+            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+            if (authentication == null || !authentication.isAuthenticated()) {
+                System.out.println("BoothSecurity: 未登入或驗證失敗");
+                return false;
+            }
+            String currentAccount = authentication.getName();
 
-        List<String> staffAccountList = singleBoothService.getAllStaffAccountList(boothID);
-        return staffAccountList.contains(currentAccount);
+            List<String> staffAccountList = singleBoothService.getAllStaffAccountList(boothID);
+            if (staffAccountList == null) return false;
+            return staffAccountList.contains(currentAccount);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
     }
 }

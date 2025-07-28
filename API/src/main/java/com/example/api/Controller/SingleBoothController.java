@@ -4,9 +4,7 @@ import com.example.api.DTO.Request.BoothUpdateRequest;
 import com.example.api.DTO.Response.BoothEditResponse;
 import com.example.api.DTO.Request.BoothCreateRequest;
 import com.example.api.DTO.Response.UserListResponse;
-import com.example.api.Exception.ForibiddenException;
 import com.example.api.Service.SingleBoothService;
-import com.example.api.Service.SingleExpoService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
@@ -72,7 +70,7 @@ public class SingleBoothController {
 
     @Operation(
             summary = "新增攤位",
-            description = "可輸入欄位 1.攤位擁有者的使用者帳號 2.攤位所屬展會的ID  3.攤位名稱 4.圖像 " +
+            description = "(暫時設定只要expoID有對到就好)/n可輸入欄位 1.攤位擁有者的使用者帳號 2.攤位所屬展會的ID  3.攤位名稱 4.圖像 " +
                     "5.介紹 6.標籤(數個) 7.開放模式 8.開放狀態 9.開始時間 10.結束時間 11.同時間最大參與人數 " +
                     "12.是否顯示於攤位總覽頁面 13.合作者(數個) 14.員工(數個)"
     )
@@ -134,7 +132,7 @@ public class SingleBoothController {
                     description = "伺服器錯誤"
             )
     })
-    @PreAuthorize("hasRole('FOUNDER') and @boothSecurity.isCollaborator(#boothID)")
+    @PreAuthorize("hasRole('FOUNDER') and (@boothSecurity.isOwner(#boothID) or @boothSecurity.isCollaborator(#boothID))")
     @PutMapping("/{boothID}")
     public ResponseEntity<BoothEditResponse> updateBoothByID(
             @Parameter(description = "攤位ID", required = true)
@@ -164,9 +162,11 @@ public class SingleBoothController {
                     description = "伺服器錯誤"
             )
     })
-    @PreAuthorize("hasRole('FOUNDER') and @boothSecurity.isOwner(#boothID)")
-    @DeleteMapping("/{boothID}")
+    @PreAuthorize("hasRole('FOUNDER') and (@boothSecurity.isOwner(#boothID) or @expoSecurity.isCollaborator(#expoID))")
+    @DeleteMapping("/{expoID}/{boothID}")
     public ResponseEntity<?> deleteBoothByID(
+            @Parameter(description = "展會ID", required = true)
+            @PathVariable Integer expoID,
             @Parameter(description = "攤位ID", required = true)
             @PathVariable Integer boothID
     ){
