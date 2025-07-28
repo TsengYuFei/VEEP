@@ -65,4 +65,11 @@ public class ExpoLogService {
         ExpoLog expoLog = getExpoLogBySessionID(sessionID);
         return ExpoLogResponse.fromExpoLog(expoLog);
     }
+
+
+    public void deleteExpoLog(String sessionID){
+        System.out.println("ExpoLogService: getExpoLog>> "+sessionID);
+        ExpoLog expoLog = getExpoLogBySessionID(sessionID);
+        expoLogRepository.delete(expoLog);
+    }
 }

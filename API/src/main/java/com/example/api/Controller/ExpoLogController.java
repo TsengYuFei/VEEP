@@ -16,6 +16,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
@@ -88,10 +89,42 @@ public class ExpoLogController {
                     description = "伺服器錯誤"
             )
     })
-    @GetMapping("/get")
-    public ResponseEntity<ExpoLogResponse> getExpoLogBySessionID(String sessionID) {
+    @GetMapping("/{sessionID}")
+    public ResponseEntity<ExpoLogResponse> getExpoLogBySessionID(
+            @Parameter(description = "展會log的Session ID", required = true)
+            @PathVariable String sessionID
+    ) {
         System.out.println("ExpoLogController: getExpoLogBySessionID>> "+sessionID);
         ExpoLogResponse response = expoLogService.getExpoLogResponse(sessionID);
         return ResponseEntity.status(HttpStatus.OK).body(response);
+    }
+
+
+    @Operation(summary = "刪除展會log")
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "204",
+                    description = "成功刪除展會log"
+            ),
+            @ApiResponse(
+                    responseCode = "404",
+                    description = "找不到展會log"
+            ),
+            @ApiResponse(
+                    responseCode = "500",
+                    description = "伺服器錯誤"
+            )
+    })
+    @PreAuthorize("hasRole('FOUNDER') and (@expoSecurity.isOwner(#expoID) or @expoSecurity.isCollaborator(#expoID))")
+    @DeleteMapping("/delete/{sessionID}")
+    public ResponseEntity<?> deleteExpoLogBySessionID(
+            @Parameter(description = "展會ID", required = true)
+            @PathVariable Integer expoID,
+            @Parameter(description = "展會log的Session ID", required = true)
+            @PathVariable String sessionID
+    ){
+        System.out.println("ExpoLogController: deleteExpoLogBySessionID>> "+sessionID);
+        expoLogService.deleteExpoLog(sessionID);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 }
