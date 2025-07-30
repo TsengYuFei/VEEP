@@ -1,10 +1,12 @@
 package com.example.api.Controller;
 
+import com.example.api.DTO.Response.BoothOverviewResponse;
 import com.example.api.DTO.Response.ExpoLogCreateResponse;
 import com.example.api.DTO.Response.ExpoLogResponse;
 import com.example.api.Service.ExpoLogService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -18,6 +20,8 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @Tag(name = "展會Log相關")
 @RequestMapping("/log/expo")
@@ -95,6 +99,37 @@ public class ExpoLogController {
         System.out.println("ExpoLogController: getExpoLogBySessionID>> "+sessionID);
         ExpoLogResponse response = expoLogService.getExpoLogResponse(sessionID);
         return ResponseEntity.status(HttpStatus.OK).body(response);
+    }
+
+
+    @Operation(
+            summary = "獲取某展會的所有log",
+            description = "目前無排序"
+    )
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "成功獲取含該展會的所有log",
+                    content = @Content(
+                            mediaType = "application/json",
+                            array = @ArraySchema(
+                                    schema = @Schema(implementation = ExpoLogResponse.class)
+                            )
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = "500",
+                    description = "伺服器錯誤"
+            )
+    })
+    @GetMapping("/all/{expoID}")
+    public ResponseEntity<List<ExpoLogResponse>> getAllExpoLog(
+            @Parameter(description = "展會ID", required = true)
+            @PathVariable Integer expoID
+    ){
+        System.out.println("ExpoLogController: getAllExpoLog >> "+expoID);
+        List<ExpoLogResponse> logs = expoLogService.getAllExpoLogResponse(expoID);
+        return ResponseEntity.status(HttpStatus.OK).body(logs);
     }
 
 

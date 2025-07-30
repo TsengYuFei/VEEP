@@ -1,6 +1,7 @@
 package com.example.api.Service;
 
 
+import com.example.api.DTO.Response.BoothOverviewResponse;
 import com.example.api.DTO.Response.ExpoLogCreateResponse;
 import com.example.api.DTO.Response.ExpoLogResponse;
 import com.example.api.Entity.Expo;
@@ -13,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -62,6 +64,15 @@ public class ExpoLogService {
         System.out.println("ExpoLogService: getExpoLogResponse>> "+sessionID);
         ExpoLog expoLog = getExpoLogBySessionID(sessionID);
         return ExpoLogResponse.fromExpoLog(expoLog);
+    }
+
+
+    public List<ExpoLogResponse> getAllExpoLogResponse(Integer expoID){
+        System.out.println("ExpoLogService: getAllExpoLogResponse >> "+expoID);
+        return expoLogRepository.findExpoLogByExpo_ExpoID(expoID)
+                .stream()
+                .map(ExpoLogResponse::fromExpoLog)
+                .toList();
     }
 
 
