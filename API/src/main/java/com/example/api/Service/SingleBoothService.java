@@ -6,6 +6,7 @@ import com.example.api.DTO.Response.BoothEditResponse;
 import com.example.api.DTO.Response.TagResponse;
 import com.example.api.DTO.Response.UserListResponse;
 import com.example.api.Entity.*;
+import com.example.api.Exception.ForibiddenException;
 import com.example.api.Exception.NotFoundException;
 import com.example.api.Exception.UnprocessableEntityException;
 import com.example.api.Repository.*;
@@ -240,17 +241,24 @@ public class SingleBoothService {
 
 
     @Transactional
-    public void deleteBoothByID(Integer boothID) {
-        System.out.println("SingleBoothService: deleteBoothByID >> "+boothID);
+    public void deleteBoothByID(Integer boothID, String account) {
+        System.out.println("SingleBoothService: deleteBoothByID >> "+boothID+", "+account);
+        User user = singleUserService.getUserByAccount(account);
         Booth booth = getBoothByID(boothID);
-        String avatar = booth.getAvatar();
-        if(avatar != null) imageService.deleteImageByName(avatar);
+        Expo expo = booth.getExpo();
 
-        for(Content content : booth.getContentList()){
-            String image = content.getImage();
-            if(image != null) imageService.deleteImageByName(image);
-        }
-        boothRepository.delete(booth);
+        if(expo.getOwner() == user || expo.getCollaborator().getCollaborators().contains(user)) {
+
+            String avatar = booth.getAvatar();
+            if (avatar != null) imageService.deleteImageByName(avatar);
+
+            for (Content content : booth.getContentList()) {
+                String image = content.getImage();
+                if (image != null) imageService.deleteImageByName(image);
+            }
+            boothRepository.delete(booth);
+        }else throw new ForibiddenException("權限不足，不可刪除此展會");
+
     }
 
 

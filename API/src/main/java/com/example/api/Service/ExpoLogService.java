@@ -2,12 +2,12 @@ package com.example.api.Service;
 
 
 import com.example.api.DTO.Request.ExpoLogUpdateRequest;
-import com.example.api.DTO.Response.BoothOverviewResponse;
-import com.example.api.DTO.Response.ExpoLogCreateResponse;
+import com.example.api.DTO.Response.LogCreateResponse;
 import com.example.api.DTO.Response.ExpoLogResponse;
 import com.example.api.Entity.Expo;
 import com.example.api.Entity.ExpoLog;
 import com.example.api.Entity.User;
+import com.example.api.Exception.ForibiddenException;
 import com.example.api.Exception.NotFoundException;
 import com.example.api.Repository.ExpoLogRepository;
 import lombok.RequiredArgsConstructor;
@@ -18,9 +18,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
-
-import static com.example.api.Other.UpdateTool.updateIfNotBlank;
-import static com.example.api.Other.UpdateTool.updateIfNotNull;
 
 @Service
 @RequiredArgsConstructor
@@ -37,7 +34,7 @@ public class ExpoLogService {
 
 
     @Transactional
-    public ExpoLogCreateResponse createExpoLog(Integer expoID, String account){
+    public LogCreateResponse createExpoLog(Integer expoID, String account){
         System.out.println("ExpoLogService: createExpoLog>> "+expoID+", "+account);
         Expo expo = singleExpoService.getExpoByID(expoID);
         User user = singleUserService.getUserByAccount(account);
@@ -45,6 +42,7 @@ public class ExpoLogService {
         String sessionID = UUID.randomUUID().toString();
         ExpoLog expoLog = new ExpoLog();
         expoLog.setSessionID(sessionID);
+        expoLog.setEnterAt(LocalDateTime.now());
         expoLog.setRole(singleUserService.getUserRoleName(account));
         if(expo.getOwner() == user) expoLog.setIsOwner(true);
         if(expo.getCollaborator().getCollaborators().contains(user)) expoLog.setIsCollaborator(true);
@@ -53,7 +51,7 @@ public class ExpoLogService {
         expoLog.setExpo(expo);
 
         expoLogRepository.save(expoLog);
-        return new ExpoLogCreateResponse(sessionID);
+        return new LogCreateResponse(sessionID);
     }
 
 
@@ -97,10 +95,14 @@ public class ExpoLogService {
 
 
     @Transactional
-    public void deleteExpoLogBySessionID(String sessionID){
-        System.out.println("ExpoLogService: deleteExpoLogBySessionID>> "+sessionID);
+    public void deleteExpoLogBySessionID(String sessionID, String account){
+        System.out.println("ExpoLogService: deleteExpoLogBySessionID>> "+sessionID+", "+account);
+        User user = singleUserService.getUserByAccount(account);
         ExpoLog expoLog = getExpoLogBySessionID(sessionID);
-        expoLogRepository.delete(expoLog);
+        Expo expo = expoLog.getExpo();
+
+        if(expo.getOwner() == user || expo.getCollaborator().getCollaborators().contains(user)) expoLogRepository.delete(expoLog);
+        else throw new ForibiddenException("權限不足，不可刪除此展會 log");
     }
 
 

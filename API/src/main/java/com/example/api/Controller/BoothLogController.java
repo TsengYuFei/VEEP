@@ -1,9 +1,11 @@
 package com.example.api.Controller;
 
+import com.example.api.DTO.Request.BoothLogUpdateRequest;
 import com.example.api.DTO.Request.ExpoLogUpdateRequest;
-import com.example.api.DTO.Response.LogCreateResponse;
+import com.example.api.DTO.Response.BoothLogResponse;
 import com.example.api.DTO.Response.ExpoLogResponse;
-import com.example.api.Service.ExpoLogService;
+import com.example.api.DTO.Response.LogCreateResponse;
+import com.example.api.Service.BoothLogService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
@@ -24,24 +26,24 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@Tag(name = "展會Log相關")
-@RequestMapping("/log/expo")
+@Tag(name = "攤位Log相關")
+@RequestMapping("/log/booth")
 @RestController
 @RequiredArgsConstructor
-public class ExpoLogController {
+public class BoothLogController {
     @Autowired
-    private final ExpoLogService expoLogService;
+    private final BoothLogService boothLogService;
 
 
 
     @Operation(
-            summary = "新增展會log",
-            description = "進入展會時呼叫。可輸入欄位 1.使用者帳號 2.展會ID"
+            summary = "新增攤位log",
+            description = "進入攤位時呼叫。可輸入欄位 1.使用者帳號 2.展會ID 3.攤位ID"
     )
     @ApiResponses(value = {
             @ApiResponse(
                     responseCode = "201",
-                    description = "成功新增展會Log",
+                    description = "成功新增攤位Log",
                     content = @Content(
                             mediaType = "application/json",
                             schema = @Schema(implementation = LogCreateResponse.class)
@@ -52,40 +54,46 @@ public class ExpoLogController {
                     description = "找不到展會"
             ),
             @ApiResponse(
+                    responseCode = "404",
+                    description = "找不到攤位"
+            ),
+            @ApiResponse(
                     responseCode = "500",
                     description = "伺服器錯誤"
             )
     })
-    @PostMapping("/create/{expoID}")
-    public ResponseEntity<LogCreateResponse> createExpoLog(
+    @PostMapping("/create/{expoID}/{boothID}")
+    public ResponseEntity<LogCreateResponse> createBoothLog(
             @Parameter(description = "展會ID", required = true)
-            @PathVariable Integer expoID
+            @PathVariable Integer expoID,
+            @Parameter(description = "攤位ID", required = true)
+            @PathVariable Integer boothID
     ){
-        System.out.print("ExpoLogController: createExpoLog>> ");
+        System.out.print("BoothLogController: createBoothLog>> ");
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String userAccount = authentication.getName();
         System.out.println(userAccount);
 
-        LogCreateResponse response = expoLogService.createExpoLog(expoID, userAccount);
+        LogCreateResponse response = boothLogService.createBoothLog(expoID, boothID, userAccount);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
 
     @Operation(
-            summary = "獲取單筆展會log"
+            summary = "獲取單筆攤位log"
     )
     @ApiResponses(value = {
             @ApiResponse(
                     responseCode = "200",
-                    description = "成功取得單筆展會log",
+                    description = "成功取得單筆攤位og",
                     content = @Content(
                             mediaType = "application/json",
-                            schema = @Schema(implementation = ExpoLogResponse.class)
+                            schema = @Schema(implementation = BoothLogResponse.class)
                     )
             ),
             @ApiResponse(
                     responseCode = "404",
-                    description = "找不到展會log資料"
+                    description = "找不到攤位log資料"
             ),
             @ApiResponse(
                     responseCode = "500",
@@ -93,18 +101,18 @@ public class ExpoLogController {
             )
     })
     @GetMapping("/{sessionID}")
-    public ResponseEntity<ExpoLogResponse> getExpoLogBySessionID(
-            @Parameter(description = "展會log的Session ID", required = true)
+    public ResponseEntity<BoothLogResponse> getBoothLogBySessionID(
+            @Parameter(description = "攤位log的Session ID", required = true)
             @PathVariable String sessionID
     ) {
-        System.out.println("ExpoLogController: getExpoLogBySessionID>> "+sessionID);
-        ExpoLogResponse response = expoLogService.getExpoLogResponse(sessionID);
+        System.out.println("BoothLogController: getBoothLogBySessionID>> "+sessionID);
+        BoothLogResponse response = boothLogService.getBoothLogResponse(sessionID);
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
 
     @Operation(
-            summary = "獲取某展會的所有展會log",
+            summary = "獲取某展會的所有攤位log",
             description = "目前無排序"
     )
     @ApiResponses(value = {
@@ -114,7 +122,7 @@ public class ExpoLogController {
                     content = @Content(
                             mediaType = "application/json",
                             array = @ArraySchema(
-                                    schema = @Schema(implementation = ExpoLogResponse.class)
+                                    schema = @Schema(implementation = BoothLogResponse.class)
                             )
                     )
             ),
@@ -123,28 +131,59 @@ public class ExpoLogController {
                     description = "伺服器錯誤"
             )
     })
-    @GetMapping("/all/{expoID}")
-    public ResponseEntity<List<ExpoLogResponse>> getAllExpoLog(
+    @GetMapping("/all/by_expo/{expoID}")
+    public ResponseEntity<List<BoothLogResponse>> getAllBoothLogByExpoID(
             @Parameter(description = "展會ID", required = true)
             @PathVariable Integer expoID
     ){
-        System.out.println("ExpoLogController: getAllExpoLog >> "+expoID);
-        List<ExpoLogResponse> logs = expoLogService.getAllExpoLogResponse(expoID);
+        System.out.println("BoothLogController: getAllBoothLogByExpoID >> "+expoID);
+        List<BoothLogResponse> logs = boothLogService.getAllBoothLogResponseByExpoID(expoID);
         return ResponseEntity.status(HttpStatus.OK).body(logs);
     }
 
 
     @Operation(
-            summary = "更新展會log",
-            description = "在展會中有任何點擊時呼叫。可針對exit at及last active at欄位傳入boolean值"
+            summary = "獲取某攤位的所有攤位log",
+            description = "目前無排序"
     )
     @ApiResponses(value = {
             @ApiResponse(
                     responseCode = "200",
-                    description = "成功更新展會log",
+                    description = "成功獲取含該攤位的所有log",
                     content = @Content(
                             mediaType = "application/json",
-                            schema = @Schema(implementation = ExpoLogResponse.class)
+                            array = @ArraySchema(
+                                    schema = @Schema(implementation = BoothLogResponse.class)
+                            )
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = "500",
+                    description = "伺服器錯誤"
+            )
+    })
+    @GetMapping("/all/by_booth/{boothID}")
+    public ResponseEntity<List<BoothLogResponse>> getAllBoothLogByBoothID(
+            @Parameter(description = "攤位ID", required = true)
+            @PathVariable Integer boothID
+    ){
+        System.out.println("BoothLogController: getAllBoothLogByBoothID >> "+boothID);
+        List<BoothLogResponse> logs = boothLogService.getAllBoothLogResponseByBoothID(boothID);
+        return ResponseEntity.status(HttpStatus.OK).body(logs);
+    }
+
+
+    @Operation(
+            summary = "更新攤位log",
+            description = "在攤位中有任何點擊時呼叫。可針對exit at及last active at欄位傳入boolean值"
+    )
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "成功更新攤位log",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = BoothLogResponse.class)
                     )
             ),
             @ApiResponse(
@@ -153,7 +192,7 @@ public class ExpoLogController {
             ),
             @ApiResponse(
                     responseCode = "404",
-                    description = "找不到展會log"
+                    description = "找不到攤位log"
             ),
             @ApiResponse(
                     responseCode = "500",
@@ -161,14 +200,14 @@ public class ExpoLogController {
             )
     })
     @PutMapping("/update/{sessionID}")
-    public ResponseEntity<ExpoLogResponse> updateExpoLogBySessionID(
-            @Parameter(description = "展會log的Session ID", required = true)
+    public ResponseEntity<BoothLogResponse> updateExpoLogBySessionID(
+            @Parameter(description = "攤位log的Session ID", required = true)
             @PathVariable String sessionID,
-            @Valid @RequestBody ExpoLogUpdateRequest request){
-        System.out.println("ExpoLogController: updateExpoLogBySessionID >> "+ sessionID);
+            @Valid @RequestBody BoothLogUpdateRequest request){
+        System.out.println("BoothLogController: updateExpoLogBySessionID >> "+ sessionID);
 
-        expoLogService.updateExpoLog(sessionID, request);
-        ExpoLogResponse response = expoLogService.getExpoLogResponse(sessionID);
+        boothLogService.updateBoothLog(sessionID, request);
+        BoothLogResponse response = boothLogService.getBoothLogResponse(sessionID);
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
@@ -181,7 +220,7 @@ public class ExpoLogController {
             ),
             @ApiResponse(
                     responseCode = "404",
-                    description = "找不到展會log"
+                    description = "找不到攤位log"
             ),
             @ApiResponse(
                     responseCode = "500",
@@ -190,15 +229,15 @@ public class ExpoLogController {
     })
     @PreAuthorize("hasRole('FOUNDER')")
     @DeleteMapping("/delete/{sessionID}")
-    public ResponseEntity<?> deleteExpoLogBySessionID(
-            @Parameter(description = "展會log的Session ID", required = true)
+    public ResponseEntity<?> deleteBoothLogBySessionID(
+            @Parameter(description = "攤位log的Session ID", required = true)
             @PathVariable String sessionID
     ){
-        System.out.println("ExpoLogController: deleteExpoLogBySessionID>> "+sessionID);
+        System.out.println("BoothLogController: deleteBoothLogBySessionID>> "+sessionID);
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String userAccount = authentication.getName();
 
-        expoLogService.deleteExpoLogBySessionID(sessionID, userAccount);
+        boothLogService.deleteBoothLogBySessionID(sessionID, userAccount);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
@@ -219,13 +258,40 @@ public class ExpoLogController {
             )
     })
     @PreAuthorize("hasRole('FOUNDER') and (@expoSecurity.isOwner(#expoID) or @expoSecurity.isCollaborator(#expoID))")
-    @DeleteMapping("/delete/{expoID}")
-    public ResponseEntity<?> deleteExpoLogByExpoID(
+    @DeleteMapping("/delete/all/by_expo/{expoID}")
+    public ResponseEntity<?> deleteBoothLogByExpoID(
             @Parameter(description = "展會ID", required = true)
             @PathVariable Integer expoID
     ){
-        System.out.println("ExpoLogController: deleteExpoLogByExponID>> "+expoID);
-        expoLogService.deleteExpoLogByExpoID(expoID);
+        System.out.println("BoothLogController: deleteBoothLogByExpoID>> "+expoID);
+        boothLogService.deleteBoothLogByExpoID(expoID);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+    }
+
+
+    @Operation(summary = "刪除某攤位的所有log")
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "204",
+                    description = "成功刪除某攤位的所有log"
+            ),
+            @ApiResponse(
+                    responseCode = "404",
+                    description = "找不到攤位"
+            ),
+            @ApiResponse(
+                    responseCode = "500",
+                    description = "伺服器錯誤"
+            )
+    })
+    @PreAuthorize("hasRole('FOUNDER') and (@boothSecurity.isOwner(#boothID) or @boothSecurity.isCollaborator(#boothID))")
+    @DeleteMapping("/delete/all/by_booth/{boothID}")
+    public ResponseEntity<?> deleteBoothLogByBoothID(
+            @Parameter(description = "攤位ID", required = true)
+            @PathVariable Integer boothID
+    ){
+        System.out.println("BoothLogController: deleteBoothLogByBoothID>> "+boothID);
+        boothLogService.deleteBoothLogByBoothID(boothID);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 }

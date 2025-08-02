@@ -162,17 +162,17 @@ public class SingleBoothController {
                     description = "伺服器錯誤"
             )
     })
-    @PreAuthorize("hasRole('FOUNDER') and (@boothSecurity.isOwner(#boothID) or @expoSecurity.isCollaborator(#expoID))")
-    @DeleteMapping("/{expoID}/{boothID}")
+    @PreAuthorize("hasRole('FOUNDER') and (@boothSecurity.isOwner(#boothID))")
+    @DeleteMapping("delete/{boothID}")
     public ResponseEntity<?> deleteBoothByID(
-            @Parameter(description = "展會ID", required = true)
-            @PathVariable Integer expoID,
             @Parameter(description = "攤位ID", required = true)
             @PathVariable Integer boothID
     ){
         System.out.println("SingleBoothController: deleteBoothByID >> "+boothID);
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String userAccount = authentication.getName();
 
-        singleBoothService.deleteBoothByID(boothID);
+        singleBoothService.deleteBoothByID(boothID, userAccount);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
