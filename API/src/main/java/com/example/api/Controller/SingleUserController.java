@@ -200,7 +200,7 @@ public class SingleUserController {
     })
     @PutMapping("/update")
     public ResponseEntity<UserDetailResponse> updateUserByAccount(@Valid @RequestBody UserUpdateRequest userRequest){
-        System.out.println("SingleUserController: updateUserByAccount >> ");
+        System.out.print("SingleUserController: updateUserByAccount >> ");
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String userAccount = authentication.getName();
         System.out.println(userAccount);
@@ -228,7 +228,7 @@ public class SingleUserController {
     })
     @DeleteMapping("/delete")
     public ResponseEntity<?> deleteUserByAccount(){
-        System.out.println("SingleUserController: deleteUserByAccount >> ");
+        System.out.print("SingleUserController: deleteUserByAccount >> ");
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String userAccount = authentication.getName();
         System.out.println(userAccount);

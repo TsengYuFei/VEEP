@@ -1,8 +1,11 @@
 package com.example.api.Controller;
 
+import com.example.api.DTO.Request.ExpoLogUpdateRequest;
+import com.example.api.DTO.Request.UserUpdateRequest;
 import com.example.api.DTO.Response.BoothOverviewResponse;
 import com.example.api.DTO.Response.ExpoLogCreateResponse;
 import com.example.api.DTO.Response.ExpoLogResponse;
+import com.example.api.DTO.Response.UserDetailResponse;
 import com.example.api.Service.ExpoLogService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -12,6 +15,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -35,7 +39,7 @@ public class ExpoLogController {
 
     @Operation(
             summary = "新增展會log",
-            description = "可輸入欄位 1.使用者帳號 2.展會ID"
+            description = "進入展會時呼叫。可輸入欄位 1.使用者帳號 2.展會ID"
     )
     @ApiResponses(value = {
             @ApiResponse(
@@ -130,6 +134,45 @@ public class ExpoLogController {
         System.out.println("ExpoLogController: getAllExpoLog >> "+expoID);
         List<ExpoLogResponse> logs = expoLogService.getAllExpoLogResponse(expoID);
         return ResponseEntity.status(HttpStatus.OK).body(logs);
+    }
+
+
+    @Operation(
+            summary = "更新展會log",
+            description = "在展會中有任何點擊時呼叫。可針對exit at及last active at欄位傳入boolean值"
+    )
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "成功更新展會log",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = ExpoLogResponse.class)
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = "400",
+                    description = "輸入格式錯誤"
+            ),
+            @ApiResponse(
+                    responseCode = "404",
+                    description = "找不到展會log"
+            ),
+            @ApiResponse(
+                    responseCode = "500",
+                    description = "伺服器錯誤"
+            )
+    })
+    @PutMapping("/update/{sessionID}")
+    public ResponseEntity<ExpoLogResponse> updateExpoLogBySessionID(
+            @Parameter(description = "展會log的Session ID", required = true)
+            @PathVariable String sessionID,
+            @Valid @RequestBody ExpoLogUpdateRequest request){
+        System.out.println("ExpoLogController: updateExpoLogBySessionID >> "+ sessionID);
+
+        expoLogService.updateExpoLog(sessionID, request);
+        ExpoLogResponse response = expoLogService.getExpoLogResponse(sessionID);
+        return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
 

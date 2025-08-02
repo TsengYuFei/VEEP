@@ -1,6 +1,7 @@
 package com.example.api.Service;
 
 
+import com.example.api.DTO.Request.ExpoLogUpdateRequest;
 import com.example.api.DTO.Response.BoothOverviewResponse;
 import com.example.api.DTO.Response.ExpoLogCreateResponse;
 import com.example.api.DTO.Response.ExpoLogResponse;
@@ -14,8 +15,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
+
+import static com.example.api.Other.UpdateTool.updateIfNotBlank;
+import static com.example.api.Other.UpdateTool.updateIfNotNull;
 
 @Service
 @RequiredArgsConstructor
@@ -73,6 +78,21 @@ public class ExpoLogService {
                 .stream()
                 .map(ExpoLogResponse::fromExpoLog)
                 .toList();
+    }
+
+
+    @Transactional
+    public void updateExpoLog(String sessionID, ExpoLogUpdateRequest request){
+        System.out.println("ExpoLogService: updateExpoLog >> "+sessionID);
+        ExpoLog expoLog = getExpoLogBySessionID(sessionID);
+
+        if(request.getIsExit()) expoLog.setExitAt(LocalDateTime.now());
+        if(request.getIsActive()) expoLog.setLastActiveAt(LocalDateTime.now());
+        if(request.getIsUsedAI()) {
+            expoLog.setHasUsedAi(true);
+            expoLog.setAiMessageCount(expoLog.getAiMessageCount() + 1);
+        }
+        expoLogRepository.save(expoLog);
     }
 
 
