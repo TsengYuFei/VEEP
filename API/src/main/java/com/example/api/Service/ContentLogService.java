@@ -24,10 +24,13 @@ public class ContentLogService {
     private SingleUserService singleUserService;
 
     @Autowired
-    private final SingleExpoService singleExpoService;
+    private UserHelperService userHelperService;
 
     @Autowired
-    private final SingleBoothService singleBoothService;
+    private final ExpoHelperService expoHelperService;
+
+    @Autowired
+    private final BoothHelperService boothHelperService;
 
 
 
@@ -37,7 +40,7 @@ public class ContentLogService {
         Content content = contentService.getContentByBoothIDAndNumber(boothID, number);
         Booth booth = content.getBooth();
         Expo expo = booth.getExpo();
-        User user = singleUserService.getUserByAccount(account);
+        User user = userHelperService.getUserByAccount(account);
 
         ContentLog contentLog = new ContentLog();
         contentLog.setContentNumber(content.getNumber());
@@ -84,7 +87,7 @@ public class ContentLogService {
     @Transactional
     public void deleteContentLogByExpoID(Integer expoID){
         System.out.println("ContentLogService: deleteContentLogByExpoID>> "+expoID);
-        singleExpoService.getExpoByID(expoID);
+        expoHelperService.getExpoByID(expoID);
         contentLogRepository.deleteByExpo_ExpoID(expoID);
     }
 
@@ -92,7 +95,7 @@ public class ContentLogService {
     @Transactional
     public void deleteContentLogByBoothID(Integer boothID){
         System.out.println("ContentLogService: deleteContentLogByBoothID>> "+boothID);
-        singleBoothService.getBoothByID(boothID);
+        boothHelperService.getBoothByID(boothID);
         contentLogRepository.deleteByBooth_BoothID(boothID);
     }
 

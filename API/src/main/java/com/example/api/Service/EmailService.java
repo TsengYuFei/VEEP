@@ -2,7 +2,6 @@ package com.example.api.Service;
 
 import com.example.api.Entity.User;
 import com.example.api.Exception.BadRequestException;
-import com.example.api.Exception.NotFoundException;
 import com.example.api.Repository.UserRepository;
 import jakarta.mail.internet.MimeMessage;
 import lombok.RequiredArgsConstructor;
@@ -28,6 +27,9 @@ public class EmailService {
 
     @Autowired
     private final UserRepository userRepository;
+
+    @Autowired
+    private final UserHelperService userHelperService;
 
 
 
@@ -95,11 +97,9 @@ public class EmailService {
     }
 
 
-
     public void resetPasswordEmail(String mail){
         System.out.println("EmailService: resetPasswordEmail >> "+mail);
-        User user = userRepository.findByMail(mail)
-                .orElseThrow(() -> new NotFoundException("找不到電子郵箱為 < "+ mail+" > 的使用者"));
+        User user = userHelperService.getUserByAccountOrMail(mail);
 
         String randomCode = UUID.randomUUID().toString();
         user.setResetPasswordToken(randomCode);
@@ -110,8 +110,7 @@ public class EmailService {
 
     public void resendVerificationEmail(String account){
         System.out.println("EmailService: resendVerificationEmail >> " + account);
-        User user = userRepository.findById(account)
-                .orElseThrow(() -> new NotFoundException("找不到使用者帳號為 < "+ account+" > 的使用者"));
+        User user = userHelperService.getUserByAccount(account);
         if(user.getIsVerified()) throw new BadRequestException("User of user account < "+account+" > has already been verified.");
 
         Integer randomCode = (int)(Math.random() * 1000000);

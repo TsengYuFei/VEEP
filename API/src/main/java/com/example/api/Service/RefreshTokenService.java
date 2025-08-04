@@ -20,13 +20,13 @@ public class RefreshTokenService {
     private final RefreshTokenRepository refreshTokenRepository;
 
     @Autowired
-    private final SingleUserService singleUserService;
+    private final UserHelperService userHelperService;
 
 
 
     public RefreshToken createOrUpdateToken(String account) {
         System.out.println("RefreshTokenService: createOrUpdateToken >> "+account);
-        User user = singleUserService.getUserByAccount(account);
+        User user = userHelperService.getUserByAccount(account);
 
         String newTokenValue = UUID.randomUUID().toString();
         LocalDateTime deadline = LocalDateTime.now().plusMinutes(JwtUtil.REFRESH_TOKEN_VALIDITY_MINUTES);
@@ -48,7 +48,7 @@ public class RefreshTokenService {
 
     public RefreshToken getTokenByUserAccount(String userAccount){
         System.out.println("RefreshTokenService: getTokenByUserAccount >> "+userAccount);
-        User user = singleUserService.getUserByAccount(userAccount);
+        User user = userHelperService.getUserByAccount(userAccount);
         return refreshTokenRepository.findByUser(user)
                 .orElseThrow(() -> new NotFoundException("找不到使用者帳號為 < "+userAccount+" > 的RefreshToken"));
     }

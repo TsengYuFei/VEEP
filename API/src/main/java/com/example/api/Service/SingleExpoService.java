@@ -4,7 +4,6 @@ import com.example.api.DTO.Request.ExpoCreateRequest;
 import com.example.api.DTO.Request.ExpoUpdateRequest;
 import com.example.api.DTO.Response.*;
 import com.example.api.Entity.*;
-import com.example.api.Exception.NotFoundException;
 import com.example.api.Exception.UnprocessableEntityException;
 import com.example.api.Repository.*;
 import lombok.RequiredArgsConstructor;
@@ -27,7 +26,7 @@ public class SingleExpoService {
     private final ExpoRepository expoRepository;
 
     @Autowired
-    private final SingleUserService singleUserService;
+    private final ExpoHelperService expoHelperService;
 
     @Autowired
     private final ExpoColListService colListService;
@@ -44,18 +43,17 @@ public class SingleExpoService {
     @Autowired
     private final ImageService imageService;
 
+    @Autowired
+    private final ExpoLogService expoLogService;
 
+    @Autowired
+    private final UserHelperService userHelperService;
 
-    Expo getExpoByID(Integer expoID){
-        System.out.println("SingleExpoService: getExpoByID >> "+expoID);
-        return expoRepository.findById(expoID)
-                .orElseThrow(() -> new NotFoundException("找不到展會ID為 < "+ expoID+" > 的展會"));
-    }
 
 
     public ExpoEditResponse getExpoEditByID(Integer expoID) {
         System.out.println("SingleExpoService: getExpoEditByID >> "+expoID);
-        Expo expo = getExpoByID(expoID);
+        Expo expo = expoHelperService.getExpoByID(expoID);
         ExpoEditResponse response = ExpoEditResponse.fromExpo(expo);
 
         // Collaborator
@@ -103,7 +101,7 @@ public class SingleExpoService {
     public Integer createExpo(String userAccount, ExpoCreateRequest request) {
         System.out.println("SingleExpoService: createExpo >> "+ userAccount);
 
-        User owner = singleUserService.getUserByAccount(userAccount);
+        User owner = userHelperService.getUserByAccount(userAccount);
 
         Boolean status = request.getOpenStatus();
         OpenMode mode = request.getOpenMode();
@@ -131,7 +129,7 @@ public class SingleExpoService {
         List<String> colIDs = request.getCollaborators();
         ExpoCollaboratorList collaborator = new ExpoCollaboratorList();
         if(colIDs != null && !colIDs.isEmpty()){
-            List<User> userList = singleUserService.getAllUserByAccount(colIDs);
+            List<User> userList = userHelperService.getAllUserByAccount(colIDs);
             Set<User> users = new HashSet<>(userList);
             collaborator.setCollaborators(users);
         }else collaborator.setCollaborators(new HashSet<>());
@@ -141,7 +139,7 @@ public class SingleExpoService {
         List<String> blackIDs = request.getBlacklist();
         Blacklist blacklistedUser = new Blacklist();
         if(blackIDs != null && !blackIDs.isEmpty()){
-            List<User> userList = singleUserService.getAllUserByAccount(blackIDs);
+            List<User> userList = userHelperService.getAllUserByAccount(blackIDs);
             Set<User> users = new HashSet<>(userList);
             blacklistedUser.setBlacklistedUsers(users);
         }else blacklistedUser.setBlacklistedUsers(new HashSet<>());
@@ -151,7 +149,7 @@ public class SingleExpoService {
         List<String> whiteIDs = request.getWhitelist();
         Whitelist whitelistedUser = new Whitelist();
         if(whiteIDs != null && !whiteIDs.isEmpty()){
-            List<User> userList = singleUserService.getAllUserByAccount(whiteIDs);
+            List<User> userList = userHelperService.getAllUserByAccount(whiteIDs);
             Set<User> users = new HashSet<>(userList);
             whitelistedUser.setWhitelistedUsers(users);
         }else whitelistedUser.setWhitelistedUsers(new HashSet<>());
@@ -178,7 +176,7 @@ public class SingleExpoService {
     @Transactional
     public void updateExpoByID(Integer expoID, ExpoUpdateRequest request){
         System.out.println("SingleExpoService: updateExpoByID >> "+expoID);
-        Expo expo = getExpoByID(expoID);
+        Expo expo = expoHelperService.getExpoByID(expoID);
 
         if(expo.getAvatar() != null && request.getAvatar() != null){
             imageService.deleteImageByName(expo.getAvatar());
@@ -203,7 +201,7 @@ public class SingleExpoService {
             collaborator.getCollaborators().clear();
 
             if (!newColAccounts.isEmpty()) {
-                List<User> userList = singleUserService.getAllUserByAccount(newColAccounts);
+                List<User> userList = userHelperService.getAllUserByAccount(newColAccounts);
 
                 for (User user : userList) {
                     if (!colListService.existInList(collaborator.getId(), user.getUserAccount())) {
@@ -220,7 +218,7 @@ public class SingleExpoService {
             blacklistedUser.getBlacklistedUsers().clear();
 
             if (!newBlackAccounts.isEmpty()) {
-                List<User> userList = singleUserService.getAllUserByAccount(newBlackAccounts);
+                List<User> userList = userHelperService.getAllUserByAccount(newBlackAccounts);
 
                 for (User user : userList) {
                     if (!blacklistService.existInList(blacklistedUser.getId(), user.getUserAccount())) {
@@ -237,7 +235,7 @@ public class SingleExpoService {
             whitelistedUser.getWhitelistedUsers().clear();
 
             if (!newWhiteAccounts.isEmpty()) {
-                List<User> userList = singleUserService.getAllUserByAccount(newWhiteAccounts);
+                List<User> userList = userHelperService.getAllUserByAccount(newWhiteAccounts);
 
                 for (User user : userList) {
                     if (!whiteListService.existInList(whitelistedUser.getId(), user.getUserAccount())) {
@@ -269,7 +267,7 @@ public class SingleExpoService {
     @Transactional
     public void deleteExpoByID(Integer expoID){
         System.out.println("SingleExpoService: deleteExpoByID >> "+expoID);
-        Expo expo = getExpoByID(expoID);
+        Expo expo = expoHelperService.getExpoByID(expoID);
 
         for(Booth booth : expo.getBoothList()){
             booth.setExpo(null);
@@ -278,13 +276,15 @@ public class SingleExpoService {
         String image = expo.getAvatar();
         if(image != null) imageService.deleteImageByName(image);
 
+        expoLogService.deleteExpoLogByExpoID(expoID);
+
         expoRepository.delete(expo);
     }
 
 
     public List<String> getAllColAccountList(Integer expoID){
         System.out.println("SingleExpoService: getAllCollaborator >> "+expoID);
-        Expo expo = getExpoByID(expoID);
+        Expo expo = expoHelperService.getExpoByID(expoID);
         Set<User> users = expo.getCollaborator().getCollaborators();
 
         return (users != null && !users.isEmpty())?
@@ -297,7 +297,7 @@ public class SingleExpoService {
 
     public List<UserListResponse> getAllColList(Integer expoID){
         System.out.println("SingleExpoService: getAllColList >> "+expoID);
-        Expo expo = getExpoByID(expoID);
+        Expo expo = expoHelperService.getExpoByID(expoID);
         List<UserListResponse> response;
 
         Set<User> users = expo.getCollaborator().getCollaborators();
@@ -313,7 +313,7 @@ public class SingleExpoService {
 
     public List<UserListResponse> getAllBlack(Integer expoID){
         System.out.println("SingleExpoService: getAllBlack >> "+expoID);
-        Expo expo = getExpoByID(expoID);
+        Expo expo = expoHelperService.getExpoByID(expoID);
         List<UserListResponse> response;
 
         Set<User> users = expo.getBlacklist().getBlacklistedUsers();
@@ -329,7 +329,7 @@ public class SingleExpoService {
 
     public List<UserListResponse> getAllWhite(Integer expoID){
         System.out.println("SingleExpoService: getAllWhite >> "+expoID);
-        Expo expo = getExpoByID(expoID);
+        Expo expo = expoHelperService.getExpoByID(expoID);
         List<UserListResponse> response;
 
         Set<User> users = expo.getWhitelist().getWhitelistedUsers();
@@ -345,7 +345,7 @@ public class SingleExpoService {
 
     public List<BoothOverviewResponse> getAllBoothOverview(Integer expoID){
         System.out.println("SingleExpoService: getAllBoothOverview >> "+expoID);
-        Expo expo = getExpoByID(expoID);
+        Expo expo = expoHelperService.getExpoByID(expoID);
 
         return expo.getBoothList().stream()
                 .map(BoothOverviewResponse::fromBooth)

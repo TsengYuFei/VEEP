@@ -146,7 +146,10 @@ public class SingleBoothController {
     }
 
 
-    @Operation(summary = "刪除攤位")
+    @Operation(
+            summary = "刪除攤位",
+            description = "刪除封面圖片、所有攤位內容、所有booth & content log"
+    )
     @ApiResponses(value = {
             @ApiResponse(
                     responseCode = "204",

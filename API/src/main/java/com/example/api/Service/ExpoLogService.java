@@ -26,18 +26,21 @@ public class ExpoLogService {
     private final ExpoLogRepository expoLogRepository;
 
     @Autowired
-    private final SingleExpoService singleExpoService;
+    private final ExpoHelperService expoHelperService;
 
     @Autowired
     private final SingleUserService singleUserService;
+
+    @Autowired
+    private final UserHelperService userHelperService;
 
 
 
     @Transactional
     public LogCreateResponse createExpoLog(Integer expoID, String account){
         System.out.println("ExpoLogService: createExpoLog>> "+expoID+", "+account);
-        Expo expo = singleExpoService.getExpoByID(expoID);
-        User user = singleUserService.getUserByAccount(account);
+        Expo expo = expoHelperService.getExpoByID(expoID);
+        User user = userHelperService.getUserByAccount(account);
 
         String sessionID = UUID.randomUUID().toString();
         ExpoLog expoLog = new ExpoLog();
@@ -97,7 +100,7 @@ public class ExpoLogService {
     @Transactional
     public void deleteExpoLogBySessionID(String sessionID, String account){
         System.out.println("ExpoLogService: deleteExpoLogBySessionID>> "+sessionID+", "+account);
-        User user = singleUserService.getUserByAccount(account);
+        User user = userHelperService.getUserByAccount(account);
         ExpoLog expoLog = getExpoLogBySessionID(sessionID);
         Expo expo = expoLog.getExpo();
 
@@ -109,7 +112,7 @@ public class ExpoLogService {
     @Transactional
     public void deleteExpoLogByExpoID(Integer expoID){
         System.out.println("ExpoLogService: deleteExpoLogByExpoID>> "+expoID);
-        Expo expo = singleExpoService.getExpoByID(expoID);
+        expoHelperService.getExpoByID(expoID);
         expoLogRepository.deleteByExpo_ExpoID(expoID);
     }
 }

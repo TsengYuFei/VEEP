@@ -24,7 +24,7 @@ public class UserMessageService {
     private final UserMessageRepository userMessageRepository;
 
     @Autowired
-    private final SingleUserService singleUserService;
+    private final UserHelperService userHelperService;
 
     @Autowired
     private final SimpMessagingTemplate messagingTemplate;
@@ -33,8 +33,8 @@ public class UserMessageService {
 
     public void sendMessage(String senderAccount, SendMessageRequest request){
         System.out.println("MessageService: sendMessage >> "+senderAccount);
-        User sender = singleUserService.getUserByAccount(senderAccount);
-        User receiver = singleUserService.getUserByAccount(request.getReceiverAccount());
+        User sender = userHelperService.getUserByAccount(senderAccount);
+        User receiver = userHelperService.getUserByAccount(request.getReceiverAccount());
 
         UserMessage userMessage = new UserMessage();
         userMessage.setSender(sender);
@@ -57,7 +57,7 @@ public class UserMessageService {
 
     public List<MessageResponse> getConversation(String currentAccount, String targetAccount, Integer page, Integer size){
         System.out.println("MessageService: getConversation >> "+currentAccount+", "+targetAccount);
-        singleUserService.getUserByAccount(targetAccount);
+        userHelperService.getUserByAccount(targetAccount);
 
         Pageable pageable = PageRequest.of(page, size, Sort.by("send_at").descending());
         return userMessageRepository.findConversation(currentAccount, targetAccount, pageable)
@@ -70,7 +70,7 @@ public class UserMessageService {
 
     public UnreadMessageResponse getUnreadCount(String currentAccount, String targetAccount){
         System.out.println("MessageService: getUnreadCount >> "+currentAccount+", "+targetAccount);
-        singleUserService.getUserByAccount(targetAccount);
+        userHelperService.getUserByAccount(targetAccount);
 
         Integer count = userMessageRepository.getUnreadCountByAccount(currentAccount, targetAccount);
         return new UnreadMessageResponse(targetAccount, count);
@@ -79,7 +79,7 @@ public class UserMessageService {
 
     public void readUnread(String currentAccount, String targetAccount){
         System.out.println("MessageService: getUnreadMessage >> "+currentAccount+", "+targetAccount);
-        User receiver = singleUserService.getUserByAccount(targetAccount);
+        User receiver = userHelperService.getUserByAccount(targetAccount);
         userMessageRepository.readUnreadByAccount(currentAccount, targetAccount);
 
         UnreadMessageResponse unreadResponse = getUnreadCount(targetAccount, currentAccount);

@@ -147,7 +147,10 @@ public class SingleExpoController {
     }
 
 
-    @Operation(summary = "刪除展會")
+    @Operation(
+            summary = "刪除展會",
+            description = "將所屬booth的對應expo設為null、刪除封面圖片、刪除所有expo log紀錄"
+    )
     @ApiResponses(value = {
             @ApiResponse(
                     responseCode = "204",

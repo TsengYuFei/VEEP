@@ -13,7 +13,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.security.sasl.AuthenticationException;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
@@ -25,22 +24,28 @@ public class BoothLogService {
     private final BoothLogRepository boothLogRepository;
 
     @Autowired
-    private final SingleExpoService singleExpoService;
+    private final ExpoHelperService expoHelperService;
 
     @Autowired
-    private final SingleBoothService singleBoothService;
+    private final BoothHelperService boothHelperService;
 
     @Autowired
     private final SingleUserService singleUserService;
+
+    @Autowired
+    private final UserHelperService userHelperService;
+
+    @Autowired
+    private final ContentLogService contentLogService;
 
 
 
     @Transactional
     public LogCreateResponse createBoothLog(Integer boothID, String account){
         System.out.println("BoothLogService: createBoothLog>> "+boothID+", "+account);
-        Booth booth = singleBoothService.getBoothByID(boothID);
+        Booth booth = boothHelperService.getBoothByID(boothID);
         Expo expo = booth.getExpo();
-        User user = singleUserService.getUserByAccount(account);
+        User user = userHelperService.getUserByAccount(account);
 
         String sessionID = UUID.randomUUID().toString();
         BoothLog boothLog = new BoothLog();
@@ -109,12 +114,15 @@ public class BoothLogService {
     @Transactional
     public void deleteBoothLogBySessionID(String sessionID, String account){
         System.out.println("BoothLogService: deleteBoothLogBySessionID>> "+sessionID+", "+account);
-        User user = singleUserService.getUserByAccount(account);
+        User user = userHelperService.getUserByAccount(account);
         BoothLog boothLog = getBoothLogBySessionID(sessionID);
         Booth booth = boothLog.getBooth();
         Expo expo = boothLog.getExpo();
 
-        if(booth.getOwner() == user || expo.getOwner() == user || expo.getCollaborator().getCollaborators().contains(user)) boothLogRepository.delete(boothLog);
+        if(booth.getOwner() == user || expo.getOwner() == user || expo.getCollaborator().getCollaborators().contains(user)) {
+            boothLogRepository.delete(boothLog);
+            contentLogService.deleteContentLogByBoothID(booth.getBoothID());
+        }
         else throw new ForibiddenException("權限不足，不可刪除此攤位 log");
     }
 
@@ -122,15 +130,17 @@ public class BoothLogService {
     @Transactional
     public void deleteBoothLogByExpoID(Integer expoID){
         System.out.println("BoothLogService: deleteBoothLogByExpoID>> "+expoID);
-        singleExpoService.getExpoByID(expoID);
+        expoHelperService.getExpoByID(expoID);
         boothLogRepository.deleteByExpo_ExpoID(expoID);
+        contentLogService.deleteContentLogByExpoID(expoID);
     }
 
 
     @Transactional
     public void deleteBoothLogByBoothID(Integer boothID){
         System.out.println("BoothLogService: deleteBoothLogByBoothID>> "+boothID);
-        singleBoothService.getBoothByID(boothID);
+        boothHelperService.getBoothByID(boothID);
         boothLogRepository.deleteByBooth_BoothID(boothID);
+        contentLogService.deleteContentLogByBoothID(boothID);
     }
 }

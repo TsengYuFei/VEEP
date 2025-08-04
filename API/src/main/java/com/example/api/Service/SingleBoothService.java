@@ -31,10 +31,10 @@ public class SingleBoothService {
     private final BoothColListService colListService;
 
     @Autowired
-    private final SingleUserService singleUserService;
+    private final UserHelperService userHelperService;
 
     @Autowired
-    private final SingleExpoService singleExpoService;
+    private final ExpoHelperService expoHelperService;
 
     @Autowired
     private final BoothStaffListService staffListService;
@@ -48,18 +48,17 @@ public class SingleBoothService {
     @Autowired
     private final ImageService imageService;
 
+    @Autowired
+    private final BoothHelperService boothHelperService;
 
+    @Autowired
+    private final BoothLogService boothLogService;
 
-    Booth getBoothByID(Integer boothID) {
-        System.out.println("SingleBoothService: getBoothByID >> "+boothID);
-        return boothRepository.findById(boothID)
-                .orElseThrow(() -> new NotFoundException("找不到攤位ID為 < "+ boothID+" > 的攤位"));
-    }
 
 
     public BoothEditResponse getBoothEditByID(Integer boothID) {
         System.out.println("SingleBoothService: getBoothEditByID >> "+boothID);
-        Booth booth = getBoothByID(boothID);
+        Booth booth = boothHelperService.getBoothByID(boothID);
         BoothEditResponse response = BoothEditResponse.fromBooth(booth);
         Expo expo = booth.getExpo();
         if(expo == null) response.setExpoID(null);
@@ -100,8 +99,8 @@ public class SingleBoothService {
     public Integer createBooth(String userAccount, Integer expoID, String ownerAccount) {
         System.out.println("SingleBoothService: createBooth >> "+ userAccount+", "+expoID+", "+ownerAccount);
 
-        User owner = singleUserService.getUserByAccount(ownerAccount);
-        Expo expo = singleExpoService.getExpoByID(expoID);
+        User owner = userHelperService.getUserByAccount(ownerAccount);
+        Expo expo = expoHelperService.getExpoByID(expoID);
 
         Booth booth = new Booth();
         booth.setExpo(expo);
@@ -122,7 +121,7 @@ public class SingleBoothService {
     @Transactional
     public void updateBoothByID(Integer boothID, BoothUpdateRequest request){
         System.out.println("SingleBoothService: updateBoothByID >> "+boothID);
-        Booth booth = getBoothByID(boothID);
+        Booth booth = boothHelperService.getBoothByID(boothID);
 
         if(booth.getAvatar() != null && request.getAvatar() != null){
             imageService.deleteImageByName(booth.getAvatar());
@@ -145,7 +144,7 @@ public class SingleBoothService {
             collaborator.getCollaborators().clear();
 
             if (!newColAccounts.isEmpty()) {
-                List<User> userList = singleUserService.getAllUserByAccount(newColAccounts);
+                List<User> userList = userHelperService.getAllUserByAccount(newColAccounts);
 
                 for (User user : userList) {
                     if (!colListService.existInList(collaborator.getId(), user.getUserAccount())) {
@@ -162,7 +161,7 @@ public class SingleBoothService {
             staff.getStaffs().clear();
 
             if (!newStaffAccounts.isEmpty()) {
-                List<User> userList = singleUserService.getAllUserByAccount(newStaffAccounts);
+                List<User> userList = userHelperService.getAllUserByAccount(newStaffAccounts);
 
                 for (User user : userList) {
                     if (!staffListService.existInList(staff.getId(), user.getUserAccount())) {
@@ -194,28 +193,29 @@ public class SingleBoothService {
     @Transactional
     public void deleteBoothByID(Integer boothID, String account) {
         System.out.println("SingleBoothService: deleteBoothByID >> "+boothID+", "+account);
-        User user = singleUserService.getUserByAccount(account);
-        Booth booth = getBoothByID(boothID);
+        User user = userHelperService.getUserByAccount(account);
+        Booth booth = boothHelperService.getBoothByID(boothID);
         Expo expo = booth.getExpo();
 
-        if(booth.getOwner() == user || expo.getOwner() == user || expo.getCollaborator().getCollaborators().contains(user)) {
+        if(expo.getOwner() != user && !expo.getCollaborator().getCollaborators().contains(user)) throw new ForibiddenException("權限不足，不可刪除此展會");
 
-            String avatar = booth.getAvatar();
-            if (avatar != null) imageService.deleteImageByName(avatar);
+        String avatar = booth.getAvatar();
+        if (avatar != null) imageService.deleteImageByName(avatar);
 
-            for (Content content : booth.getContentList()) {
-                String image = content.getImage();
-                if (image != null) imageService.deleteImageByName(image);
-            }
-            boothRepository.delete(booth);
-        }else throw new ForibiddenException("權限不足，不可刪除此展會");
+        for (Content content : booth.getContentList()) {
+            String image = content.getImage();
+            if (image != null) imageService.deleteImageByName(image);
+        }
+
+        boothLogService.deleteBoothLogByBoothID(boothID);
+        boothRepository.delete(booth);
 
     }
 
 
     public List<String> getAllColAccountList(Integer boothID){
         System.out.println("SingleBoothService: getAllColAccountList >> "+boothID);
-        Booth booth = getBoothByID(boothID);
+        Booth booth = boothHelperService.getBoothByID(boothID);
         Set<User> users = booth.getCollaborator().getCollaborators();
 
         return (users != null && !users.isEmpty())?
@@ -228,7 +228,7 @@ public class SingleBoothService {
 
     public List<String> getAllStaffAccountList(Integer boothID){
         System.out.println("SingleBoothService: getAllStaffAccountList >> "+boothID);
-        Booth booth = getBoothByID(boothID);
+        Booth booth = boothHelperService.getBoothByID(boothID);
         Set<User> users = booth.getStaff().getStaffs();
 
         return (users != null && !users.isEmpty())?
@@ -241,7 +241,7 @@ public class SingleBoothService {
 
     public List<UserListResponse> getAllColList(Integer boothID){
         System.out.println("SingleBoothService: getAllColList >> "+boothID);
-        Booth booth = getBoothByID(boothID);
+        Booth booth = boothHelperService.getBoothByID(boothID);
         List<UserListResponse> response;
 
         Set<User> users = booth.getCollaborator().getCollaborators();
@@ -257,7 +257,7 @@ public class SingleBoothService {
 
     public List<UserListResponse> getAllStaff(Integer boothID){
         System.out.println("SingleBoothService: getAllStaff >> "+boothID);
-        Booth booth = getBoothByID(boothID);
+        Booth booth = boothHelperService.getBoothByID(boothID);
         List<UserListResponse> response;
 
         Set<User> stas = booth.getStaff().getStaffs();
