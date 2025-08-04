@@ -1,6 +1,5 @@
 package com.example.api.Service;
 
-import com.example.api.DTO.Request.BoothCreateRequest;
 import com.example.api.DTO.Request.BoothUpdateRequest;
 import com.example.api.DTO.Response.BoothEditResponse;
 import com.example.api.DTO.Response.TagResponse;
@@ -8,7 +7,6 @@ import com.example.api.DTO.Response.UserListResponse;
 import com.example.api.Entity.*;
 import com.example.api.Exception.ForibiddenException;
 import com.example.api.Exception.NotFoundException;
-import com.example.api.Exception.UnprocessableEntityException;
 import com.example.api.Repository.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -99,65 +97,18 @@ public class SingleBoothService {
 
 
     @Transactional
-    public Integer createBooth(String userAccount, Integer expoID, BoothCreateRequest request) {
-        System.out.println("SingleBoothService: createBooth >> "+ userAccount+", "+expoID);
+    public Integer createBooth(String userAccount, Integer expoID, String ownerAccount) {
+        System.out.println("SingleBoothService: createBooth >> "+ userAccount+", "+expoID+", "+ownerAccount);
 
-        User owner = singleUserService.getUserByAccount(userAccount);
+        User owner = singleUserService.getUserByAccount(ownerAccount);
         Expo expo = singleExpoService.getExpoByID(expoID);
 
-        Boolean status = request.getOpenStatus();
-        OpenMode mode = request.getOpenMode();
-        if(mode == OpenMode.MANUAL && status == null){
-            throw new UnprocessableEntityException("Open mode 為 MANUAL 時，open status 不可為空");
-        }else if (mode == OpenMode.AUTO && (request.getOpenStart() == null || request.getOpenEnd() == null)) {
-            throw new UnprocessableEntityException("Open mode 為 MANUAL 時，open start/end 不可為空");
-        }
-
         Booth booth = new Booth();
-        booth.setName(request.getName());
         booth.setExpo(expo);
         booth.setOwner(owner);
-        booth.setAvatar(updateIfNotBlank(null, request.getAvatar()));
-        booth.setIntroduction(updateIfNotBlank(null, request.getIntroduction()));
-        booth.setOpenMode(mode);
-        booth.setOpenStatus(status);
-        booth.setOpenStart(request.getOpenStart());
-        booth.setOpenEnd(request.getOpenEnd());
-        booth.setMaxParticipants(request.getMaxParticipants());
-        booth.setDisplay(request.getDisplay());
-
-        // Collaborator
-        List<String> colUserIDs = request.getCollaborators();
-        BoothCollaboratorList collaborator = new BoothCollaboratorList();
-        if(colUserIDs != null && !colUserIDs.isEmpty()) {
-            List<User> userList = singleUserService.getAllUserByAccount(colUserIDs);
-            Set<User> users = new HashSet<>(userList);
-            collaborator.setCollaborators(users);
-        }else collaborator.setCollaborators(new HashSet<>());
-        booth.setCollaborator(collaborator);
-
-        // Staff
-        List<String> staffUserIDs = request.getStaffs();
-        BoothStaffList staff = new BoothStaffList();
-        if(staffUserIDs != null && !staffUserIDs.isEmpty()) {
-            List<User> userList = singleUserService.getAllUserByAccount(staffUserIDs);
-            Set<User> users = new HashSet<>(userList);
-            staff.setStaffs(users);
-        }else staff.setStaffs(new HashSet<>());
-        booth.setStaff(staff);
-
-        // Tag
-        List<String> tagNames = request.getTags();
-        Set<Tag> tags = new HashSet<>();
-        if(tagNames != null && !tagNames.isEmpty()){
-            for(String name : tagNames){
-                name = name.toLowerCase();
-                Tag tag = tagService.addTagIfNotExist(name);
-                tags.add(tag);
-            }
-        }
-        booth.setTags(tags);
-
+        booth.setCollaborator(new BoothCollaboratorList());
+        booth.setStaff(new BoothStaffList());
+        booth.setTags(new HashSet<>());
         boothRepository.save(booth);
 
         // Content
@@ -247,7 +198,7 @@ public class SingleBoothService {
         Booth booth = getBoothByID(boothID);
         Expo expo = booth.getExpo();
 
-        if(expo.getOwner() == user || expo.getCollaborator().getCollaborators().contains(user)) {
+        if(booth.getOwner() == user || expo.getOwner() == user || expo.getCollaborator().getCollaborators().contains(user)) {
 
             String avatar = booth.getAvatar();
             if (avatar != null) imageService.deleteImageByName(avatar);

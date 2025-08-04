@@ -32,4 +32,11 @@ public class BoothStaffList {
     )
     @JsonIgnore
     private Set<User> staffs = new HashSet<>();
+
+
+
+    @PrePersist
+    protected void onCreate() {
+        staffs = new HashSet<>();
+    }
 }

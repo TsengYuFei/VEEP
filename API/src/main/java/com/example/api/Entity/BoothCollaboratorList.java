@@ -30,5 +30,12 @@ public class BoothCollaboratorList {
             inverseJoinColumns = {@JoinColumn(name = "userAccount")}  //User table's foreigner key in database
     )
     @JsonIgnore
-    private Set<User> collaborators = new HashSet<>();
+    private Set<User> collaborators;
+
+
+
+    @PrePersist
+    protected void onCreate() {
+        collaborators = new HashSet<>();
+    }
 }

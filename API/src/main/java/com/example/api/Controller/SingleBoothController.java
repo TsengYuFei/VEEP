@@ -70,9 +70,7 @@ public class SingleBoothController {
 
     @Operation(
             summary = "新增攤位",
-            description = "(暫時設定只要expoID有對到就好)/n可輸入欄位 1.攤位擁有者的使用者帳號 2.攤位所屬展會的ID  3.攤位名稱 4.圖像 " +
-                    "5.介紹 6.標籤(數個) 7.開放模式 8.開放狀態 9.開始時間 10.結束時間 11.同時間最大參與人數 " +
-                    "12.是否顯示於攤位總覽頁面 13.合作者(數個) 14.員工(數個)"
+            description = "需由expo owner或collaborator新增並指定owner"
     )
     @ApiResponses(value = {
             @ApiResponse(
@@ -88,19 +86,20 @@ public class SingleBoothController {
                     description = "伺服器錯誤"
             )
     })
-    @PreAuthorize("hasRole('FOUNDER')")
-    @PostMapping("/{expoID}")
+    @PreAuthorize("hasRole('FOUNDER') and (@expoSecurity.isOwner(#expoID) or @expoSecurity.isCollaborator(#expoID))")
+    @PostMapping("/{expoID}/{userAccount}")
     public ResponseEntity<BoothEditResponse> createBooth(
             @Parameter(description = "攤位所屬展會的ID", required = true)
             @PathVariable Integer expoID,
-            @Valid @RequestBody BoothCreateRequest boothRequest
+            @Parameter(description = "攤位持有者的使用者帳號", required = true)
+            @PathVariable String userAccount
     ){
         System.out.print("SingleBoothController: createBooth >> ");
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String userAccount = authentication.getName();
-        System.out.println(userAccount);
+        String currentAccount = authentication.getName();
+        System.out.println(currentAccount);
 
-        Integer boothID = singleBoothService.createBooth(userAccount, expoID, boothRequest);
+        Integer boothID = singleBoothService.createBooth(currentAccount, expoID, userAccount);
         BoothEditResponse booth = singleBoothService.getBoothEditByID(boothID);
         return ResponseEntity.status(HttpStatus.CREATED).body(booth);
     }
