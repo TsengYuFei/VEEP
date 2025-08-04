@@ -36,10 +36,10 @@ public class BoothLogService {
 
 
     @Transactional
-    public LogCreateResponse createBoothLog(Integer expoID, Integer boothID, String account){
-        System.out.println("BoothLogService: createBoothLog>> "+expoID+", "+boothID+", "+account);
-        Expo expo = singleExpoService.getExpoByID(expoID);
+    public LogCreateResponse createBoothLog(Integer boothID, String account){
+        System.out.println("BoothLogService: createBoothLog>> "+boothID+", "+account);
         Booth booth = singleBoothService.getBoothByID(boothID);
+        Expo expo = booth.getExpo();
         User user = singleUserService.getUserByAccount(account);
 
         String sessionID = UUID.randomUUID().toString();

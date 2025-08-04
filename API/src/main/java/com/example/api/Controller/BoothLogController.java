@@ -62,10 +62,8 @@ public class BoothLogController {
                     description = "伺服器錯誤"
             )
     })
-    @PostMapping("/create/{expoID}/{boothID}")
+    @PostMapping("/create/{boothID}")
     public ResponseEntity<LogCreateResponse> createBoothLog(
-            @Parameter(description = "展會ID", required = true)
-            @PathVariable Integer expoID,
             @Parameter(description = "攤位ID", required = true)
             @PathVariable Integer boothID
     ){
@@ -74,7 +72,7 @@ public class BoothLogController {
         String userAccount = authentication.getName();
         System.out.println(userAccount);
 
-        LogCreateResponse response = boothLogService.createBoothLog(expoID, boothID, userAccount);
+        LogCreateResponse response = boothLogService.createBoothLog(boothID, userAccount);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 

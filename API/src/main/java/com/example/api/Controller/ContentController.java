@@ -28,9 +28,6 @@ public class ContentController {
     @Autowired
     private final ContentService contentService;
 
-    @Autowired
-    private final SingleBoothService singleBoothService;
-
 
 
     @Operation(

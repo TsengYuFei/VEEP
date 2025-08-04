@@ -33,9 +33,16 @@ public class ContentService {
     Content getContentByBoothIDAndNumber(Integer boothID, Integer number) {
         System.out.println("ContentService: getContentByBoothAndNumber >> "+boothID+", "+number);
         boothRepository.findById(boothID)
-                .orElseThrow(() -> new NotFoundException("找不到攤位ID為 < "+ boothID+" > 的攤位"));
+                .orElseThrow(() -> new NotFoundException("找不到攤位ID為 < "+ boothID+" > 的攤位內容"));
         return contentRepository.findByBooth_BoothIDAndNumber(boothID, number)
-                .orElseThrow(() -> new NotFoundException("在攤位ID為 < "+ boothID+" > 的攤位中，找不到內容編號為 < "+ number+" > 的內容"));
+                .orElseThrow(() -> new NotFoundException("在攤位ID為 < "+ boothID+" > 的攤位中，找不到內容編號為 < "+ number+" > 的攤位內容"));
+    }
+
+
+    Content getContentByContentID(Integer contentID) {
+        System.out.println("ContentService: getContentByContentID >> "+contentID);
+        return contentRepository.findContentById(contentID)
+                .orElseThrow(() -> new NotFoundException("找不到攤位內容ID為 < "+ contentID+" > 的攤位內容"));
     }
 
 
