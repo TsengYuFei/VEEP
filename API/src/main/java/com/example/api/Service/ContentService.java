@@ -39,13 +39,6 @@ public class ContentService {
     }
 
 
-    Content getContentByContentID(Integer contentID) {
-        System.out.println("ContentService: getContentByContentID >> "+contentID);
-        return contentRepository.findContentById(contentID)
-                .orElseThrow(() -> new NotFoundException("找不到攤位內容ID為 < "+ contentID+" > 的攤位內容"));
-    }
-
-
     public List<Content> createDefaultContent(Booth booth){
         System.out.println("ContentService: createDefaultContent");
 

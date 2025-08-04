@@ -116,7 +116,7 @@ public class BoothLogController {
     @ApiResponses(value = {
             @ApiResponse(
                     responseCode = "200",
-                    description = "成功獲取含該展會的所有log",
+                    description = "成功獲取含該展會的所有攤位log",
                     content = @Content(
                             mediaType = "application/json",
                             array = @ArraySchema(
@@ -147,7 +147,7 @@ public class BoothLogController {
     @ApiResponses(value = {
             @ApiResponse(
                     responseCode = "200",
-                    description = "成功獲取含該攤位的所有log",
+                    description = "成功獲取含該攤位的所有攤位log",
                     content = @Content(
                             mediaType = "application/json",
                             array = @ArraySchema(
@@ -210,11 +210,11 @@ public class BoothLogController {
     }
 
 
-    @Operation(summary = "刪除單筆log")
+    @Operation(summary = "刪除單筆攤位log")
     @ApiResponses(value = {
             @ApiResponse(
                     responseCode = "204",
-                    description = "成功刪除單筆log"
+                    description = "成功刪除單筆攤位log"
             ),
             @ApiResponse(
                     responseCode = "404",
@@ -231,7 +231,7 @@ public class BoothLogController {
             @Parameter(description = "攤位log的Session ID", required = true)
             @PathVariable String sessionID
     ){
-        System.out.println("BoothLogController: deleteBoothLogBySessionID>> "+sessionID);
+        System.out.println("BoothLogController: deleteBoothLogBySessionID >> "+sessionID);
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String userAccount = authentication.getName();
 
@@ -240,11 +240,11 @@ public class BoothLogController {
     }
 
 
-    @Operation(summary = "刪除某展會的所有log")
+    @Operation(summary = "刪除某展會的所有攤位log")
     @ApiResponses(value = {
             @ApiResponse(
                     responseCode = "204",
-                    description = "成功刪除某展會的所有log"
+                    description = "成功刪除某展會的所有攤位log"
             ),
             @ApiResponse(
                     responseCode = "404",
@@ -261,17 +261,17 @@ public class BoothLogController {
             @Parameter(description = "展會ID", required = true)
             @PathVariable Integer expoID
     ){
-        System.out.println("BoothLogController: deleteBoothLogByExpoID>> "+expoID);
+        System.out.println("BoothLogController: deleteBoothLogByExpoID >> "+expoID);
         boothLogService.deleteBoothLogByExpoID(expoID);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
 
-    @Operation(summary = "刪除某攤位的所有log")
+    @Operation(summary = "刪除某攤位的所有攤位log")
     @ApiResponses(value = {
             @ApiResponse(
                     responseCode = "204",
-                    description = "成功刪除某攤位的所有log"
+                    description = "成功刪除某攤位的所有攤位log"
             ),
             @ApiResponse(
                     responseCode = "404",
@@ -288,7 +288,7 @@ public class BoothLogController {
             @Parameter(description = "攤位ID", required = true)
             @PathVariable Integer boothID
     ){
-        System.out.println("BoothLogController: deleteBoothLogByBoothID>> "+boothID);
+        System.out.println("BoothLogController: deleteBoothLogByBoothID >> "+boothID);
         boothLogService.deleteBoothLogByBoothID(boothID);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }

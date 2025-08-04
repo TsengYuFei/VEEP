@@ -18,9 +18,6 @@ public class ContentLog {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @Column(name = "sessionID", nullable = false, unique = true)
-    private String sessionID;
-
     @Column(name = "contentNumber", nullable = false)
     private Integer contentNumber;
 

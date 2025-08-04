@@ -7,7 +7,6 @@ import java.time.LocalDateTime;
 
 @Data
 public class ContentLogResponse {
-    private String sessionID;
     private String userAccount;
     private Integer expoID;
     private Integer boothID;
@@ -21,7 +20,6 @@ public class ContentLogResponse {
     public static ContentLogResponse fromContentLog(ContentLog contentLog){
         ContentLogResponse response = new ContentLogResponse();
 
-        response.setSessionID(contentLog.getSessionID());
         response.setUserAccount(contentLog.getUser().getUserAccount());
         response.setExpoID(contentLog.getExpo().getExpoID());
         response.setBoothID(contentLog.getBooth().getBoothID());

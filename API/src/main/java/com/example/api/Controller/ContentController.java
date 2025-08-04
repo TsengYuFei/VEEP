@@ -2,9 +2,7 @@ package com.example.api.Controller;
 
 import com.example.api.DTO.Request.ContentUpdateRequest;
 import com.example.api.DTO.Response.ContentEditResponse;
-import com.example.api.Exception.ForibiddenException;
 import com.example.api.Service.ContentService;
-import com.example.api.Service.SingleBoothService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -17,7 +15,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @Tag(name = "單一攤位內容相關", description = "每個攤位固定有6個內容，創建booth時會自動建立")

@@ -9,11 +9,10 @@ import java.util.Optional;
 
 @Repository
 public interface ContentLogRepository extends JpaRepository<ContentLog, Integer> {
-    Optional<ContentLog> findBySessionID(String sessionID);
     List<ContentLog> findContentLogByExpo_ExpoID(Integer expoExpoID);
     List<ContentLog> findContentLogByBooth_BoothID(Integer boothBoothID);
-    List<ContentLog> findContentLogByContent_ContentID(Integer contentID);
+    List<ContentLog> findContentLogByBooth_BoothIDAndContent_Number(Integer boothBoothID, Integer contentNumber);
     void deleteByExpo_ExpoID(Integer expoExpoID);
     void deleteByBooth_BoothID(Integer boothBoothID);
-    void deleteByContent_ContentID(Integer contentID);
+    void deleteByBooth_BoothIDAndContent_Number(Integer boothBoothID, Integer contentNumber);
 }
