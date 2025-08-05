@@ -1,7 +1,6 @@
 package com.example.api.Service;
 
 import com.example.api.Repository.BlacklistRepository;
-import com.example.api.Repository.ExpoCollaboratorListRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

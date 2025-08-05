@@ -29,7 +29,7 @@ public class ExpoLogService {
     private final ExpoHelperService expoHelperService;
 
     @Autowired
-    private final SingleUserService singleUserService;
+    private final UserRoleService userRoleService;
 
     @Autowired
     private final UserHelperService userHelperService;
@@ -46,7 +46,7 @@ public class ExpoLogService {
         ExpoLog expoLog = new ExpoLog();
         expoLog.setSessionID(sessionID);
         expoLog.setEnterAt(LocalDateTime.now());
-        expoLog.setRole(singleUserService.getUserRoleName(account));
+        expoLog.setRole(userRoleService.getUserRoleName(account));
         if(expo.getOwner() == user) expoLog.setIsOwner(true);
         if(expo.getCollaborator().getCollaborators().contains(user)) expoLog.setIsCollaborator(true);
         if(expo.getWhitelist().getWhitelistedUsers().contains(user)) expoLog.setIsWhiteListed(true);

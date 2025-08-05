@@ -211,7 +211,10 @@ public class SingleUserController {
     }
 
 
-    @Operation(summary = "刪除使用者")
+    @Operation(
+            summary = "刪除使用者",
+            description = "刪除頭像圖片及持有(owner)的所有展會和攤位"
+    )
     @ApiResponses(value = {
             @ApiResponse(
                     responseCode = "204",

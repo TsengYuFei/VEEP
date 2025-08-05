@@ -54,12 +54,12 @@ public class Booth {
     private Boolean display;
 
     @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
-    @JoinColumn(name = "collaborator", nullable = false, unique = true)  // 主控方加JoinColumn
+    @JoinColumn(name = "collaborator", unique = true)  // 主控方加JoinColumn
     @JsonManagedReference
     private BoothCollaboratorList collaborator;
 
     @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
-    @JoinColumn(name = "staff", nullable = false, unique = true)  // 主控方加JoinColumn
+    @JoinColumn(name = "staff", unique = true)  // 主控方加JoinColumn
     @JsonManagedReference
     private BoothStaffList staff;
 

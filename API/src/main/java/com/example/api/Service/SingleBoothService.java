@@ -6,7 +6,6 @@ import com.example.api.DTO.Response.TagResponse;
 import com.example.api.DTO.Response.UserListResponse;
 import com.example.api.Entity.*;
 import com.example.api.Exception.ForibiddenException;
-import com.example.api.Exception.NotFoundException;
 import com.example.api.Repository.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;

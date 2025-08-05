@@ -21,7 +21,7 @@ public class ContentLogService {
     private final ContentService contentService;
 
     @Autowired
-    private SingleUserService singleUserService;
+    private UserRoleService userRoleService;
 
     @Autowired
     private UserHelperService userHelperService;
@@ -45,7 +45,7 @@ public class ContentLogService {
         ContentLog contentLog = new ContentLog();
         contentLog.setContentNumber(content.getNumber());
         contentLog.setClickAt(LocalDateTime.now());
-        contentLog.setRole(singleUserService.getUserRoleName(account));
+        contentLog.setRole(userRoleService.getUserRoleName(account));
         if(booth.getOwner() == user) contentLog.setIsOwner(true);
         if(booth.getCollaborator().getCollaborators().contains(user)) contentLog.setIsCollaborator(true);
         contentLog.setUser(user);

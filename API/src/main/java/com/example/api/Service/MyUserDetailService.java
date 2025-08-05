@@ -28,7 +28,7 @@ public class MyUserDetailService implements UserDetailsService {
         User user = userRepository.findById(account)
                 .orElseThrow(() -> new NotFoundException("找不到使用者帳號為 < "+ account+" > 的使用者"));
 
-        UserRole userRole = userRoleService.getUserRoleByUser(user);
+        UserRole userRole = userRoleService.getUserRoleByAccount(account);
         String roleName = userRole.getRole().getName();
 
         return org.springframework.security.core.userdetails.User

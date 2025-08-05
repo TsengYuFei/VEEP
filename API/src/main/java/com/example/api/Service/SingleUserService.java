@@ -5,9 +5,7 @@ import com.example.api.DTO.Request.ResetPasswordRequest;
 import com.example.api.DTO.Request.UserCreateRequest;
 import com.example.api.DTO.Request.UserUpdateRequest;
 import com.example.api.DTO.Response.*;
-import com.example.api.Entity.Role;
-import com.example.api.Entity.User;
-import com.example.api.Entity.UserRole;
+import com.example.api.Entity.*;
 import com.example.api.Exception.*;
 import com.example.api.Other.JwtUtil;
 import com.example.api.Repository.UserRepository;
@@ -50,6 +48,12 @@ public class SingleUserService {
     @Autowired
     private final UserHelperService userHelperService;
 
+    @Autowired
+    private final SingleExpoService singleExpoService;
+
+    @Autowired
+    private final SingleBoothService singleBoothService;
+
 
 
     public boolean isNotCurrentUser(String account){
@@ -74,20 +78,13 @@ public class SingleUserService {
     }
 
 
-    public String getUserRoleName(String account){
-        System.out.println("SingleUserService: isShowCurrentBooth >> "+account);
-        User user = userHelperService.getUserByAccount(account);
-        UserRole userRole = userRoleService.getUserRoleByUser(user);
-        return userRole.getRole().getName();
-    }
-
 
     public UserDetailResponse getUserDetailByAccount(String account){
         System.out.println("SingleUserService: getUserByAccount >> "+account);
         User user = userHelperService.getUserByAccount(account);
 
         UserDetailResponse response =  UserDetailResponse.fromUser(user);
-        UserRole userRole = userRoleService.getUserRoleByUser(user);
+        UserRole userRole = userRoleService.getUserRoleByAccount(account);
         String roleName = userRole.getRole().getName();
         response.setRoleName(roleName);
 
@@ -100,7 +97,7 @@ public class SingleUserService {
         User user = userHelperService.getUserByAccount(account);
 
         UserOverviewResponse response =  UserOverviewResponse.fromUser(user);
-        String roleName = getUserRoleName(account);
+        String roleName = userRoleService.getUserRoleName(account);
         response.setRoleName(roleName);
 
         return response;
@@ -112,7 +109,7 @@ public class SingleUserService {
         User user = userHelperService.getUserByAccount(account);
 
         UserEditResponse response =  UserEditResponse.fromUser(user);
-        String roleName = getUserRoleName(account);
+        String roleName = userRoleService.getUserRoleName(account);
         response.setRoleName(roleName);
 
         return response;
@@ -201,7 +198,15 @@ public class SingleUserService {
         String image = user.getAvatar();
         if(image != null) imageService.deleteImageByName(image);
 
+        for(Expo expo:user.getExpoList()){
+            singleExpoService.deleteExpoByID(expo.getExpoID());
+        }
 
+        for(Booth booth:user.getBoothList()){
+            singleBoothService.deleteBoothByID(booth.getBoothID(), account);
+        }
+
+        userRoleService.deleteUserRoleByAccount(account);
 
         userRepository.delete(user);
     }
@@ -229,8 +234,8 @@ public class SingleUserService {
 
     public void switchRole(String account){
         System.out.println("SingleUserService: switchRole >> "+account);
-        User user = userHelperService.getUserByAccount(account);
-        UserRole userRole = userRoleService.getUserRoleByUser(user);
+        userHelperService.getUserByAccount(account);
+        UserRole userRole = userRoleService.getUserRoleByAccount(account);
 
         String roleName = userRole.getRole().getName();
         String newRoleName = roleName.equals("GENERAL")? "FOUNDER": "GENERAL";

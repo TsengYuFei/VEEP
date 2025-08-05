@@ -30,7 +30,7 @@ public class BoothLogService {
     private final BoothHelperService boothHelperService;
 
     @Autowired
-    private final SingleUserService singleUserService;
+    private final UserRoleService userRoleService;
 
     @Autowired
     private final UserHelperService userHelperService;
@@ -51,7 +51,7 @@ public class BoothLogService {
         BoothLog boothLog = new BoothLog();
         boothLog.setSessionID(sessionID);
         boothLog.setEnterAt(LocalDateTime.now());
-        boothLog.setRole(singleUserService.getUserRoleName(account));
+        boothLog.setRole(userRoleService.getUserRoleName(account));
         if(booth.getOwner() == user) boothLog.setIsOwner(true);
         if(booth.getCollaborator().getCollaborators().contains(user)) boothLog.setIsCollaborator(true);
         boothLog.setUser(user);

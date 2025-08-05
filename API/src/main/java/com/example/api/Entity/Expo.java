@@ -61,15 +61,15 @@ public class Expo {
     private Boolean display;
 
     @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
-    @JoinColumn(name = "collaborator", nullable = false, unique = true)  // 主控方加JoinColumn
+    @JoinColumn(name = "collaborator",  unique = true)  // 主控方加JoinColumn
     private ExpoCollaboratorList collaborator;
 
     @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
-    @JoinColumn(name = "blacklist", nullable = false, unique = true)
+    @JoinColumn(name = "blacklist", unique = true)
     private Blacklist blacklist;
 
     @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
-    @JoinColumn(name = "whitelist", nullable = false, unique = true)
+    @JoinColumn(name = "whitelist", unique = true)
     private Whitelist whitelist;
 
     @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
