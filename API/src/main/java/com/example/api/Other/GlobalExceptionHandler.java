@@ -92,6 +92,13 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
     }
 
+    // 410 - 驗證碼或資源已過期
+    @ExceptionHandler(CodeExpiredException.class)
+    public ResponseEntity<ErrorResponseResponse> handleCodeExpiredException(CodeExpiredException exception) {
+        ErrorResponseResponse error = new ErrorResponseResponse("Gone", exception.getMessage());
+        return new ResponseEntity<>(error, HttpStatus.GONE);
+    }
+
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorResponseResponse> handle(Exception exception) {
         exception.printStackTrace();  // 看完整堆疊

@@ -39,9 +39,10 @@ public class SecurityConfig {
                                 "/account/login",
                                 "/user/create",
                                 "/user/verify/**",
-                                "/user/password/reset",
+                                "/user/password/reset/**",
                                 "/mail/**",
                                 "/token/refresh",
+                                "/image/upload",
                                 "/uploads/**",
                                 "/swagger-ui/**",
                                 "/v3/api-docs/**"

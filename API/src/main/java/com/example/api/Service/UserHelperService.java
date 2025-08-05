@@ -34,13 +34,6 @@ public class UserHelperService {
     }
 
 
-    User getUserByRestPasswordToken(String token){
-        System.out.println("UserHelperService: getUserByRestPasswordToken >> "+token);
-        return userRepository.findByResetPasswordToken(token)
-                .orElseThrow(() -> new NotFoundException("找不到reset password token為 < "+ token+" > 的使用者"));
-    }
-
-
     List<User> getAllUserByAccount(List<String> accounts){
         System.out.println("UserHelperService: getAllUserByAccount");
         return userRepository.findAllById(accounts);

@@ -37,13 +37,13 @@ public class EmailController {
                     description = "伺服器錯誤"
             )
     })
-    @PostMapping("/resend/verification/{userAccount}")
+    @PostMapping("/resend/verification/{userAccountOrMail}")
     public ResponseEntity<?> resendVerificationEmail(
-            @Parameter(description = "使用者帳號", required = true)
-            @PathVariable String userAccount
+            @Parameter(description = "使用者帳號或電子郵箱", required = true)
+            @PathVariable String userAccountOrMail
     ){
-        System.out.println("EmailController: resendVerificationEmail >> "+userAccount);
-        emailService.resendVerificationEmail(userAccount);
+        System.out.println("EmailController: resendVerificationEmail >> "+userAccountOrMail);
+        emailService.resendVerificationEmail(userAccountOrMail);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
@@ -66,14 +66,14 @@ public class EmailController {
                     description = "伺服器錯誤"
             )
     })
-    @PostMapping("/send/reset_password/{mail}")
+    @PostMapping("/send/reset_password/{userAccountOrMail}")
     public ResponseEntity<?> resetPasswordEmail(
-            @Parameter(description = "電子郵箱", required = true)
-            @PathVariable String mail
+            @Parameter(description = "使用者帳號或電子郵箱", required = true)
+            @PathVariable String userAccountOrMail
     ){
-        System.out.println("EmailController: resetPasswordEmail >> "+mail);
+        System.out.println("EmailController: resetPasswordEmail >> "+userAccountOrMail);
 
-        emailService.resetPasswordEmail(mail);
+        emailService.resetPasswordEmail(userAccountOrMail);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 }

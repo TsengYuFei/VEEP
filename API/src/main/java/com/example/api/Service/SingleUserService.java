@@ -9,6 +9,7 @@ import com.example.api.Entity.Role;
 import com.example.api.Entity.User;
 import com.example.api.Entity.UserRole;
 import com.example.api.Exception.*;
+import com.example.api.Other.JwtUtil;
 import com.example.api.Repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,9 +19,10 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
 
+import static com.example.api.Other.GenerateCodeTool.generateRandomCode;
 import static com.example.api.Other.UpdateTool.updateIfNotBlank;
 import static com.example.api.Other.UpdateTool.updateIfNotNull;
 
@@ -133,7 +135,8 @@ public class SingleUserService {
         if(user != null) throw new UserAlreadyExistsException("已存在電子郵箱為< "+request.getMail()+" >的使用者");
 
         String encodedPassword = passwordEncoder.encode(request.getPassword());
-        Integer randomCode = (int)(Math.random() * 1000000);
+        String verifyCode = generateRandomCode(6);
+        LocalDateTime deadline = LocalDateTime.now().plusMinutes(JwtUtil.VERIFY_CODE_VALIDITY_MINUTES);
 
         User newUser = new User();
         newUser.setName(request.getName());
@@ -143,9 +146,11 @@ public class SingleUserService {
         newUser.setMail(request.getMail());
         newUser.setAvatar(updateIfNotBlank(null, request.getAvatar()));
         newUser.setBirthday(request.getBirthday());
-        newUser.setResetPasswordToken(null);
-        newUser.setVerificationCode(randomCode);
         newUser.setIsVerified(false);
+        newUser.setVerificationCode(verifyCode);
+        newUser.setVerifyDateline(deadline);
+        newUser.setResetPasswordCode(null);
+        newUser.setResetPasswordDateline(null);
 
         userRepository.save(newUser);
 
@@ -157,7 +162,7 @@ public class SingleUserService {
 
         userRoleService.saveUserRole(userRole);
 
-        emailService.sendVerificationEmail(newUser.getMail(), randomCode, newUser.getName());
+        emailService.sendVerificationEmail(newUser.getMail(), verifyCode, newUser.getName());
         return newUser.getUserAccount();
     }
 
@@ -192,8 +197,12 @@ public class SingleUserService {
     public void deleteUserByAccount(String account){
         System.out.println("SingleUserService: deleteUserByAccount >> "+account);
         User user = userHelperService.getUserByAccount(account);
+
         String image = user.getAvatar();
         if(image != null) imageService.deleteImageByName(image);
+
+
+
         userRepository.delete(user);
     }
 
@@ -232,30 +241,38 @@ public class SingleUserService {
     }
 
 
-    public void verifyUser(String account, Integer code){
-        System.out.println("SingleUserService: verifyUser >> "+account+", "+code);
-        User user = userHelperService.getUserByAccount(account);
-        if(user.getIsVerified()) throw new ConflictException("使用者帳號 < "+account+" > 已完成信箱驗證");
+    public void verifyUser(String userAccountOrMail, String code){
+        System.out.println("SingleUserService: verifyUser >> "+userAccountOrMail+", "+code);
+        User user = userHelperService.getUserByAccountOrMail(userAccountOrMail);
+        if(user.getIsVerified()) throw new ConflictException("使用者帳號或電子郵箱為 < "+userAccountOrMail+" > 的使用者已完成信箱驗證");
+        else if(user.getVerifyDateline().isBefore(LocalDateTime.now())) throw new CodeExpiredException("驗證碼已過期，請重新申請驗證");
         else if(user.getVerificationCode().equals(code)) {
-            user.setVerificationCode(null);
             user.setIsVerified(true);
+            user.setVerificationCode(null);
+            user.setVerifyDateline(null);
             userRepository.save(user);
         }else throw new BadRequestException("XX 驗證碼錯誤 XX");
     }
 
 
-    public void resetPassword(ResetPasswordRequest request){
+    public void resetPassword(String userAccountOrMail, ResetPasswordRequest request){
         System.out.println("SingleUserService: resetPassword");
-        String token = request.getToken();
+        User user = userHelperService.getUserByAccountOrMail(userAccountOrMail);
+        String code = request.getCode();
         String newPassword = request.getPassword();
 
-        User user = userHelperService.getUserByRestPasswordToken(token);
-        if (passwordEncoder.matches(newPassword, user.getPassword())) throw new BadRequestException("The new password cannot be the same as the old password.");
+        if(user.getResetPasswordDateline().isBefore(LocalDateTime.now())) throw new CodeExpiredException("驗證碼已過期，請重新申請重設密碼");
+        else if (user.getResetPasswordCode().equals(code)) {
+            if (passwordEncoder.matches(newPassword, user.getPassword())) throw new BadRequestException("The new password cannot be as same as the old password.");
 
-        String encodedPassword = passwordEncoder.encode(newPassword);
-        user.setPassword(encodedPassword);
-        user.setResetPasswordToken(null);
-        userRepository.save(user);
+            String encodedPassword = passwordEncoder.encode(newPassword);
+
+            user.setPassword(encodedPassword);
+            user.setResetPasswordCode(null);
+            user.setResetPasswordDateline(null);
+
+            userRepository.save(user);
+        }else throw new BadRequestException("XX 驗證碼錯誤 XX");
     }
 
 

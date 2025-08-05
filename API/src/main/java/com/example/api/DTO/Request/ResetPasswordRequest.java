@@ -7,9 +7,9 @@ import lombok.Data;
 
 @Data
 public class ResetPasswordRequest {
-    @NotBlank(message = "The reset password token cannot be empty.")
-    @Size(max = 255, message = "Reset password的token長度應該在255字元以下")
-    private String token;
+    @NotBlank(message = "The reset password code cannot be empty.")
+    @Size(max = 6, min = 6, message = "Reset password的code長度應該為6字元")
+    private String code;
 
     @NotBlank(message = "The password cannot be empty.")
     @Size(min = 6, max = 20, message = "密碼長度應該在6~20字元之間")

@@ -12,6 +12,12 @@ import java.util.Date;
 public class JwtUtil {
 
     private final SecretKey key;
+    // 10 mins
+    public static final long VERIFY_CODE_VALIDITY_MINUTES = 10;
+
+    // 30 mins
+    public static final long RESET_PASSWORD_VALIDITY_MINUTES = 30;
+
     // 30 mins
     public static final long ACCESS_TOKEN_VALIDITY_MINUTES = 30;
 

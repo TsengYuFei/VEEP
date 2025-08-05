@@ -342,7 +342,8 @@ public class SingleUserController {
 
 
     @Operation(
-            summary = "信箱驗證"
+            summary = "驗證使用者帳號",
+            description = "驗證成功啟用帳號"
     )
     @ApiResponses(value = {
             @ApiResponse(
@@ -358,14 +359,14 @@ public class SingleUserController {
                     description = "伺服器錯誤"
             )
     })
-    @GetMapping("/verify/{userAccount}")
+    @PutMapping("/verify/{userAccountOrMail}")
     public ResponseEntity<?> verifyUser(
-            @Parameter(description = "使用者帳號", required = true)
-            @PathVariable String userAccount,
-            @RequestParam("code") Integer code
+            @Parameter(description = "使用者帳號或電子郵箱", required = true)
+            @PathVariable String userAccountOrMail,
+            @RequestParam("code") String code
     ){
-        System.out.println("SingleUserController: verifyUser >> "+userAccount+", "+code);
-        singleUserService.verifyUser(userAccount,code);
+        System.out.println("SingleUserController: verifyUser >> "+userAccountOrMail+", "+code);
+        singleUserService.verifyUser(userAccountOrMail,code);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
@@ -388,10 +389,14 @@ public class SingleUserController {
                     description = "伺服器錯誤"
             )
     })
-    @PutMapping("/password/reset")
-    public ResponseEntity<?> resetPassword(@Valid @RequestBody ResetPasswordRequest request){
-        System.out.println("SingleUserController: resetPassword");
-        singleUserService.resetPassword(request);
+    @PutMapping("/password/reset/{userAccountOrMail}")
+    public ResponseEntity<?> resetPassword(
+            @Valid @RequestBody ResetPasswordRequest request,
+            @Parameter(description = "使用者帳號或電子郵箱", required = true)
+            @PathVariable String userAccountOrMail
+    ){
+        System.out.println("SingleUserController: resetPassword >> "+userAccountOrMail);
+        singleUserService.resetPassword(userAccountOrMail,request);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 

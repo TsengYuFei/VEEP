@@ -7,6 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -61,14 +62,20 @@ public class User{
     @Column(name = "showCurrentBooth", nullable = false)
     private Boolean showCurrentBooth;
 
-    @Column(name = "resetPasswordToken")
-    private String resetPasswordToken;
-
-    @Column(name = "verificationCode")
-    private Integer verificationCode;
-
     @Column(name = "isVerified", nullable = false)
     private Boolean isVerified;
+
+    @Column(name = "verificationCode")
+    private String verificationCode;
+
+    @Column(name = "verifyDateline")
+    private LocalDateTime verifyDateline;
+
+    @Column(name = "resetPasswordCode")
+    private String resetPasswordCode;
+
+    @Column(name = "resetPasswordDateline")
+    private LocalDateTime resetPasswordDateline;
 
     @OneToMany(mappedBy = "owner", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonManagedReference
