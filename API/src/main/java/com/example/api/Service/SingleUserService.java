@@ -173,6 +173,10 @@ public class SingleUserService {
             imageService.deleteImageByName(user.getAvatar());
         }
 
+        if(user.getBackground() != null && request.getBackground() != null){
+            imageService.deleteImageByName(user.getBackground());
+        }
+
         user.setName(updateIfNotBlank(user.getName(), request.getName()));
         user.setTel(updateIfNotBlank(user.getTel(), request.getTel()));
         user.setMail(updateIfNotBlank(user.getMail(), request.getMail()));
@@ -196,6 +200,8 @@ public class SingleUserService {
         User user = userHelperService.getUserByAccount(account);
 
         String image = user.getAvatar();
+        if(image != null) imageService.deleteImageByName(image);
+        image = user.getBackground();
         if(image != null) imageService.deleteImageByName(image);
 
         for(Expo expo:user.getExpoList()){
