@@ -57,8 +57,14 @@ public class ImageService {
 
     public void deleteImageByName(String imageName) {
         System.out.println("ImageService: deleteImageByName >> "+imageName);
+
         if (imageName == null || imageName.trim().isEmpty()) {
             throw new UnprocessableEntityException("圖片檔名不可為空");
+        }
+
+        if (imageName.startsWith("Preset_Avatar_")) {
+            System.out.println("跳過預設頭像圖片刪除: " + imageName);
+            return;
         }
 
         File file = new File(Paths.get(uploadDir).toAbsolutePath().toString(), imageName);
