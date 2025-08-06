@@ -82,6 +82,39 @@ public class ExpoLogService {
     }
 
 
+    public List<ExpoLogResponse> getExpoLogResponseByUserAccount(String account){
+        System.out.println("ExpoLogService: getExpoLogResponseByUserAccount >> "+account);
+        return expoLogRepository.findExpoLogByUser_UserAccountOrderByEnterAtDesc(account)
+                .stream()
+                .map(ExpoLogResponse::fromExpoLog)
+                .toList();
+    }
+
+
+    public List<ExpoLogResponse> getExpoLogResponseByUserAccountAndExpoID(Integer expoID, String account){
+        System.out.println("ExpoLogService: getExpoLogResponseByUserAccountAndExpoID >> "+account+", "+expoID);
+        return expoLogRepository.findExpoLogByUser_UserAccountAndExpo_ExpoIDOrderByEnterAtDesc(account, expoID)
+                .stream()
+                .map(ExpoLogResponse::fromExpoLog)
+                .toList();
+    }
+
+
+    public List<ExpoLogResponse> getOnlineExpoLogResponseByExpoID(Integer expoID){
+        System.out.println("ExpoLogService: getOnlineExpoLogResponseByExpoID >> "+expoID);
+        return expoLogRepository.findExpoLogByExpo_ExpoIDAndExitAt(expoID, null)
+                .stream()
+                .map(ExpoLogResponse::fromExpoLog)
+                .toList();
+    }
+
+
+    public Integer getOnlineNumberByExpoID(Integer expoID){
+        System.out.println("ExpoLogService: getOnlineNumberByExpoID >> "+expoID);
+        return expoLogRepository.countByExpo_ExpoIDAndExitAt(expoID, null);
+    }
+
+
     @Transactional
     public void updateExpoLog(String sessionID, ExpoLogUpdateRequest request){
         System.out.println("ExpoLogService: updateExpoLog >> "+sessionID);

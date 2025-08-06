@@ -135,6 +135,131 @@ public class ExpoLogController {
 
 
     @Operation(
+            summary = "獲取某使用者的所有展會log",
+            description = "依大->小排序"
+    )
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "成功獲取該使用者的所有展會log",
+                    content = @Content(
+                            mediaType = "application/json",
+                            array = @ArraySchema(
+                                    schema = @Schema(implementation = ExpoLogResponse.class)
+                            )
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = "500",
+                    description = "伺服器錯誤"
+            )
+    })
+    @GetMapping("/user/{userAccount}")
+    public ResponseEntity<List<ExpoLogResponse>> getExpoLogByUserAccount(
+            @Parameter(description = "使用者帳號", required = true)
+            @PathVariable String userAccount
+    ){
+        System.out.println("ExpoLogController: getExpoLogByUserAccount >> "+userAccount);
+        List<ExpoLogResponse> logs = expoLogService.getExpoLogResponseByUserAccount(userAccount);
+        return ResponseEntity.status(HttpStatus.OK).body(logs);
+    }
+
+
+    @Operation(
+            summary = "獲取某使用者在某展會的所有展會log",
+            description = "依大->小排序"
+    )
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "成功獲取該使用者含該展會的所有展會log",
+                    content = @Content(
+                            mediaType = "application/json",
+                            array = @ArraySchema(
+                                    schema = @Schema(implementation = ExpoLogResponse.class)
+                            )
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = "500",
+                    description = "伺服器錯誤"
+            )
+    })
+    @GetMapping("/user/{expoID}/{userAccount}")
+    public ResponseEntity<List<ExpoLogResponse>> getExpoLogByUserAccountAndExpoID(
+            @Parameter(description = "展會ID", required = true)
+            @PathVariable Integer expoID,
+            @Parameter(description = "使用者帳號", required = true)
+            @PathVariable String userAccount
+    ){
+        System.out.println("ExpoLogController: getExpoLogByUserAccountAndExpoID >> "+userAccount+", "+expoID);
+        List<ExpoLogResponse> logs = expoLogService.getExpoLogResponseByUserAccountAndExpoID(expoID, userAccount);
+        return ResponseEntity.status(HttpStatus.OK).body(logs);
+    }
+
+
+    @Operation(
+            summary = "獲取某展會現正進行中(目前在場)的展會log",
+            description = "目前無排序"
+    )
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "成功獲取該展會現正進行中(目前在場)的所有展會log",
+                    content = @Content(
+                            mediaType = "application/json",
+                            array = @ArraySchema(
+                                    schema = @Schema(implementation = ExpoLogResponse.class)
+                            )
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = "500",
+                    description = "伺服器錯誤"
+            )
+    })
+    @GetMapping("/online/{expoID}")
+    public ResponseEntity<List<ExpoLogResponse>> getOnlineExpoLogResponseByExpoID(
+            @Parameter(description = "展會ID", required = true)
+            @PathVariable Integer expoID
+    ){
+        System.out.println("ExpoLogController: getOnlineExpoLogResponseByExpoID >> "+expoID);
+        List<ExpoLogResponse> logs = expoLogService.getOnlineExpoLogResponseByExpoID(expoID);
+        return ResponseEntity.status(HttpStatus.OK).body(logs);
+    }
+
+
+    @Operation(
+            summary = "獲取某展會目前的在場人數"
+    )
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "成功獲取該展會目前的在場人數",
+                    content = @Content(
+                            mediaType = "application/json",
+                            array = @ArraySchema(
+                                    schema = @Schema(implementation = Integer.class)
+                            )
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = "500",
+                    description = "伺服器錯誤"
+            )
+    })
+    @GetMapping("/online/number/{expoID}")
+    public ResponseEntity<Integer> getOnlineNumberByExpoID(
+            @Parameter(description = "展會ID", required = true)
+            @PathVariable Integer expoID
+    ){
+        System.out.println("ExpoLogController: getOnlineNumberByExpoID >> "+expoID);
+        Integer number = expoLogService.getOnlineNumberByExpoID(expoID);
+        return ResponseEntity.status(HttpStatus.OK).body(number);
+    }
+
+
+    @Operation(
             summary = "更新展會log",
             description = "在展會中有任何點擊時呼叫。可針對exit at及last active at欄位傳入boolean值"
     )
