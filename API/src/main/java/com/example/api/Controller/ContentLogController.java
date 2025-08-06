@@ -1,6 +1,5 @@
 package com.example.api.Controller;
 
-import com.example.api.DTO.Response.BoothLogResponse;
 import com.example.api.DTO.Response.ContentLogResponse;
 import com.example.api.Service.ContentLogService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -165,6 +164,134 @@ public class ContentLogController {
     ){
         System.out.println("ContentLogController: getAllContentLogByBoothIDAndNumber >> "+boothID+", "+number);
         List<ContentLogResponse> logs = contentLogService.getAllContentLogByBoothIDAndNumber(boothID, number);
+        return ResponseEntity.status(HttpStatus.OK).body(logs);
+    }
+
+
+    @Operation(
+            summary = "獲取某使用者的所有攤位內容log"
+    )
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "成功獲取該使用者的所有攤位內容log",
+                    content = @Content(
+                            mediaType = "application/json",
+                            array = @ArraySchema(
+                                    schema = @Schema(implementation = ContentLogResponse.class)
+                            )
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = "500",
+                    description = "伺服器錯誤"
+            )
+    })
+    @GetMapping("/user/{userAccount}")
+    public ResponseEntity<List<ContentLogResponse>> getContentLogByUserAccount(
+            @Parameter(description = "使用者帳號", required = true)
+            @PathVariable String userAccount
+    ){
+        System.out.println("ContentLogController: getContentLogByUserAccount >> "+userAccount);
+        List<ContentLogResponse> logs = contentLogService.getContentLogResponseByUserAccount(userAccount);
+        return ResponseEntity.status(HttpStatus.OK).body(logs);
+    }
+
+
+    @Operation(
+            summary = "獲取某使用者在某展會的所有攤位內容log"
+    )
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "成功獲取該使用者在該展會的所有攤位內容log",
+                    content = @Content(
+                            mediaType = "application/json",
+                            array = @ArraySchema(
+                                    schema = @Schema(implementation = ContentLogResponse.class)
+                            )
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = "500",
+                    description = "伺服器錯誤"
+            )
+    })
+    @GetMapping("/user/by_expo/{expoID}/{userAccount}")
+    public ResponseEntity<List<ContentLogResponse>> getContentLogByUserAccountAndExpoID(
+            @Parameter(description = "展會ID", required = true)
+            @PathVariable Integer expoID,
+            @Parameter(description = "使用者帳號", required = true)
+            @PathVariable String userAccount
+    ){
+        System.out.println("ContentLogController: getContentLogByUserAccountAndExpoID >> "+userAccount+", "+expoID);
+        List<ContentLogResponse> logs = contentLogService.getContentLogResponseByUserAccountAndExpoID(expoID, userAccount);
+        return ResponseEntity.status(HttpStatus.OK).body(logs);
+    }
+
+
+    @Operation(
+            summary = "獲取某使用者在某攤位的所有攤位內容log"
+    )
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "成功獲取該使用者在該攤位的所有攤位內容log",
+                    content = @Content(
+                            mediaType = "application/json",
+                            array = @ArraySchema(
+                                    schema = @Schema(implementation = ContentLogResponse.class)
+                            )
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = "500",
+                    description = "伺服器錯誤"
+            )
+    })
+    @GetMapping("/user/by_booth/{boothID}/{userAccount}")
+    public ResponseEntity<List<ContentLogResponse>> getContentLogByUserAccountAndBoothID(
+            @Parameter(description = "攤位ID", required = true)
+            @PathVariable Integer boothID,
+            @Parameter(description = "使用者帳號", required = true)
+            @PathVariable String userAccount
+    ){
+        System.out.println("ContentLogController: getContentLogByUserAccountAndBoothID >> "+userAccount+", "+boothID);
+        List<ContentLogResponse> logs = contentLogService.getContentLogResponseByUserAccountAndBoothID(boothID, userAccount);
+        return ResponseEntity.status(HttpStatus.OK).body(logs);
+    }
+
+
+    @Operation(
+            summary = "獲取某使用者在某攤位內容的所有攤位內容log"
+    )
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "成功獲取該使用者在該攤位內容的所有攤位內容log",
+                    content = @Content(
+                            mediaType = "application/json",
+                            array = @ArraySchema(
+                                    schema = @Schema(implementation = ContentLogResponse.class)
+                            )
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = "500",
+                    description = "伺服器錯誤"
+            )
+    })
+    @GetMapping("/user/by_content/{boothID}/{number}/{userAccount}")
+    public ResponseEntity<List<ContentLogResponse>> getContentLogByUserAccountAndBoothIDAndNumber(
+            @Parameter(description = "攤位ID", required = true)
+            @PathVariable Integer boothID,
+            @Parameter(description = "內容編號", required = true)
+            @PathVariable Integer number,
+            @Parameter(description = "使用者帳號", required = true)
+            @PathVariable String userAccount
+    ){
+        System.out.println("ContentLogController: getContentLogByUserAccountAndBoothIDAndNumber >> "+userAccount+", "+boothID+", "+number);
+        List<ContentLogResponse> logs = contentLogService.getContentLogResponseByUserAccountAndBoothIDAndNumber(boothID, number, userAccount);
         return ResponseEntity.status(HttpStatus.OK).body(logs);
     }
 

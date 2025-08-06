@@ -1,9 +1,7 @@
 package com.example.api.Service;
 
-
 import com.example.api.DTO.Request.BoothLogUpdateRequest;
 import com.example.api.DTO.Response.BoothLogResponse;
-import com.example.api.DTO.Response.ExpoLogResponse;
 import com.example.api.DTO.Response.LogCreateResponse;
 import com.example.api.Entity.*;
 import com.example.api.Exception.ForibiddenException;

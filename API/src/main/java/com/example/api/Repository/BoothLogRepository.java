@@ -17,8 +17,10 @@ public interface BoothLogRepository extends JpaRepository<BoothLog, Integer> {
     List<BoothLog> findBoothLogByUser_UserAccountOrderByEnterAtDesc(String userAccount);
     List<BoothLog> findBoothLogByUser_UserAccountAndExpo_ExpoIDOrderByEnterAtDesc(String userAccount, Integer expoExpoID);
     List<BoothLog> findBoothLogByUser_UserAccountAndBooth_BoothIDOrderByEnterAtDesc(String userAccount, Integer boothBoothID);
+
     List<BoothLog> findBoothLogByExpo_ExpoIDAndExitAt(Integer expoExpoID, LocalDateTime exitAt);
     List<BoothLog> findBoothLogByBooth_BoothIDAndExitAt(Integer boothBoothID, LocalDateTime exitAt);
+
     Integer countByBooth_BoothIDAndExitAt(Integer boothBoothID, LocalDateTime exitAt);
 
     void deleteByExpo_ExpoID(Integer expoExpoID);

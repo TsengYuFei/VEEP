@@ -1,9 +1,7 @@
 package com.example.api.Controller;
 
 import com.example.api.DTO.Request.BoothLogUpdateRequest;
-import com.example.api.DTO.Request.ExpoLogUpdateRequest;
 import com.example.api.DTO.Response.BoothLogResponse;
-import com.example.api.DTO.Response.ExpoLogResponse;
 import com.example.api.DTO.Response.LogCreateResponse;
 import com.example.api.Service.BoothLogService;
 import io.swagger.v3.oas.annotations.Operation;

@@ -84,6 +84,42 @@ public class ContentLogService {
     }
 
 
+    public List<ContentLogResponse> getContentLogResponseByUserAccount(String account){
+        System.out.println("ContentLogService: getContentLogResponseByUserAccount >> "+account);
+        return contentLogRepository.findContentLogByUser_UserAccount(account)
+                .stream()
+                .map(ContentLogResponse::fromContentLog)
+                .toList();
+    }
+
+
+    public List<ContentLogResponse> getContentLogResponseByUserAccountAndExpoID(Integer expoID, String account){
+        System.out.println("ContentLogService: getContentLogResponseByUserAccountAndExpoID >> "+account+", "+expoID);
+        return contentLogRepository.findContentLogByUser_UserAccountAndExpo_ExpoID(account, expoID)
+                .stream()
+                .map(ContentLogResponse::fromContentLog)
+                .toList();
+    }
+
+
+    public List<ContentLogResponse> getContentLogResponseByUserAccountAndBoothID(Integer boothID, String account){
+        System.out.println("ContentLogService: getContentLogResponseByUserAccountAndBoothID >> "+account+", "+boothID);
+        return contentLogRepository.findContentLogByUser_UserAccountAndBooth_BoothID(account, boothID)
+                .stream()
+                .map(ContentLogResponse::fromContentLog)
+                .toList();
+    }
+
+
+    public List<ContentLogResponse> getContentLogResponseByUserAccountAndBoothIDAndNumber(Integer boothID, Integer number, String account){
+        System.out.println("ContentLogService: getContentLogResponseByUserAccountAndBoothIDAndNumber >> "+account+", "+boothID+", "+number);
+        return contentLogRepository.findContentLogByUser_UserAccountAndBooth_BoothIDAndContent_Number(account, boothID, number)
+                .stream()
+                .map(ContentLogResponse::fromContentLog)
+                .toList();
+    }
+
+
     @Transactional
     public void deleteContentLogByExpoID(Integer expoID){
         System.out.println("ContentLogService: deleteContentLogByExpoID>> "+expoID);
