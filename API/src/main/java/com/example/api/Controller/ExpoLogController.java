@@ -219,11 +219,11 @@ public class ExpoLogController {
             )
     })
     @GetMapping("/online/{expoID}")
-    public ResponseEntity<List<ExpoLogResponse>> getOnlineExpoLogResponseByExpoID(
+    public ResponseEntity<List<ExpoLogResponse>> getOnlineExpoLogByExpoID(
             @Parameter(description = "展會ID", required = true)
             @PathVariable Integer expoID
     ){
-        System.out.println("ExpoLogController: getOnlineExpoLogResponseByExpoID >> "+expoID);
+        System.out.println("ExpoLogController: getOnlineExpoLogByExpoID >> "+expoID);
         List<ExpoLogResponse> logs = expoLogService.getOnlineExpoLogResponseByExpoID(expoID);
         return ResponseEntity.status(HttpStatus.OK).body(logs);
     }

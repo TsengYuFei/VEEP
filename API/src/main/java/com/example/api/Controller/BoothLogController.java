@@ -172,6 +172,195 @@ public class BoothLogController {
 
 
     @Operation(
+            summary = "獲取某使用者的所有攤位log",
+            description = "依大->小排序"
+    )
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "成功獲取該使用者的所有攤位log",
+                    content = @Content(
+                            mediaType = "application/json",
+                            array = @ArraySchema(
+                                    schema = @Schema(implementation = BoothLogResponse.class)
+                            )
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = "500",
+                    description = "伺服器錯誤"
+            )
+    })
+    @GetMapping("/user/{userAccount}")
+    public ResponseEntity<List<BoothLogResponse>> getBoothLogByUserAccount(
+            @Parameter(description = "使用者帳號", required = true)
+            @PathVariable String userAccount
+    ){
+        System.out.println("BoothLogController: getBoothLogByUserAccount >> "+userAccount);
+        List<BoothLogResponse> logs = boothLogService.getBoothLogResponseByUserAccount(userAccount);
+        return ResponseEntity.status(HttpStatus.OK).body(logs);
+    }
+
+
+    @Operation(
+            summary = "獲取某使用者在某展會的所有攤位log",
+            description = "依大->小排序"
+    )
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "成功獲取該使用者含該展會的所有攤位log",
+                    content = @Content(
+                            mediaType = "application/json",
+                            array = @ArraySchema(
+                                    schema = @Schema(implementation = BoothLogResponse.class)
+                            )
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = "500",
+                    description = "伺服器錯誤"
+            )
+    })
+    @GetMapping("/user/by_expo/{expoID}/{userAccount}")
+    public ResponseEntity<List<BoothLogResponse>> getBoothLogByUserAccountAndExpoID(
+            @Parameter(description = "展會ID", required = true)
+            @PathVariable Integer expoID,
+            @Parameter(description = "使用者帳號", required = true)
+            @PathVariable String userAccount
+    ){
+        System.out.println("BoothLogController: getBoothLogByUserAccountAndExpoID >> "+userAccount+", "+expoID);
+        List<BoothLogResponse> logs = boothLogService.getBoothLogResponseByUserAccountAndExpoID(expoID, userAccount);
+        return ResponseEntity.status(HttpStatus.OK).body(logs);
+    }
+
+
+    @Operation(
+            summary = "獲取某使用者在某攤位的所有攤位log",
+            description = "依大->小排序"
+    )
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "成功獲取該使用者含該攤位的所有攤位log",
+                    content = @Content(
+                            mediaType = "application/json",
+                            array = @ArraySchema(
+                                    schema = @Schema(implementation = BoothLogResponse.class)
+                            )
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = "500",
+                    description = "伺服器錯誤"
+            )
+    })
+    @GetMapping("/user/by_booth/{boothID}/{userAccount}")
+    public ResponseEntity<List<BoothLogResponse>> getBoothLogByUserAccountAndBoothID(
+            @Parameter(description = "攤位ID", required = true)
+            @PathVariable Integer boothID,
+            @Parameter(description = "使用者帳號", required = true)
+            @PathVariable String userAccount
+    ){
+        System.out.println("BoothLogController: getBoothLogByUserAccountAndBoothID >> "+userAccount+", "+boothID);
+        List<BoothLogResponse> logs = boothLogService.getBoothLogResponseByUserAccountAndBoothID(boothID, userAccount);
+        return ResponseEntity.status(HttpStatus.OK).body(logs);
+    }
+
+
+    @Operation(
+            summary = "獲取某展會現正進行中(目前在場)的攤位log",
+            description = "目前無排序"
+    )
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "成功獲取該展會現正進行中(目前在場)的所有攤位log",
+                    content = @Content(
+                            mediaType = "application/json",
+                            array = @ArraySchema(
+                                    schema = @Schema(implementation = BoothLogResponse.class)
+                            )
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = "500",
+                    description = "伺服器錯誤"
+            )
+    })
+    @GetMapping("/online/by_expo/{expoID}")
+    public ResponseEntity<List<BoothLogResponse>> getOnlineBoothLogByExpoID(
+            @Parameter(description = "展會ID", required = true)
+            @PathVariable Integer expoID
+    ){
+        System.out.println("BoothLogController: getOnlineBoothLogByExpoID >> "+expoID);
+        List<BoothLogResponse> logs = boothLogService.getOnlineBoothLogResponseByExpoID(expoID);
+        return ResponseEntity.status(HttpStatus.OK).body(logs);
+    }
+
+
+    @Operation(
+            summary = "獲取某攤位現正進行中(目前在場)的攤位log",
+            description = "目前無排序"
+    )
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "成功獲取該攤位現正進行中(目前在場)的所有攤位log",
+                    content = @Content(
+                            mediaType = "application/json",
+                            array = @ArraySchema(
+                                    schema = @Schema(implementation = BoothLogResponse.class)
+                            )
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = "500",
+                    description = "伺服器錯誤"
+            )
+    })
+    @GetMapping("/online/by_booth/{boothID}")
+    public ResponseEntity<List<BoothLogResponse>> getOnlineBoothLogByBoothID(
+            @Parameter(description = "攤位ID", required = true)
+            @PathVariable Integer boothID
+    ){
+        System.out.println("BoothLogController: getOnlineBoothLogByBoothID >> "+boothID);
+        List<BoothLogResponse> logs = boothLogService.getOnlineBoothLogResponseByBoothID(boothID);
+        return ResponseEntity.status(HttpStatus.OK).body(logs);
+    }
+
+
+    @Operation(
+            summary = "獲取某攤位目前的在場人數"
+    )
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "成功獲取該攤位目前的在場人數",
+                    content = @Content(
+                            mediaType = "application/json",
+                            array = @ArraySchema(
+                                    schema = @Schema(implementation = Integer.class)
+                            )
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = "500",
+                    description = "伺服器錯誤"
+            )
+    })
+    @GetMapping("/online/number/{boothID}")
+    public ResponseEntity<Integer> getOnlineNumberByBoothID(
+            @Parameter(description = "攤位ID", required = true)
+            @PathVariable Integer boothID
+    ){
+        System.out.println("BoothLogController: getOnlineNumberByBoothID >> "+boothID);
+        Integer number = boothLogService.getOnlineNumberByBoothID(boothID);
+        return ResponseEntity.status(HttpStatus.OK).body(number);
+    }
+
+
+    @Operation(
             summary = "更新攤位log",
             description = "在攤位中有任何點擊時呼叫。可針對exit at及last active at欄位傳入boolean值"
     )

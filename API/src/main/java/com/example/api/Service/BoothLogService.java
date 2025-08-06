@@ -3,6 +3,7 @@ package com.example.api.Service;
 
 import com.example.api.DTO.Request.BoothLogUpdateRequest;
 import com.example.api.DTO.Response.BoothLogResponse;
+import com.example.api.DTO.Response.ExpoLogResponse;
 import com.example.api.DTO.Response.LogCreateResponse;
 import com.example.api.Entity.*;
 import com.example.api.Exception.ForibiddenException;
@@ -93,6 +94,57 @@ public class BoothLogService {
                 .stream()
                 .map(BoothLogResponse::fromBoothLog)
                 .toList();
+    }
+
+
+    public List<BoothLogResponse> getBoothLogResponseByUserAccount(String account){
+        System.out.println("BoothLogService: getBoothLogResponseByUserAccount >> "+account);
+        return boothLogRepository.findBoothLogByUser_UserAccountOrderByEnterAtDesc(account)
+                .stream()
+                .map(BoothLogResponse::fromBoothLog)
+                .toList();
+    }
+
+
+    public List<BoothLogResponse> getBoothLogResponseByUserAccountAndExpoID(Integer expoID, String account){
+        System.out.println("BoothLogService: getBoothLogResponseByUserAccountAndExpoID >> "+account+", "+expoID);
+        return boothLogRepository.findBoothLogByUser_UserAccountAndExpo_ExpoIDOrderByEnterAtDesc(account, expoID)
+                .stream()
+                .map(BoothLogResponse::fromBoothLog)
+                .toList();
+    }
+
+
+    public List<BoothLogResponse> getBoothLogResponseByUserAccountAndBoothID(Integer boothID, String account){
+        System.out.println("BoothLogService: getBoothLogResponseByUserAccountAndBoothID >> "+account+", "+boothID);
+        return boothLogRepository.findBoothLogByUser_UserAccountAndBooth_BoothIDOrderByEnterAtDesc(account, boothID)
+                .stream()
+                .map(BoothLogResponse::fromBoothLog)
+                .toList();
+    }
+
+
+    public List<BoothLogResponse> getOnlineBoothLogResponseByExpoID(Integer expoID){
+        System.out.println("BoothLogService: getOnlineBoothLogResponseByExpoID >> "+expoID);
+        return boothLogRepository.findBoothLogByExpo_ExpoIDAndExitAt(expoID, null)
+                .stream()
+                .map(BoothLogResponse::fromBoothLog)
+                .toList();
+    }
+
+
+    public List<BoothLogResponse> getOnlineBoothLogResponseByBoothID(Integer boothID){
+        System.out.println("BoothLogService: getOnlineBoothLogResponseByBoothID >> "+boothID);
+        return boothLogRepository.findBoothLogByBooth_BoothIDAndExitAt(boothID, null)
+                .stream()
+                .map(BoothLogResponse::fromBoothLog)
+                .toList();
+    }
+
+
+    public Integer getOnlineNumberByBoothID(Integer boothID){
+        System.out.println("BoothLogService: getOnlineNumberByBoothID >> "+boothID);
+        return boothLogRepository.countByBooth_BoothIDAndExitAt(boothID, null);
     }
 
 

@@ -12,9 +12,11 @@ import java.util.Optional;
 public interface ExpoLogRepository extends JpaRepository<ExpoLog, Integer> {
     Optional<ExpoLog> findBySessionID(String sessionID);
     List<ExpoLog> findExpoLogByExpo_ExpoID(Integer expoExpoID);
+
     List<ExpoLog> findExpoLogByUser_UserAccountOrderByEnterAtDesc(String userAccount);
     List<ExpoLog> findExpoLogByUser_UserAccountAndExpo_ExpoIDOrderByEnterAtDesc(String userAccount, Integer expoExpoID);
     List<ExpoLog> findExpoLogByExpo_ExpoIDAndExitAt(Integer expo_expoID, LocalDateTime exitAt);
     Integer countByExpo_ExpoIDAndExitAt(Integer expoExpoID, LocalDateTime exitAt);
+
     void deleteByExpo_ExpoID(Integer expoExpoID);
 }
