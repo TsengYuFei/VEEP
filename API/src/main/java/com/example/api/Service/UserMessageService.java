@@ -1,8 +1,8 @@
 package com.example.api.Service;
 
-import com.example.api.DTO.Request.SendMessageRequest;
+import com.example.api.DTO.Request.SendUserMessageRequest;
 import com.example.api.DTO.Response.MessageListResponse;
-import com.example.api.DTO.Response.MessageResponse;
+import com.example.api.DTO.Response.UserMessageResponse;
 import com.example.api.DTO.Response.UnreadMessageResponse;
 import com.example.api.Entity.UserMessage;
 import com.example.api.Entity.User;
@@ -14,6 +14,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -31,10 +32,12 @@ public class UserMessageService {
 
 
 
-    public void sendMessage(String senderAccount, SendMessageRequest request){
+    @Transactional
+    public void sendMessage(String senderAccount, SendUserMessageRequest request){
         System.out.println("MessageService: sendMessage >> "+senderAccount);
         User sender = userHelperService.getUserByAccount(senderAccount);
         User receiver = userHelperService.getUserByAccount(request.getReceiverAccount());
+        String receiverAccount = receiver.getUserAccount();
 
         UserMessage userMessage = new UserMessage();
         userMessage.setSender(sender);
@@ -43,26 +46,25 @@ public class UserMessageService {
         userMessage.setIsRead(false);
         userMessageRepository.save(userMessage);
 
-        MessageResponse response = MessageResponse.fromMessage(userMessage);
+        UserMessageResponse response = UserMessageResponse.fromUserMessage(userMessage);
 
-        System.out.println("WebSocket 推送到 /server/messages/" + receiver.getUserAccount());
-        messagingTemplate.convertAndSend("/server/messages/"+receiver.getUserAccount(), response);
+        System.out.println("WebSocket 推送到 /server/user/messages/" + receiverAccount);
+        messagingTemplate.convertAndSend("/server/user/messages/"+receiverAccount, response);
 
-        String receiverAccount = receiver.getUserAccount();
         UnreadMessageResponse unreadResponse = getUnreadCount(senderAccount, receiverAccount);
-        System.out.println("WebSocket 推送到 /server/unread/" + receiver.getUserAccount());
-        messagingTemplate.convertAndSend("/server/unread/"+receiver.getUserAccount(), unreadResponse);
+        System.out.println("WebSocket 推送到 /server/user/unread/" + receiverAccount);
+        messagingTemplate.convertAndSend("/server/user/unread/"+receiverAccount, unreadResponse);
     }
 
 
-    public List<MessageResponse> getConversation(String currentAccount, String targetAccount, Integer page, Integer size){
+    public List<UserMessageResponse> getConversation(String currentAccount, String targetAccount, Integer page, Integer size){
         System.out.println("MessageService: getConversation >> "+currentAccount+", "+targetAccount);
         userHelperService.getUserByAccount(targetAccount);
 
         Pageable pageable = PageRequest.of(page, size, Sort.by("send_at").descending());
         return userMessageRepository.findConversation(currentAccount, targetAccount, pageable)
                 .stream()
-                .map(MessageResponse::fromMessage)
+                .map(UserMessageResponse::fromUserMessage)
                 .toList();
 
     }
@@ -77,14 +79,15 @@ public class UserMessageService {
     }
 
 
+    @Transactional
     public void readUnread(String currentAccount, String targetAccount){
         System.out.println("MessageService: getUnreadMessage >> "+currentAccount+", "+targetAccount);
         User receiver = userHelperService.getUserByAccount(targetAccount);
         userMessageRepository.readUnreadByAccount(currentAccount, targetAccount);
 
         UnreadMessageResponse unreadResponse = getUnreadCount(targetAccount, currentAccount);
-        System.out.println("WebSocket 推送到 /server/unread/" + receiver.getUserAccount());
-        messagingTemplate.convertAndSend("/server/unread/"+receiver.getUserAccount(), unreadResponse);
+        System.out.println("WebSocket 推送到 /server/user/unread/" + receiver.getUserAccount());
+        messagingTemplate.convertAndSend("/server/user/unread/"+receiver.getUserAccount(), unreadResponse);
     }
 
 

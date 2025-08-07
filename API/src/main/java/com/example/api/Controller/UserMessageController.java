@@ -1,6 +1,6 @@
 package com.example.api.Controller;
 
-import com.example.api.DTO.Request.SendMessageRequest;
+import com.example.api.DTO.Request.SendUserMessageRequest;
 import com.example.api.DTO.Response.*;
 import com.example.api.Service.UserMessageService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -22,8 +22,8 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@Tag(name = "聊天室相關")
-@RequestMapping("/message")
+@Tag(name = "使用者聊天室相關")
+@RequestMapping("/message/user")
 @RestController
 @RequiredArgsConstructor
 public class UserMessageController {
@@ -48,7 +48,7 @@ public class UserMessageController {
             )
     })
     @PostMapping("/send")
-    public ResponseEntity<?> sendMessage(@Valid @RequestBody SendMessageRequest request){
+    public ResponseEntity<?> sendMessage(@Valid @RequestBody SendUserMessageRequest request){
         System.out.print("MessageController: sendMessage >> ");
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String userAccount = authentication.getName();
@@ -70,7 +70,7 @@ public class UserMessageController {
                     content = @Content(
                             mediaType = "application/json",
                             array = @ArraySchema(
-                                    schema = @Schema(implementation = MessageResponse.class)
+                                    schema = @Schema(implementation = UserMessageResponse.class)
                             )
                     )
             ),
@@ -84,7 +84,7 @@ public class UserMessageController {
             )
     })
     @GetMapping("/conversation/{targetAccount}")
-    public ResponseEntity<List<MessageResponse>> getConversation(
+    public ResponseEntity<List<UserMessageResponse>> getConversation(
             @Parameter(description = "使用者帳號", required = true)
             @PathVariable String targetAccount,
             @Parameter(description = "頁數(第幾頁)", required = true)
@@ -97,7 +97,7 @@ public class UserMessageController {
         String userAccount = authentication.getName();
         System.out.println(userAccount+", "+targetAccount);
 
-        List<MessageResponse> messageList = userMessageService.getConversation(userAccount, targetAccount, page, size);
+        List<UserMessageResponse> messageList = userMessageService.getConversation(userAccount, targetAccount, page, size);
         return ResponseEntity.status(HttpStatus.OK).body(messageList);
 
     }
