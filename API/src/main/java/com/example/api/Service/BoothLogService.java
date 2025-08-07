@@ -14,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -59,6 +60,20 @@ public class BoothLogService {
 
         boothLogRepository.save(boothLog);
         return new ExpoEnterResponse(sessionID);
+    }
+
+
+    public Boolean existBoothLogBySessionID(String sessionID){
+        System.out.println("BoothLogService: existBoothLogBySessionID>> "+sessionID);
+        Optional<BoothLog> log = boothLogRepository.findBySessionID(sessionID);
+        return log.isPresent();
+    }
+
+
+    public Boolean isOnlineBoothLogBySessionID(String sessionID){
+        System.out.println("BoothLogService: isOnlineBoothLogBySessionID>> "+sessionID);
+        BoothLog log = getBoothLogBySessionID(sessionID);
+        return log.getExitAt() == null;
     }
 
 
@@ -152,11 +167,20 @@ public class BoothLogService {
         BoothLog boothLog = getBoothLogBySessionID(sessionID);
 
         if(request.getIsExit()) boothLog.setExitAt(LocalDateTime.now());
-        if(request.getIsActive()) boothLog.setLastActiveAt(LocalDateTime.now());
         if(request.getIsUsedAI()) {
             boothLog.setHasUsedAi(true);
             boothLog.setAiMessageCount(boothLog.getAiMessageCount() + 1);
         }
+        boothLogRepository.save(boothLog);
+    }
+
+
+    @Transactional
+    public void updateBoothLogLastActivity(String sessionID){
+        System.out.println("BoothLogService: updateBoothLogLastActivity >> "+sessionID);
+        BoothLog boothLog = getBoothLogBySessionID(sessionID);
+
+        boothLog.setLastActiveAt(LocalDateTime.now());
         boothLogRepository.save(boothLog);
     }
 

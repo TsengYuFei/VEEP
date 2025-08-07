@@ -15,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -61,6 +62,20 @@ public class ExpoLogService {
         return expoLogRepository.findBySessionID(sessionID)
                 .orElseThrow(() -> new NotFoundException("找不到Session ID為 < "+ sessionID+" > 的展會log"));
 
+    }
+
+
+    public Boolean existExpoLogBySessionID(String sessionID){
+        System.out.println("ExpoLogService: existExpoLogBySessionID>> "+sessionID);
+        Optional<ExpoLog> log = expoLogRepository.findBySessionID(sessionID);
+        return log.isPresent();
+    }
+
+
+    public Boolean isOnlineExpoLogBySessionID(String sessionID){
+        System.out.println("ExpoLogService: isOnlineExpoLogBySessionID>> "+sessionID);
+        ExpoLog log = getExpoLogBySessionID(sessionID);
+        return log.getExitAt() == null;
     }
 
 
@@ -119,11 +134,20 @@ public class ExpoLogService {
         ExpoLog expoLog = getExpoLogBySessionID(sessionID);
 
         if(request.getIsExit()) expoLog.setExitAt(LocalDateTime.now());
-        if(request.getIsActive()) expoLog.setLastActiveAt(LocalDateTime.now());
         if(request.getIsUsedAI()) {
             expoLog.setHasUsedAi(true);
             expoLog.setAiMessageCount(expoLog.getAiMessageCount() + 1);
         }
+        expoLogRepository.save(expoLog);
+    }
+
+
+    @Transactional
+    public void updateExpoLogLastActivity(String sessionID){
+        System.out.println("ExpoLogService: updateExpoLogLastActivity >> "+sessionID);
+        ExpoLog expoLog = getExpoLogBySessionID(sessionID);
+
+        expoLog.setLastActiveAt(LocalDateTime.now());
         expoLogRepository.save(expoLog);
     }
 

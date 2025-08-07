@@ -7,7 +7,5 @@ public class BoothLogUpdateRequest {
 
     private Boolean isExit;
 
-    private Boolean isActive;
-
     private Boolean isUsedAI;
 }

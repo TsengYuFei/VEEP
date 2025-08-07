@@ -9,7 +9,5 @@ public class ExpoLogUpdateRequest {
 
     private Boolean isExit;
 
-    private Boolean isActive;
-
     private Boolean isUsedAI;
 }
