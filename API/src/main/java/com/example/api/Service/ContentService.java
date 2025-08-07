@@ -7,7 +7,6 @@ import com.example.api.Exception.NotFoundException;
 import com.example.api.Repository.BoothRepository;
 import com.example.api.Repository.ContentRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -19,13 +18,8 @@ import static com.example.api.Other.UpdateTool.updateIfNotBlank;
 @Service
 @RequiredArgsConstructor
 public class ContentService {
-    @Autowired
     private final ContentRepository contentRepository;
-
-    @Autowired
     private final BoothRepository boothRepository;
-
-    @Autowired
     private final ImageService imageService;
 
 

@@ -2,12 +2,10 @@ package com.example.api.DTO.Response;
 
 import com.example.api.Entity.BoothLog;
 import lombok.Data;
-import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
 
 @Data
-@Component
 public class BoothLogResponse {
     private String sessionID;
     private String userAccount;

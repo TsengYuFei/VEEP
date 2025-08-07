@@ -4,16 +4,12 @@ import com.example.api.Entity.UserRole;
 import com.example.api.Exception.NotFoundException;
 import com.example.api.Repository.UserRoleRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
 public class UserRoleService {
-    @Autowired
     private final UserRoleRepository userRoleRepository;
-
-    @Autowired
     private final UserHelperService userHelperService;
 
 

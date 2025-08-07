@@ -8,7 +8,6 @@ import com.example.api.Entity.*;
 import com.example.api.Exception.ForibiddenException;
 import com.example.api.Repository.*;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -23,34 +22,15 @@ import static com.example.api.Other.UpdateTool.updateIfNotNull;
 @Service
 @RequiredArgsConstructor
 public class SingleBoothService {
-    @Autowired
     private final BoothRepository boothRepository;
-
-    @Autowired
     private final BoothColListService colListService;
-
-    @Autowired
     private final UserHelperService userHelperService;
-
-    @Autowired
     private final ExpoHelperService expoHelperService;
-
-    @Autowired
     private final BoothStaffListService staffListService;
-
-    @Autowired
     private final TagService tagService;
-
-    @Autowired
     private final ContentService contentService;
-
-    @Autowired
     private final ImageService imageService;
-
-    @Autowired
     private final BoothHelperService boothHelperService;
-
-    @Autowired
     private final BoothLogService boothLogService;
 
 

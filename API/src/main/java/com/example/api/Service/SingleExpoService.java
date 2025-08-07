@@ -9,7 +9,6 @@ import com.example.api.Exception.ForibiddenException;
 import com.example.api.Exception.UnprocessableEntityException;
 import com.example.api.Repository.*;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -21,34 +20,15 @@ import static com.example.api.Other.UpdateTool.updateIfNotNull;
 @Service
 @RequiredArgsConstructor
 public class SingleExpoService {
-    @Autowired
     private final ExpoRepository expoRepository;
-
-    @Autowired
     private final ExpoHelperService expoHelperService;
-
-    @Autowired
     private final ExpoColListService colListService;
-
-    @Autowired
     private final TagService tagService;
-
-    @Autowired
     private final BlackListService blacklistService;
-
-    @Autowired
     private final WhiteListService whiteListService;
-
-    @Autowired
     private final ImageService imageService;
-
-    @Autowired
     private final ExpoLogService expoLogService;
-
-    @Autowired
     private final UserHelperService userHelperService;
-
-    @Autowired
     private final ExpoGroupMessageService expoGroupMessageService;
 
 

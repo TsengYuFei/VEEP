@@ -3,12 +3,10 @@ package com.example.api.DTO.Response;
 import com.example.api.Entity.Booth;
 import com.example.api.Entity.OpenMode;
 import lombok.Data;
-import org.springframework.stereotype.Component;
 import java.time.LocalDateTime;
 import java.util.List;
 
 @Data
-@Component
 public class BoothEditResponse {
     private Integer boothID;
     private Integer expoID;

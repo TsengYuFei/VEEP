@@ -1,9 +1,7 @@
 package com.example.api.Controller;
 
 import com.example.api.DTO.Request.SendExpoGroupMessageRequest;
-import com.example.api.DTO.Request.SendUserMessageRequest;
 import com.example.api.DTO.Response.ExpoGroupMessageResponse;
-import com.example.api.DTO.Response.UserMessageResponse;
 import com.example.api.Service.ExpoGroupMessageService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -15,10 +13,8 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
@@ -30,7 +26,6 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 public class ExpoGroupMessageController {
-    @Autowired
     private final ExpoGroupMessageService expoGroupMessageService;
 
 

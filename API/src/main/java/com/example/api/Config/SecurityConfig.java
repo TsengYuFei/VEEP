@@ -2,8 +2,7 @@ package com.example.api.Config;
 
 import com.example.api.Other.JwtAuthenticationFilter;
 import jakarta.servlet.http.HttpServletResponse;
-import lombok.AllArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -19,10 +18,9 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 @Configuration
 @EnableWebSecurity
-@AllArgsConstructor
 @EnableMethodSecurity
+@RequiredArgsConstructor
 public class SecurityConfig {
-    @Autowired
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
 
     @Bean

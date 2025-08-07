@@ -2,10 +2,8 @@ package com.example.api.DTO.Response;
 
 import com.example.api.Entity.User;
 import lombok.Data;
-import org.springframework.stereotype.Component;
 
 @Data
-@Component
 public class UserListResponse {
     private String name;
     private String userAccount;

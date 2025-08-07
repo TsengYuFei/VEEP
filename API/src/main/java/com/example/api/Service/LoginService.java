@@ -8,23 +8,15 @@ import com.example.api.Entity.User;
 import com.example.api.Exception.UnauthorizedException;
 import com.example.api.Other.JwtUtil;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
 public class LoginService {
-    @Autowired
     private final UserHelperService userHelperService;
-
-    @Autowired
     private final PasswordEncoder passwordEncoder;
-
-    @Autowired
     private final JwtUtil jwtUtil;
-
-    @Autowired
     private final RefreshTokenService refreshTokenService;
 
 

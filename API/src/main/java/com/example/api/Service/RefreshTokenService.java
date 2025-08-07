@@ -6,7 +6,6 @@ import com.example.api.Exception.NotFoundException;
 import com.example.api.Other.JwtUtil;
 import com.example.api.Repository.RefreshTokenRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -16,10 +15,7 @@ import java.util.UUID;
 @Service
 @RequiredArgsConstructor
 public class RefreshTokenService {
-    @Autowired
     private final RefreshTokenRepository refreshTokenRepository;
-
-    @Autowired
     private final UserHelperService userHelperService;
 
 

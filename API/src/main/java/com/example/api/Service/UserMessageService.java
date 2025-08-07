@@ -8,7 +8,6 @@ import com.example.api.Entity.UserMessage;
 import com.example.api.Entity.User;
 import com.example.api.Repository.UserMessageRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -21,13 +20,8 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class UserMessageService {
-    @Autowired
     private final UserMessageRepository userMessageRepository;
-
-    @Autowired
     private final UserHelperService userHelperService;
-
-    @Autowired
     private final SimpMessagingTemplate messagingTemplate;
 
 

@@ -7,7 +7,6 @@ import com.example.api.Entity.ExpoGroupMessage;
 import com.example.api.Entity.User;
 import com.example.api.Repository.ExpoGroupMessageRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -20,16 +19,9 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class ExpoGroupMessageService {
-    @Autowired
     private final ExpoGroupMessageRepository expoGroupMessageRepository;
-
-    @Autowired
     private final UserHelperService userHelperService;
-
-    @Autowired
     private final ExpoHelperService expoHelperService;
-
-    @Autowired
     private final SimpMessagingTemplate messagingTemplate;
 
 

@@ -3,7 +3,6 @@ package com.example.api.Service;
 import com.example.api.DTO.Response.ExpoOverviewResponse;
 import com.example.api.Repository.ExpoRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -15,7 +14,6 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class MultipleExpoService {
-    @Autowired
     private final ExpoRepository expoRepository;
 
 

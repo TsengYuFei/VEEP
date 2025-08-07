@@ -4,7 +4,6 @@ import com.example.api.DTO.Response.ContentLogResponse;
 import com.example.api.Entity.*;
 import com.example.api.Repository.ContentLogRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -14,22 +13,11 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class ContentLogService {
-    @Autowired
     private final ContentLogRepository contentLogRepository;
-
-    @Autowired
     private final ContentService contentService;
-
-    @Autowired
     private UserRoleService userRoleService;
-
-    @Autowired
     private UserHelperService userHelperService;
-
-    @Autowired
     private final ExpoHelperService expoHelperService;
-
-    @Autowired
     private final BoothHelperService boothHelperService;
 
 

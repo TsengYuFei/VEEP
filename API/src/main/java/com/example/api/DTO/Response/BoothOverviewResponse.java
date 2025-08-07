@@ -2,10 +2,8 @@ package com.example.api.DTO.Response;
 
 import com.example.api.Entity.Booth;
 import lombok.Data;
-import org.springframework.stereotype.Component;
 
 @Data
-@Component
 public class BoothOverviewResponse {
     private Integer boothID;
     private Integer expoID;

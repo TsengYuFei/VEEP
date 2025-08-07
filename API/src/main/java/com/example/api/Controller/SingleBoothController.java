@@ -2,7 +2,6 @@ package com.example.api.Controller;
 
 import com.example.api.DTO.Request.BoothUpdateRequest;
 import com.example.api.DTO.Response.BoothEditResponse;
-import com.example.api.DTO.Request.BoothCreateRequest;
 import com.example.api.DTO.Response.UserListResponse;
 import com.example.api.Service.SingleBoothService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -15,7 +14,6 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -30,7 +28,6 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 public class SingleBoothController {
-    @Autowired
     private final SingleBoothService singleBoothService;
 
 

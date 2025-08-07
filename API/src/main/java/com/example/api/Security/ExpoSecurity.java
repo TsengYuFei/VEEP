@@ -1,12 +1,8 @@
 package com.example.api.Security;
 
 import com.example.api.DTO.Response.ExpoEditResponse;
-import com.example.api.Entity.Expo;
-import com.example.api.Entity.User;
 import com.example.api.Service.SingleExpoService;
-import com.example.api.Service.SingleUserService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
@@ -16,7 +12,6 @@ import java.util.List;
 @Component
 @RequiredArgsConstructor
 public class ExpoSecurity {
-    @Autowired
     private final SingleExpoService singleExpoService;
 
 

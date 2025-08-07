@@ -10,9 +10,6 @@ import com.example.api.Exception.*;
 import com.example.api.Other.JwtUtil;
 import com.example.api.Repository.UserRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -27,31 +24,14 @@ import static com.example.api.Other.UpdateTool.updateIfNotNull;
 @Service
 @RequiredArgsConstructor
 public class SingleUserService {
-    @Autowired
     private final UserRepository userRepository;
-
-    @Autowired
     private final ImageService imageService;
-
-    @Autowired
     private final PasswordEncoder passwordEncoder;
-
-    @Autowired
     private final RoleService roleService;
-
-    @Autowired
     private final UserRoleService userRoleService;
-
-    @Autowired
     private final EmailService emailService;
-
-    @Autowired
     private final UserHelperService userHelperService;
-
-    @Autowired
     private final SingleExpoService singleExpoService;
-
-    @Autowired
     private final SingleBoothService singleBoothService;
 
 

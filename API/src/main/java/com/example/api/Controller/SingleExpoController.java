@@ -7,7 +7,6 @@ import com.example.api.DTO.Response.ExpoEditResponse;
 import com.example.api.DTO.Request.ExpoCreateRequest;
 import com.example.api.DTO.Response.ExpoEnterResponse;
 import com.example.api.DTO.Response.UserListResponse;
-import com.example.api.Service.ExpoLogService;
 import com.example.api.Service.SingleExpoService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -19,7 +18,6 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -34,10 +32,8 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 public class SingleExpoController {
-    @Autowired
     private final SingleExpoService singleExpoService;
-    @Autowired
-    private ExpoLogService expoLogService;
+
 
 
     @Operation(

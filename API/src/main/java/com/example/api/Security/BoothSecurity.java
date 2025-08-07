@@ -1,10 +1,8 @@
 package com.example.api.Security;
 
 import com.example.api.DTO.Response.BoothEditResponse;
-import com.example.api.DTO.Response.ExpoEditResponse;
 import com.example.api.Service.SingleBoothService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
@@ -14,7 +12,6 @@ import java.util.List;
 @Component
 @RequiredArgsConstructor
 public class BoothSecurity {
-    @Autowired
     private final SingleBoothService singleBoothService;
 
 

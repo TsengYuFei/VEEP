@@ -8,7 +8,6 @@ import com.example.api.Exception.ForibiddenException;
 import com.example.api.Exception.NotFoundException;
 import com.example.api.Repository.BoothLogRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -20,22 +19,11 @@ import java.util.UUID;
 @Service
 @RequiredArgsConstructor
 public class BoothLogService {
-    @Autowired
     private final BoothLogRepository boothLogRepository;
-
-    @Autowired
     private final ExpoHelperService expoHelperService;
-
-    @Autowired
     private final BoothHelperService boothHelperService;
-
-    @Autowired
     private final UserRoleService userRoleService;
-
-    @Autowired
     private final UserHelperService userHelperService;
-
-    @Autowired
     private final ContentLogService contentLogService;
 
 
