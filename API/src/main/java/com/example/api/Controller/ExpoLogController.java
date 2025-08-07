@@ -2,6 +2,7 @@ package com.example.api.Controller;
 
 import com.example.api.DTO.Request.ExpoLogUpdateRequest;
 import com.example.api.DTO.Response.ExpoLogResponse;
+import com.example.api.DTO.Response.UserOverviewResponse;
 import com.example.api.Service.ExpoLogService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -225,6 +226,37 @@ public class ExpoLogController {
         System.out.println("ExpoLogController: getOnlineExpoLogByExpoID >> "+expoID);
         List<ExpoLogResponse> logs = expoLogService.getOnlineExpoLogResponseByExpoID(expoID);
         return ResponseEntity.status(HttpStatus.OK).body(logs);
+    }
+
+
+    @Operation(
+            summary = "獲取某展會目前在場的使用者",
+            description = "目前無排序"
+    )
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "成功獲取該展會目前在場的使用者",
+                    content = @Content(
+                            mediaType = "application/json",
+                            array = @ArraySchema(
+                                    schema = @Schema(implementation = UserOverviewResponse.class)
+                            )
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = "500",
+                    description = "伺服器錯誤"
+            )
+    })
+    @GetMapping("/online/user/{expoID}")
+    public ResponseEntity<List<UserOverviewResponse>> getOnlineUserOverviewByExpoID(
+            @Parameter(description = "展會ID", required = true)
+            @PathVariable Integer expoID
+    ){
+        System.out.println("ExpoLogController: getOnlineUserOverviewByExpoID >> "+expoID);
+        List<UserOverviewResponse> users = expoLogService.getOnlineUserOverviewByExpoID(expoID);
+        return ResponseEntity.status(HttpStatus.OK).body(users);
     }
 
 

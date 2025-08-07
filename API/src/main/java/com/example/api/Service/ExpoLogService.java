@@ -2,6 +2,7 @@ package com.example.api.Service;
 
 import com.example.api.DTO.Request.ExpoLogUpdateRequest;
 import com.example.api.DTO.Response.ExpoLogResponse;
+import com.example.api.DTO.Response.UserOverviewResponse;
 import com.example.api.Entity.Expo;
 import com.example.api.Entity.ExpoLog;
 import com.example.api.Entity.User;
@@ -14,6 +15,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -125,6 +127,17 @@ public class ExpoLogService {
     public Integer getOnlineNumberByExpoID(Integer expoID){
         System.out.println("ExpoLogService: getOnlineNumberByExpoID >> "+expoID);
         return expoLogRepository.countByExpo_ExpoIDAndExitAt(expoID, null);
+    }
+
+
+    public List<UserOverviewResponse> getOnlineUserOverviewByExpoID(Integer expoID){
+        System.out.println("ExpoLogService: getOnlineUserOverviewByExpoID >> "+expoID);
+        List<ExpoLog> expoLogs = expoLogRepository.findExpoLogByExpo_ExpoIDAndExitAt(expoID, null);
+        List<User> users = new ArrayList<>();
+        for(ExpoLog expoLog : expoLogs){
+            users.add(expoLog.getUser());
+        }
+        return users.stream().map(UserOverviewResponse::fromUser).toList();
     }
 
 
