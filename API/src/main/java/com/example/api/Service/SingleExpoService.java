@@ -48,6 +48,9 @@ public class SingleExpoService {
     @Autowired
     private final UserHelperService userHelperService;
 
+    @Autowired
+    private final ExpoGroupMessageService expoGroupMessageService;
+
 
 
     public ExpoEditResponse getExpoEditByID(Integer expoID) {
@@ -276,6 +279,7 @@ public class SingleExpoService {
         if(image != null) imageService.deleteImageByName(image);
 
         expoLogService.deleteExpoLogByExpoID(expoID);
+        expoGroupMessageService.deleteMessageByExpoID(expoID);
 
         expoRepository.delete(expo);
     }
