@@ -36,6 +36,7 @@ public class UserRoleService {
 
     public void deleteUserRoleByAccount(String account) {
         System.out.println("UserRoleService: deleteUserRoleByAccount >> "+account);
+        userHelperService.getUserByAccount(account);
         UserRole userRole = getUserRoleByAccount(account);
         userRoleRepository.delete(userRole);
     }

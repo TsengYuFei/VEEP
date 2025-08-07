@@ -15,8 +15,8 @@ import java.util.List;
 public class ContentLogService {
     private final ContentLogRepository contentLogRepository;
     private final ContentService contentService;
-    private UserRoleService userRoleService;
-    private UserHelperService userHelperService;
+    private final UserRoleService userRoleService;
+    private final UserHelperService userHelperService;
     private final ExpoHelperService expoHelperService;
     private final BoothHelperService boothHelperService;
 
@@ -47,6 +47,7 @@ public class ContentLogService {
 
     public List<ContentLogResponse> getAllContentLogByBoothID (Integer boothID){
         System.out.println("ContentLogService: getAllContentLogByBoothID >> "+boothID);
+        boothHelperService.getBoothByID(boothID);
         return contentLogRepository.findContentLogByBooth_BoothID(boothID)
                 .stream()
                 .map(ContentLogResponse::fromContentLog)
@@ -56,6 +57,7 @@ public class ContentLogService {
 
     public List<ContentLogResponse> getAllContentLogByExpoID (Integer expoID){
         System.out.println("ContentLogService: getAllContentLogByExpoID >> "+expoID);
+        expoHelperService.getExpoByID(expoID);
         return contentLogRepository.findContentLogByExpo_ExpoID(expoID)
                 .stream()
                 .map(ContentLogResponse::fromContentLog)
@@ -65,6 +67,7 @@ public class ContentLogService {
 
     public List<ContentLogResponse> getAllContentLogByBoothIDAndNumber (Integer boothID, Integer number){
         System.out.println("ContentLogService: getAllContentLogByBoothIDAndNumber >> "+boothID+", "+number);
+        contentService.getContentByBoothIDAndNumber(boothID, number);
         return contentLogRepository.findContentLogByBooth_BoothIDAndContent_Number(boothID, number)
                 .stream()
                 .map(ContentLogResponse::fromContentLog)
@@ -74,6 +77,7 @@ public class ContentLogService {
 
     public List<ContentLogResponse> getContentLogResponseByUserAccount(String account){
         System.out.println("ContentLogService: getContentLogResponseByUserAccount >> "+account);
+        userHelperService.getUserByAccount(account);
         return contentLogRepository.findContentLogByUser_UserAccount(account)
                 .stream()
                 .map(ContentLogResponse::fromContentLog)
@@ -83,6 +87,8 @@ public class ContentLogService {
 
     public List<ContentLogResponse> getContentLogResponseByUserAccountAndExpoID(Integer expoID, String account){
         System.out.println("ContentLogService: getContentLogResponseByUserAccountAndExpoID >> "+account+", "+expoID);
+        userHelperService.getUserByAccount(account);
+        expoHelperService.getExpoByID(expoID);
         return contentLogRepository.findContentLogByUser_UserAccountAndExpo_ExpoID(account, expoID)
                 .stream()
                 .map(ContentLogResponse::fromContentLog)
@@ -92,6 +98,8 @@ public class ContentLogService {
 
     public List<ContentLogResponse> getContentLogResponseByUserAccountAndBoothID(Integer boothID, String account){
         System.out.println("ContentLogService: getContentLogResponseByUserAccountAndBoothID >> "+account+", "+boothID);
+        userHelperService.getUserByAccount(account);
+        boothHelperService.getBoothByID(boothID);
         return contentLogRepository.findContentLogByUser_UserAccountAndBooth_BoothID(account, boothID)
                 .stream()
                 .map(ContentLogResponse::fromContentLog)
@@ -101,6 +109,8 @@ public class ContentLogService {
 
     public List<ContentLogResponse> getContentLogResponseByUserAccountAndBoothIDAndNumber(Integer boothID, Integer number, String account){
         System.out.println("ContentLogService: getContentLogResponseByUserAccountAndBoothIDAndNumber >> "+account+", "+boothID+", "+number);
+        contentService.getContentByBoothIDAndNumber(boothID, number);
+        userHelperService.getUserByAccount(account);
         return contentLogRepository.findContentLogByUser_UserAccountAndBooth_BoothIDAndContent_Number(account, boothID, number)
                 .stream()
                 .map(ContentLogResponse::fromContentLog)

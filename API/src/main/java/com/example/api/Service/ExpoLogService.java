@@ -82,6 +82,7 @@ public class ExpoLogService {
 
     public List<ExpoLogResponse> getAllExpoLogResponse(Integer expoID){
         System.out.println("ExpoLogService: getAllExpoLogResponse >> "+expoID);
+        expoHelperService.getExpoByID(expoID);
         return expoLogRepository.findExpoLogByExpo_ExpoID(expoID)
                 .stream()
                 .map(ExpoLogResponse::fromExpoLog)
@@ -91,6 +92,7 @@ public class ExpoLogService {
 
     public List<ExpoLogResponse> getExpoLogResponseByUserAccount(String account){
         System.out.println("ExpoLogService: getExpoLogResponseByUserAccount >> "+account);
+        userHelperService.getUserByAccount(account);
         return expoLogRepository.findExpoLogByUser_UserAccountOrderByEnterAtDesc(account)
                 .stream()
                 .map(ExpoLogResponse::fromExpoLog)
@@ -100,6 +102,8 @@ public class ExpoLogService {
 
     public List<ExpoLogResponse> getExpoLogResponseByUserAccountAndExpoID(Integer expoID, String account){
         System.out.println("ExpoLogService: getExpoLogResponseByUserAccountAndExpoID >> "+account+", "+expoID);
+        userHelperService.getUserByAccount(account);
+        expoHelperService.getExpoByID(expoID);
         return expoLogRepository.findExpoLogByUser_UserAccountAndExpo_ExpoIDOrderByEnterAtDesc(account, expoID)
                 .stream()
                 .map(ExpoLogResponse::fromExpoLog)
@@ -109,6 +113,7 @@ public class ExpoLogService {
 
     public List<ExpoLogResponse> getOnlineExpoLogResponseByExpoID(Integer expoID){
         System.out.println("ExpoLogService: getOnlineExpoLogResponseByExpoID >> "+expoID);
+        expoHelperService.getExpoByID(expoID);
         return expoLogRepository.findExpoLogByExpo_ExpoIDAndExitAt(expoID, null)
                 .stream()
                 .map(ExpoLogResponse::fromExpoLog)
@@ -118,12 +123,15 @@ public class ExpoLogService {
 
     public Integer getOnlineNumberByExpoID(Integer expoID){
         System.out.println("ExpoLogService: getOnlineNumberByExpoID >> "+expoID);
+        expoHelperService.getExpoByID(expoID);
         return expoLogRepository.countByExpo_ExpoIDAndExitAt(expoID, null);
     }
 
 
     public List<UserOverviewResponse> getOnlineUserOverviewByExpoID(Integer expoID){
         System.out.println("ExpoLogService: getOnlineUserOverviewByExpoID >> "+expoID);
+        expoHelperService.getExpoByID(expoID);
+
         List<ExpoLog> expoLogs = expoLogRepository.findExpoLogByExpo_ExpoIDAndExitAt(expoID, null);
         List<User> users = new ArrayList<>();
         for(ExpoLog expoLog : expoLogs){

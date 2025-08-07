@@ -78,6 +78,7 @@ public class SingleBoothService {
     public Integer createBooth(String userAccount, Integer expoID, String ownerAccount) {
         System.out.println("SingleBoothService: createBooth >> "+ userAccount+", "+expoID+", "+ownerAccount);
 
+        userHelperService.getUserByAccount(userAccount);
         User owner = userHelperService.getUserByAccount(ownerAccount);
         Expo expo = expoHelperService.getExpoByID(expoID);
 

@@ -13,7 +13,7 @@ import org.springframework.stereotype.Service;
 @Service
 @RequiredArgsConstructor
 public class MyUserDetailService implements UserDetailsService {
-    private final UserRepository userRepository;
+    private final UserHelperService userHelperService;
     private final UserRoleService userRoleService;
 
 
@@ -21,8 +21,7 @@ public class MyUserDetailService implements UserDetailsService {
     // 回傳Spring Security認得的格式
     @Override
     public UserDetails loadUserByUsername(String account) throws UsernameNotFoundException {
-        User user = userRepository.findById(account)
-                .orElseThrow(() -> new NotFoundException("找不到使用者帳號為 < "+ account+" > 的使用者"));
+        User user = userHelperService.getUserByAccount(account);
 
         UserRole userRole = userRoleService.getUserRoleByAccount(account);
         String roleName = userRole.getRole().getName();

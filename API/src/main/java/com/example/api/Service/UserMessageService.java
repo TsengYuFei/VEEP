@@ -53,6 +53,7 @@ public class UserMessageService {
 
     public List<UserMessageResponse> getConversation(String currentAccount, String targetAccount, Integer page, Integer size){
         System.out.println("MessageService: getConversation >> "+currentAccount+", "+targetAccount);
+        userHelperService.getUserByAccount(currentAccount);
         userHelperService.getUserByAccount(targetAccount);
 
         Pageable pageable = PageRequest.of(page, size, Sort.by("send_at").descending());
@@ -66,6 +67,7 @@ public class UserMessageService {
 
     public UnreadMessageResponse getUnreadCount(String currentAccount, String targetAccount){
         System.out.println("MessageService: getUnreadCount >> "+currentAccount+", "+targetAccount);
+        userHelperService.getUserByAccount(currentAccount);
         userHelperService.getUserByAccount(targetAccount);
 
         Integer count = userMessageRepository.getUnreadCountByAccount(currentAccount, targetAccount);
@@ -76,6 +78,7 @@ public class UserMessageService {
     @Transactional
     public void readUnread(String currentAccount, String targetAccount){
         System.out.println("MessageService: getUnreadMessage >> "+currentAccount+", "+targetAccount);
+        userHelperService.getUserByAccount(currentAccount);
         User receiver = userHelperService.getUserByAccount(targetAccount);
         userMessageRepository.readUnreadByAccount(currentAccount, targetAccount);
 
@@ -87,6 +90,8 @@ public class UserMessageService {
 
     public List<MessageListResponse> getChatList(String userAccount, Integer page, Integer size){
         System.out.println("MessageService: getChatList >> "+userAccount);
+        userHelperService.getUserByAccount(userAccount);
+
         Pageable pageable = PageRequest.of(page, size, Sort.by("latestTime").descending());
         return userMessageRepository.getChatList(userAccount, pageable)
                 .stream()

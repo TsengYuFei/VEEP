@@ -82,6 +82,7 @@ public class BoothLogService {
 
     public List<BoothLogResponse> getAllBoothLogResponseByExpoID(Integer expoID){
         System.out.println("BoothLogService: getAllBoothLogResponseByExpoID >> "+expoID);
+        expoHelperService.getExpoByID(expoID);
         return boothLogRepository.findExpoLogByExpo_ExpoID(expoID)
                 .stream()
                 .map(BoothLogResponse::fromBoothLog)
@@ -91,6 +92,7 @@ public class BoothLogService {
 
     public List<BoothLogResponse> getAllBoothLogResponseByBoothID(Integer boothID){
         System.out.println("BoothLogService: getAllBoothLogResponseByBoothID >> "+boothID);
+        boothHelperService.getBoothByID(boothID);
         return boothLogRepository.findBoothLogByBooth_BoothID(boothID)
                 .stream()
                 .map(BoothLogResponse::fromBoothLog)
@@ -100,6 +102,7 @@ public class BoothLogService {
 
     public List<BoothLogResponse> getBoothLogResponseByUserAccount(String account){
         System.out.println("BoothLogService: getBoothLogResponseByUserAccount >> "+account);
+        userHelperService.getUserByAccount(account);
         return boothLogRepository.findBoothLogByUser_UserAccountOrderByEnterAtDesc(account)
                 .stream()
                 .map(BoothLogResponse::fromBoothLog)
@@ -109,6 +112,8 @@ public class BoothLogService {
 
     public List<BoothLogResponse> getBoothLogResponseByUserAccountAndExpoID(Integer expoID, String account){
         System.out.println("BoothLogService: getBoothLogResponseByUserAccountAndExpoID >> "+account+", "+expoID);
+        expoHelperService.getExpoByID(expoID);
+        userHelperService.getUserByAccount(account);
         return boothLogRepository.findBoothLogByUser_UserAccountAndExpo_ExpoIDOrderByEnterAtDesc(account, expoID)
                 .stream()
                 .map(BoothLogResponse::fromBoothLog)
@@ -118,6 +123,8 @@ public class BoothLogService {
 
     public List<BoothLogResponse> getBoothLogResponseByUserAccountAndBoothID(Integer boothID, String account){
         System.out.println("BoothLogService: getBoothLogResponseByUserAccountAndBoothID >> "+account+", "+boothID);
+        userHelperService.getUserByAccount(account);
+        boothHelperService.getBoothByID(boothID);
         return boothLogRepository.findBoothLogByUser_UserAccountAndBooth_BoothIDOrderByEnterAtDesc(account, boothID)
                 .stream()
                 .map(BoothLogResponse::fromBoothLog)
@@ -125,8 +132,9 @@ public class BoothLogService {
     }
 
 
-    public List<BoothLogResponse> getOnlineBoothLogResponseByExpoID(Integer expoID){
+    public List<BoothLogResponse> getOnlineBoothLogResponseByExpoID(Integer expoID)     {
         System.out.println("BoothLogService: getOnlineBoothLogResponseByExpoID >> "+expoID);
+        expoHelperService.getExpoByID(expoID);
         return boothLogRepository.findBoothLogByExpo_ExpoIDAndExitAt(expoID, null)
                 .stream()
                 .map(BoothLogResponse::fromBoothLog)
@@ -136,6 +144,7 @@ public class BoothLogService {
 
     public List<BoothLogResponse> getOnlineBoothLogResponseByBoothID(Integer boothID){
         System.out.println("BoothLogService: getOnlineBoothLogResponseByBoothID >> "+boothID);
+        boothHelperService.getBoothByID(boothID);
         return boothLogRepository.findBoothLogByBooth_BoothIDAndExitAt(boothID, null)
                 .stream()
                 .map(BoothLogResponse::fromBoothLog)
@@ -145,6 +154,7 @@ public class BoothLogService {
 
     public Integer getOnlineNumberByBoothID(Integer boothID){
         System.out.println("BoothLogService: getOnlineNumberByBoothID >> "+boothID);
+        boothHelperService.getBoothByID(boothID);
         return boothLogRepository.countByBooth_BoothIDAndExitAt(boothID, null);
     }
 

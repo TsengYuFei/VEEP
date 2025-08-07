@@ -72,6 +72,7 @@ public class RefreshTokenService {
     @Transactional
     public void deleteTokenByToken(String token){
         System.out.println("RefreshTokenService: deleteTokenByToken >> "+token);
+        getTokenByToken(token);
         refreshTokenRepository.deleteByToken(token);
     }
 }
