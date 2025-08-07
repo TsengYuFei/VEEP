@@ -5,6 +5,6 @@ import lombok.Data;
 
 @Data
 @AllArgsConstructor
-public class LogCreateResponse {
+public class ExpoEnterResponse {
     private String sessionID;
 }

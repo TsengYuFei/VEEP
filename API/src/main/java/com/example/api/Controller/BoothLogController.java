@@ -2,7 +2,7 @@ package com.example.api.Controller;
 
 import com.example.api.DTO.Request.BoothLogUpdateRequest;
 import com.example.api.DTO.Response.BoothLogResponse;
-import com.example.api.DTO.Response.LogCreateResponse;
+import com.example.api.DTO.Response.ExpoEnterResponse;
 import com.example.api.Service.BoothLogService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -44,7 +44,7 @@ public class BoothLogController {
                     description = "成功新增攤位Log",
                     content = @Content(
                             mediaType = "application/json",
-                            schema = @Schema(implementation = LogCreateResponse.class)
+                            schema = @Schema(implementation = ExpoEnterResponse.class)
                     )
             ),
             @ApiResponse(
@@ -61,7 +61,7 @@ public class BoothLogController {
             )
     })
     @PostMapping("/create/{boothID}")
-    public ResponseEntity<LogCreateResponse> createBoothLog(
+    public ResponseEntity<ExpoEnterResponse> createBoothLog(
             @Parameter(description = "攤位ID", required = true)
             @PathVariable Integer boothID
     ){
@@ -70,7 +70,7 @@ public class BoothLogController {
         String userAccount = authentication.getName();
         System.out.println(userAccount);
 
-        LogCreateResponse response = boothLogService.createBoothLog(boothID, userAccount);
+        ExpoEnterResponse response = boothLogService.createBoothLog(boothID, userAccount);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 

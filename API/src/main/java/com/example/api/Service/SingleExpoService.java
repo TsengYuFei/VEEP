@@ -1,9 +1,11 @@
 package com.example.api.Service;
 
 import com.example.api.DTO.Request.ExpoCreateRequest;
+import com.example.api.DTO.Request.ExpoEnterRequest;
 import com.example.api.DTO.Request.ExpoUpdateRequest;
 import com.example.api.DTO.Response.*;
 import com.example.api.Entity.*;
+import com.example.api.Exception.ForibiddenException;
 import com.example.api.Exception.UnprocessableEntityException;
 import com.example.api.Repository.*;
 import lombok.RequiredArgsConstructor;
@@ -11,10 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 import static com.example.api.Other.UpdateTool.updateIfNotBlank;
 import static com.example.api.Other.UpdateTool.updateIfNotNull;
@@ -350,5 +349,39 @@ public class SingleExpoService {
         return expo.getBoothList().stream()
                 .map(BoothOverviewResponse::fromBooth)
                 .toList();
+    }
+
+
+    public ExpoEnterResponse enterExpo(Integer expoID, String account, ExpoEnterRequest request){
+        System.out.println("SingleExpoService: enterExpo >> "+expoID);
+        Expo expo = expoHelperService.getExpoByID(expoID);
+        User user = userHelperService.getUserByAccount(account);
+        List<Booth> booths = expo.getBoothList();
+
+        boolean isExpoOwner = expo.getOwner() == user;
+        boolean isExpoCol = expo.getCollaborator().getCollaborators().contains(user);
+        boolean isExpoWhiteListed = expo.getWhitelist().getWhitelistedUsers().contains(user);
+        boolean isBoothOwner = false;
+        boolean isBoothCol = false;
+        boolean isBoothStaff = false;
+
+        for(Booth booth : booths){
+            if(booth.getOwner() == user) {
+                isBoothOwner = true;
+                break;
+            }else if(booth.getCollaborator().getCollaborators().contains(user)){
+                isBoothCol = true;
+                break;
+            }else if(booth.getStaff().getStaffs().contains(user)){
+                isBoothStaff = true;
+                break;
+            }
+        }
+
+        if(isExpoOwner || isExpoCol || isExpoWhiteListed || isBoothOwner || isBoothCol || isBoothStaff) {
+        }else if(!Objects.equals(request.getAccessCode(), expo.getAccessCode())) throw new ForibiddenException("驗證碼錯誤，無法進入展會ID為 < "+expoID+" > 的展會");
+
+        String session = expoLogService.createExpoLog(expoID, account);
+        return new ExpoEnterResponse(session);
     }
 }

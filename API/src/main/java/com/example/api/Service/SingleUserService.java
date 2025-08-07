@@ -56,29 +56,6 @@ public class SingleUserService {
 
 
 
-    public boolean isNotCurrentUser(String account){
-        System.out.println("SingleUserService: isCurrentUser >> "+account);
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String currentAccount = authentication.getName();
-        return !account.equals(currentAccount);
-    }
-
-
-    public boolean isShowCurrentExpo(String account){
-        System.out.println("SingleUserService: isShowCurrentExpo >> "+account);
-        User user = userHelperService.getUserByAccount(account);
-        return user.getShowCurrentExpo();
-    }
-
-
-    public boolean isShowCurrentBooth(String account){
-        System.out.println("SingleUserService: isShowCurrentBooth >> "+account);
-        User user = userHelperService.getUserByAccount(account);
-        return user.getShowCurrentBooth();
-    }
-
-
-
     public UserDetailResponse getUserDetailByAccount(String account){
         System.out.println("SingleUserService: getUserByAccount >> "+account);
         User user = userHelperService.getUserByAccount(account);

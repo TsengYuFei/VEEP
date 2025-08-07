@@ -1,7 +1,6 @@
 package com.example.api.Controller;
 
 import com.example.api.DTO.Request.ExpoLogUpdateRequest;
-import com.example.api.DTO.Response.LogCreateResponse;
 import com.example.api.DTO.Response.ExpoLogResponse;
 import com.example.api.Service.ExpoLogService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -34,41 +33,41 @@ public class ExpoLogController {
 
 
 
-    @Operation(
-            summary = "新增展會log",
-            description = "進入展會時呼叫。可輸入欄位 1.使用者帳號 2.展會ID"
-    )
-    @ApiResponses(value = {
-            @ApiResponse(
-                    responseCode = "201",
-                    description = "成功新增展會Log",
-                    content = @Content(
-                            mediaType = "application/json",
-                            schema = @Schema(implementation = LogCreateResponse.class)
-                    )
-            ),
-            @ApiResponse(
-                    responseCode = "404",
-                    description = "找不到展會"
-            ),
-            @ApiResponse(
-                    responseCode = "500",
-                    description = "伺服器錯誤"
-            )
-    })
-    @PostMapping("/create/{expoID}")
-    public ResponseEntity<LogCreateResponse> createExpoLog(
-            @Parameter(description = "展會ID", required = true)
-            @PathVariable Integer expoID
-    ){
-        System.out.print("ExpoLogController: createExpoLog>> ");
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String userAccount = authentication.getName();
-        System.out.println(userAccount);
-
-        LogCreateResponse response = expoLogService.createExpoLog(expoID, userAccount);
-        return ResponseEntity.status(HttpStatus.CREATED).body(response);
-    }
+//    @Operation(
+//            summary = "新增展會log",
+//            description = "進入展會時呼叫。可輸入欄位 1.使用者帳號 2.展會ID"
+//    )
+//    @ApiResponses(value = {
+//            @ApiResponse(
+//                    responseCode = "201",
+//                    description = "成功新增展會Log",
+//                    content = @Content(
+//                            mediaType = "application/json",
+//                            schema = @Schema(implementation = LogCreateResponse.class)
+//                    )
+//            ),
+//            @ApiResponse(
+//                    responseCode = "404",
+//                    description = "找不到展會"
+//            ),
+//            @ApiResponse(
+//                    responseCode = "500",
+//                    description = "伺服器錯誤"
+//            )
+//    })
+//    @PostMapping("/create/{expoID}")
+//    public ResponseEntity<LogCreateResponse> createExpoLog(
+//            @Parameter(description = "展會ID", required = true)
+//            @PathVariable Integer expoID
+//    ){
+//        System.out.print("ExpoLogController: createExpoLog>> ");
+//        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+//        String userAccount = authentication.getName();
+//        System.out.println(userAccount);
+//
+//        LogCreateResponse response = expoLogService.createExpoLog(expoID, userAccount);
+//        return ResponseEntity.status(HttpStatus.CREATED).body(response);
+//    }
 
 
     @Operation(

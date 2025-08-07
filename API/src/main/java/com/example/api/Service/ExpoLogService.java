@@ -1,8 +1,6 @@
 package com.example.api.Service;
 
-
 import com.example.api.DTO.Request.ExpoLogUpdateRequest;
-import com.example.api.DTO.Response.LogCreateResponse;
 import com.example.api.DTO.Response.ExpoLogResponse;
 import com.example.api.Entity.Expo;
 import com.example.api.Entity.ExpoLog;
@@ -37,7 +35,7 @@ public class ExpoLogService {
 
 
     @Transactional
-    public LogCreateResponse createExpoLog(Integer expoID, String account){
+    public String createExpoLog(Integer expoID, String account){
         System.out.println("ExpoLogService: createExpoLog>> "+expoID+", "+account);
         Expo expo = expoHelperService.getExpoByID(expoID);
         User user = userHelperService.getUserByAccount(account);
@@ -54,7 +52,7 @@ public class ExpoLogService {
         expoLog.setExpo(expo);
 
         expoLogRepository.save(expoLog);
-        return new LogCreateResponse(sessionID);
+        return sessionID;
     }
 
 

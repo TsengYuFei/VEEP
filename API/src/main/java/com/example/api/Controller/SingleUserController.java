@@ -350,7 +350,7 @@ public class SingleUserController {
     )
     @ApiResponses(value = {
             @ApiResponse(
-                    responseCode = "200",
+                    responseCode = "204",
                     description = "驗證成功，啟用帳號"
             ),
             @ApiResponse(

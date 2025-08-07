@@ -2,7 +2,7 @@ package com.example.api.Service;
 
 import com.example.api.DTO.Request.BoothLogUpdateRequest;
 import com.example.api.DTO.Response.BoothLogResponse;
-import com.example.api.DTO.Response.LogCreateResponse;
+import com.example.api.DTO.Response.ExpoEnterResponse;
 import com.example.api.Entity.*;
 import com.example.api.Exception.ForibiddenException;
 import com.example.api.Exception.NotFoundException;
@@ -40,7 +40,7 @@ public class BoothLogService {
 
 
     @Transactional
-    public LogCreateResponse createBoothLog(Integer boothID, String account){
+    public ExpoEnterResponse createBoothLog(Integer boothID, String account){
         System.out.println("BoothLogService: createBoothLog>> "+boothID+", "+account);
         Booth booth = boothHelperService.getBoothByID(boothID);
         Expo expo = booth.getExpo();
@@ -58,7 +58,7 @@ public class BoothLogService {
         boothLog.setBooth(booth);
 
         boothLogRepository.save(boothLog);
-        return new LogCreateResponse(sessionID);
+        return new ExpoEnterResponse(sessionID);
     }
 
 

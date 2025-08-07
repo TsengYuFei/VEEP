@@ -1,10 +1,13 @@
 package com.example.api.Controller;
 
+import com.example.api.DTO.Request.ExpoEnterRequest;
 import com.example.api.DTO.Request.ExpoUpdateRequest;
 import com.example.api.DTO.Response.BoothOverviewResponse;
 import com.example.api.DTO.Response.ExpoEditResponse;
 import com.example.api.DTO.Request.ExpoCreateRequest;
+import com.example.api.DTO.Response.ExpoEnterResponse;
 import com.example.api.DTO.Response.UserListResponse;
+import com.example.api.Service.ExpoLogService;
 import com.example.api.Service.SingleExpoService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -33,7 +36,8 @@ import java.util.List;
 public class SingleExpoController {
     @Autowired
     private final SingleExpoService singleExpoService;
-
+    @Autowired
+    private ExpoLogService expoLogService;
 
 
     @Operation(
@@ -193,6 +197,10 @@ public class SingleExpoController {
                     )
             ),
             @ApiResponse(
+                    responseCode = "404",
+                    description = "找不到展會"
+            ),
+            @ApiResponse(
                     responseCode = "500",
                     description = "伺服器錯誤"
             )
@@ -222,6 +230,10 @@ public class SingleExpoController {
                                     schema = @Schema(implementation = UserListResponse.class)
                             )
                     )
+            ),
+            @ApiResponse(
+                    responseCode = "404",
+                    description = "找不到展會"
             ),
             @ApiResponse(
                     responseCode = "500",
@@ -255,6 +267,10 @@ public class SingleExpoController {
                     )
             ),
             @ApiResponse(
+                    responseCode = "404",
+                    description = "找不到展會"
+            ),
+            @ApiResponse(
                     responseCode = "500",
                     description = "伺服器錯誤"
             )
@@ -285,6 +301,10 @@ public class SingleExpoController {
                     )
             ),
             @ApiResponse(
+                    responseCode = "404",
+                    description = "找不到展會"
+            ),
+            @ApiResponse(
                     responseCode = "500",
                     description = "伺服器錯誤"
             )
@@ -297,5 +317,49 @@ public class SingleExpoController {
         System.out.println("SingleExpoController: getAllBoothOverview >> "+expoID);
         List<BoothOverviewResponse> booths = singleExpoService.getAllBoothOverview(expoID);
         return ResponseEntity.status(HttpStatus.OK).body(booths);
+    }
+
+
+    @Operation(
+            summary = "進入展會時呼叫",
+            description = "會驗證展會驗證碼(如果沒有傳入null即可)。如果是展會或攤位的任何工作人員可直接進入"
+    )
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "成功進入展會",
+                    content = @Content(
+                            mediaType = "application/json",
+                            array = @ArraySchema(
+                                    schema = @Schema(implementation = ExpoEnterResponse.class)
+                            )
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = "403",
+                    description = "驗證碼錯誤"
+            ),
+            @ApiResponse(
+                    responseCode = "404",
+                    description = "找不到展會"
+            ),
+            @ApiResponse(
+                    responseCode = "500",
+                    description = "伺服器錯誤"
+            )
+    })
+    @PostMapping("/enter/{expoID}")
+    public ResponseEntity<ExpoEnterResponse> enterExpo(
+            @Parameter(description = "展會ID", required = true)
+            @RequestParam Integer expoID,
+            @RequestBody ExpoEnterRequest expoRequest
+    ){
+        System.out.print("SingleExpoController: enterExpo >> "+expoID);
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String userAccount = authentication.getName();
+        System.out.println(", "+userAccount);
+
+        ExpoEnterResponse response = singleExpoService.enterExpo(expoID, userAccount, expoRequest);
+        return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 }
