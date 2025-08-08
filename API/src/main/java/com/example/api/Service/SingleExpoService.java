@@ -12,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.*;
 
 import static com.example.api.Other.UpdateTool.updateIfNotBlank;
@@ -162,6 +163,17 @@ public class SingleExpoService {
 
         if(expo.getAvatar() != null && request.getAvatar() != null){
             imageService.deleteImageByName(expo.getAvatar());
+        }
+
+        OpenMode mode = request.getOpenMode();
+        if(mode != null) {
+            if (mode == OpenMode.MANUAL) {
+                if(request.getOpenStatus() == null && expo.getOpenStatus() == null) {
+                    throw new UnprocessableEntityException("Open mode 為 MANUAL 時，open status 不可為空");
+                }
+            } else if ((request.getOpenStart() == null && expo.getOpenStart() == null) || (request.getOpenEnd() == null && expo.getOpenEnd() == null)) {
+                throw new UnprocessableEntityException("Open mode 為 MANUAL 時，open start/end 不可為空");
+            }
         }
 
         expo.setName(updateIfNotBlank(expo.getName(), request.getName()));
@@ -367,5 +379,18 @@ public class SingleExpoService {
 
         String session = expoLogService.createExpoLog(expoID, account);
         return new ExpoEnterResponse(session);
+    }
+
+
+    public Boolean isOpening(Integer expoID){
+        System.out.println("SingleExpoService: isOpening >> "+expoID);
+        Expo expo = expoHelperService.getExpoByID(expoID);
+        OpenMode mode = expo.getOpenMode();
+
+        if(mode == OpenMode.MANUAL){
+            return expo.getOpenStatus();
+        }else{
+            return expo.getOpenStart().isBefore(LocalDateTime.now()) && expo.getOpenEnd().isAfter(LocalDateTime.now());
+        }
     }
 }

@@ -358,4 +358,37 @@ public class SingleExpoController {
         ExpoEnterResponse response = singleExpoService.enterExpo(expoID, userAccount, expoRequest);
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
+
+
+    @Operation(
+            summary = "獲取展會是否開放中"
+    )
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "成功取得展會是否開放中",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = Boolean.class)
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = "404",
+                    description = "找不到展會"
+            ),
+            @ApiResponse(
+                    responseCode = "500",
+                    description = "伺服器錯誤"
+            )
+    })
+    @GetMapping("/is_opening_or_not/{expoID}")
+    public ResponseEntity<Boolean> getOpeningOrNot(
+            @Parameter(description = "展會ID", required = true)
+            @PathVariable Integer expoID
+    ){
+        System.out.println("SingleExpoController: getOpeningOrNot >> "+expoID);
+
+        Boolean isOpening = singleExpoService.isOpening(expoID);
+        return ResponseEntity.status(HttpStatus.OK).body(isOpening);
+    }
 }
