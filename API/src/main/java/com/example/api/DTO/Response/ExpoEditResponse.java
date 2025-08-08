@@ -13,7 +13,6 @@ public class ExpoEditResponse {
     private String owner;
     private String name;
     private String avatar;
-    private Integer price;
     private String introduction;
     private List<TagResponse> tags;
     private OpenMode openMode;
@@ -33,7 +32,6 @@ public class ExpoEditResponse {
         response.setOwner(expo.getOwner().getUserAccount());
         response.setName(expo.getName());
         response.setAvatar(expo.getAvatar());
-        response.setPrice(expo.getPrice());
         response.setIntroduction(expo.getIntroduction());
         response.setOpenMode(expo.getOpenMode());
         response.setOpenStatus(expo.getOpenStatus());

@@ -29,9 +29,6 @@ public class Expo {
     @Column(name = "avatar")
     private String avatar;
 
-    @Column(name = "price", nullable = false)
-    private Integer price;
-
     @Lob
     @Column(name = "introduction")
     private String introduction;
@@ -90,7 +87,6 @@ public class Expo {
     @PrePersist
     protected void onCreate() {
         if(name == null) name = "Exhibition";
-        if(price == null) price = 0;
         if(openMode == null) openMode = OpenMode.MANUAL;
         if(openStatus == null) openStatus = false;
         if(maxParticipants == null) maxParticipants = 50;

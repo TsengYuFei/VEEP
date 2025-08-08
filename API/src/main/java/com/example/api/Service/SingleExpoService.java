@@ -98,7 +98,6 @@ public class SingleExpoService {
         expo.setName(request.getName());
         expo.setOwner(owner);
         expo.setAvatar(updateIfNotBlank(null, request.getAvatar()));
-        expo.setPrice(request.getPrice());
         expo.setIntroduction(updateIfNotBlank(null, request.getIntroduction()));
         expo.setOpenMode(mode);
         expo.setOpenStatus(status);
@@ -178,7 +177,6 @@ public class SingleExpoService {
 
         expo.setName(updateIfNotBlank(expo.getName(), request.getName()));
         expo.setAvatar(updateIfNotBlank(expo.getAvatar(), request.getAvatar()));
-        expo.setPrice(updateIfNotNull(expo.getPrice(), request.getPrice()));
         expo.setIntroduction(updateIfNotBlank(expo.getIntroduction(), request.getIntroduction()));
         expo.setOpenMode(updateIfNotNull(expo.getOpenMode(), request.getOpenMode()));
         expo.setOpenStatus(updateIfNotNull(expo.getOpenStatus(), request.getOpenStatus()));
