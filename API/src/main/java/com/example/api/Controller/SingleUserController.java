@@ -23,6 +23,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @Tag(name = "使用者相關", description = "含三種不同範圍的GET")
 @RequestMapping("/user")
@@ -98,6 +99,35 @@ public class SingleUserController {
     ){
         System.out.println("SingleUserController: getUserOverviewByAccount >> "+userAccount);
         UserOverviewResponse user = singleUserService.getUserOverviewByAccount(userAccount);
+        return ResponseEntity.status(HttpStatus.OK).body(user);
+    }
+
+
+    @Operation(
+            summary = "如果存在!獲取使用者資訊(概略)",
+            description = "收到null代表不存在"
+    )
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "如果存在!成功取得使用者資訊(概略)",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = UserOverviewResponse.class, nullable = true)
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = "500",
+                    description = "伺服器錯誤"
+            )
+    })
+    @GetMapping("/overview/if_exist/{userAccount}")
+    public ResponseEntity<Optional<UserOverviewResponse>> getUserOverviewByAccountIfExist(
+            @Parameter(description = "使用者帳號", required = true)
+            @PathVariable String userAccount
+    ){
+        System.out.println("SingleUserController: getUserOverviewByAccountIfExist >> "+userAccount);
+        Optional<UserOverviewResponse> user = singleUserService.getUserOverviewByAccountIfExist(userAccount);
         return ResponseEntity.status(HttpStatus.OK).body(user);
     }
 

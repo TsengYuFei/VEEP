@@ -16,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 import static com.example.api.Other.GenerateCodeTool.generateRandomCode;
 import static com.example.api.Other.UpdateTool.updateIfNotBlank;
@@ -52,12 +53,14 @@ public class SingleUserService {
     public UserOverviewResponse getUserOverviewByAccount(String account){
         System.out.println("SingleUserService: getUserOverviewByAccount >> "+account);
         User user = userHelperService.getUserByAccount(account);
+        return UserOverviewResponse.fromUser(user);
+    }
 
-        UserOverviewResponse response =  UserOverviewResponse.fromUser(user);
-        String roleName = userRoleService.getUserRoleName(account);
-        response.setRoleName(roleName);
 
-        return response;
+    public Optional<UserOverviewResponse> getUserOverviewByAccountIfExist (String account){
+        System.out.println("SingleUserService: getUserOverviewByAccountIfExist >> "+account);
+        return userRepository.findById(account)
+                .map(user -> new UserOverviewResponse(user.getName(), user.getUserAccount(), user.getAvatar()));
     }
 
 
