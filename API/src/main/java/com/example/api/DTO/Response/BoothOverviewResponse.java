@@ -7,14 +7,16 @@ import lombok.Data;
 public class BoothOverviewResponse {
     private Integer boothID;
     private Integer expoID;
-    private String owner;
     private String name;
+    private String avatar;
+    private String introduction;
 
     public static BoothOverviewResponse fromBooth(Booth booth) {
         BoothOverviewResponse response = new BoothOverviewResponse();
         response.setBoothID(booth.getBoothID());
-        response.setOwner(booth.getOwner().getUserAccount());
         response.setName(booth.getName());
+        response.setAvatar(booth.getAvatar());
+        response.setIntroduction(booth.getIntroduction());
 
         if(booth.getExpo() == null) response.setExpoID(null);
         else response.setExpoID(booth.getExpo().getExpoID());

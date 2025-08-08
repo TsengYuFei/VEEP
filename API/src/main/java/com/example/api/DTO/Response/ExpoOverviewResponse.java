@@ -6,14 +6,18 @@ import lombok.Data;
 @Data
 public class ExpoOverviewResponse {
     private Integer expoID;
-    private String owner;
     private String name;
+    private String avatar;
+    private String introduction;
+    private Boolean isOpening;
 
-    public static ExpoOverviewResponse fromExpo(Expo expo) {
+    public static ExpoOverviewResponse fromExpo(Expo expo, Boolean isOpening) {
         ExpoOverviewResponse response = new ExpoOverviewResponse();
         response.setExpoID(expo.getExpoID());
-        response.setOwner(expo.getOwner().getUserAccount());
         response.setName(expo.getName());
+        response.setAvatar(expo.getAvatar());
+        response.setIntroduction(expo.getIntroduction());
+        response.setIsOpening(isOpening);
         return response;
     }
 }

@@ -15,6 +15,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class MultipleExpoService {
     private final ExpoRepository expoRepository;
+    private final SingleExpoService singleExpoService;
 
 
 
@@ -22,7 +23,7 @@ public class MultipleExpoService {
         System.out.println("MultipleExpoService: getAllExpoOverview");
         return  expoRepository.findAll()
                 .stream()
-                .map(ExpoOverviewResponse::fromExpo)
+                .map(expo -> ExpoOverviewResponse.fromExpo(expo, singleExpoService.isOpening(expo.getExpoID())))
                 .toList();
     }
 
@@ -30,7 +31,7 @@ public class MultipleExpoService {
     public Page<ExpoOverviewResponse> getAllExpoOverviewPage(Integer page, Integer size) {
         System.out.println("MultipleExpoService: getAllExpoOverviewPage >> "+page+", "+size);
         Pageable pageable = PageRequest.of(page, size);
-        return expoRepository.findAll(pageable).map(ExpoOverviewResponse::fromExpo);
+        return expoRepository.findAll(pageable).map(expo -> ExpoOverviewResponse.fromExpo(expo, singleExpoService.isOpening(expo.getExpoID())));
     }
 
 
@@ -40,7 +41,7 @@ public class MultipleExpoService {
 
         return expoRepository.findExposByTagName(tag)
                 .stream()
-                .map(ExpoOverviewResponse::fromExpo)
+                .map(expo -> ExpoOverviewResponse.fromExpo(expo, singleExpoService.isOpening(expo.getExpoID())))
                 .toList();
     }
 
@@ -51,7 +52,7 @@ public class MultipleExpoService {
 
         return expoRepository.findExposByNameAndIntro(keyword)
                 .stream()
-                .map(ExpoOverviewResponse::fromExpo)
+                .map(expo -> ExpoOverviewResponse.fromExpo(expo, singleExpoService.isOpening(expo.getExpoID())))
                 .toList();
     }
 
@@ -60,7 +61,7 @@ public class MultipleExpoService {
         System.out.println("MultipleExpoService: getDisplayExpoOverview");
         return  expoRepository.findExposAreDisplay()
                 .stream()
-                .map(ExpoOverviewResponse::fromExpo)
+                .map(expo -> ExpoOverviewResponse.fromExpo(expo, singleExpoService.isOpening(expo.getExpoID())))
                 .toList();
     }
 }

@@ -179,8 +179,9 @@ public class SingleUserService {
         System.out.println("SingleUserService: getAllExpoOverview >> "+account);
         User user = userHelperService.getUserByAccount(account);
 
-        return user.getExpoList().stream()
-                .map(ExpoOverviewResponse::fromExpo)
+        return user.getExpoList()
+                .stream()
+                .map(expo -> ExpoOverviewResponse.fromExpo(expo, singleExpoService.isOpening(expo.getExpoID())))
                 .toList();
     }
 
