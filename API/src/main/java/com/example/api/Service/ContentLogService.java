@@ -1,0 +1,143 @@
+package com.example.api.Service;
+
+import com.example.api.DTO.Response.ContentLogResponse;
+import com.example.api.Entity.*;
+import com.example.api.Repository.ContentLogRepository;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.time.LocalDateTime;
+import java.util.List;
+
+@Service
+@RequiredArgsConstructor
+public class ContentLogService {
+    private final ContentLogRepository contentLogRepository;
+    private final ContentService contentService;
+    private final UserRoleService userRoleService;
+    private final UserHelperService userHelperService;
+    private final ExpoHelperService expoHelperService;
+    private final BoothHelperService boothHelperService;
+
+
+
+    @Transactional
+    public void createContentLogByBoothIDAndNumber(Integer boothID, Integer number, String account) {
+        System.out.println("ContentLogService: createContentLogByContentID >> "+boothID+", "+number+", "+account);
+        Content content = contentService.getContentByBoothIDAndNumber(boothID, number);
+        Booth booth = content.getBooth();
+        Expo expo = booth.getExpo();
+        User user = userHelperService.getUserByAccount(account);
+
+        ContentLog contentLog = new ContentLog();
+        contentLog.setContentNumber(content.getNumber());
+        contentLog.setClickAt(LocalDateTime.now());
+        contentLog.setRole(userRoleService.getUserRoleName(account));
+        if(booth.getOwner() == user) contentLog.setIsOwner(true);
+        if(booth.getCollaborator().getCollaborators().contains(user)) contentLog.setIsCollaborator(true);
+        contentLog.setUser(user);
+        contentLog.setExpo(expo);
+        contentLog.setBooth(booth);
+        contentLog.setContent(content);
+
+        contentLogRepository.save(contentLog);
+    }
+
+
+    public List<ContentLogResponse> getAllContentLogByBoothID (Integer boothID){
+        System.out.println("ContentLogService: getAllContentLogByBoothID >> "+boothID);
+        boothHelperService.getBoothByID(boothID);
+        return contentLogRepository.findContentLogByBooth_BoothID(boothID)
+                .stream()
+                .map(ContentLogResponse::fromContentLog)
+                .toList();
+    }
+
+
+    public List<ContentLogResponse> getAllContentLogByExpoID (Integer expoID){
+        System.out.println("ContentLogService: getAllContentLogByExpoID >> "+expoID);
+        expoHelperService.getExpoByID(expoID);
+        return contentLogRepository.findContentLogByExpo_ExpoID(expoID)
+                .stream()
+                .map(ContentLogResponse::fromContentLog)
+                .toList();
+    }
+
+
+    public List<ContentLogResponse> getAllContentLogByBoothIDAndNumber (Integer boothID, Integer number){
+        System.out.println("ContentLogService: getAllContentLogByBoothIDAndNumber >> "+boothID+", "+number);
+        contentService.getContentByBoothIDAndNumber(boothID, number);
+        return contentLogRepository.findContentLogByBooth_BoothIDAndContent_Number(boothID, number)
+                .stream()
+                .map(ContentLogResponse::fromContentLog)
+                .toList();
+    }
+
+
+    public List<ContentLogResponse> getContentLogResponseByUserAccount(String account){
+        System.out.println("ContentLogService: getContentLogResponseByUserAccount >> "+account);
+        userHelperService.getUserByAccount(account);
+        return contentLogRepository.findContentLogByUser_UserAccount(account)
+                .stream()
+                .map(ContentLogResponse::fromContentLog)
+                .toList();
+    }
+
+
+    public List<ContentLogResponse> getContentLogResponseByUserAccountAndExpoID(Integer expoID, String account){
+        System.out.println("ContentLogService: getContentLogResponseByUserAccountAndExpoID >> "+account+", "+expoID);
+        userHelperService.getUserByAccount(account);
+        expoHelperService.getExpoByID(expoID);
+        return contentLogRepository.findContentLogByUser_UserAccountAndExpo_ExpoID(account, expoID)
+                .stream()
+                .map(ContentLogResponse::fromContentLog)
+                .toList();
+    }
+
+
+    public List<ContentLogResponse> getContentLogResponseByUserAccountAndBoothID(Integer boothID, String account){
+        System.out.println("ContentLogService: getContentLogResponseByUserAccountAndBoothID >> "+account+", "+boothID);
+        userHelperService.getUserByAccount(account);
+        boothHelperService.getBoothByID(boothID);
+        return contentLogRepository.findContentLogByUser_UserAccountAndBooth_BoothID(account, boothID)
+                .stream()
+                .map(ContentLogResponse::fromContentLog)
+                .toList();
+    }
+
+
+    public List<ContentLogResponse> getContentLogResponseByUserAccountAndBoothIDAndNumber(Integer boothID, Integer number, String account){
+        System.out.println("ContentLogService: getContentLogResponseByUserAccountAndBoothIDAndNumber >> "+account+", "+boothID+", "+number);
+        contentService.getContentByBoothIDAndNumber(boothID, number);
+        userHelperService.getUserByAccount(account);
+        return contentLogRepository.findContentLogByUser_UserAccountAndBooth_BoothIDAndContent_Number(account, boothID, number)
+                .stream()
+                .map(ContentLogResponse::fromContentLog)
+                .toList();
+    }
+
+
+    @Transactional
+    public void deleteContentLogByExpoID(Integer expoID){
+        System.out.println("ContentLogService: deleteContentLogByExpoID>> "+expoID);
+        expoHelperService.getExpoByID(expoID);
+        contentLogRepository.deleteByExpo_ExpoID(expoID);
+    }
+
+
+    @Transactional
+    public void deleteContentLogByBoothID(Integer boothID){
+        System.out.println("ContentLogService: deleteContentLogByBoothID>> "+boothID);
+        boothHelperService.getBoothByID(boothID);
+        contentLogRepository.deleteByBooth_BoothID(boothID);
+    }
+
+
+    @Transactional
+    public void deleteContentLogByBoothIDAndNumber(Integer boothID, Integer number){
+        System.out.println("ContentLogService: deleteContentLogByBoothIDAndNumber>> "+boothID+", "+number);
+        contentService.getContentByBoothIDAndNumber(boothID, number);
+        contentLogRepository.deleteByBooth_BoothIDAndContent_Number(boothID, number);
+    }
+}
