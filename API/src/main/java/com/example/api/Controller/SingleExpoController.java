@@ -2,11 +2,8 @@ package com.example.api.Controller;
 
 import com.example.api.DTO.Request.ExpoEnterRequest;
 import com.example.api.DTO.Request.ExpoUpdateRequest;
-import com.example.api.DTO.Response.BoothOverviewResponse;
-import com.example.api.DTO.Response.ExpoEditResponse;
+import com.example.api.DTO.Response.*;
 import com.example.api.DTO.Request.ExpoCreateRequest;
-import com.example.api.DTO.Response.ExpoEnterResponse;
-import com.example.api.DTO.Response.UserListResponse;
 import com.example.api.Service.SingleExpoService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -66,6 +63,37 @@ public class SingleExpoController {
         System.out.println("SingleExpoController: getExpoEdit >> "+expoID);
 
         ExpoEditResponse expo = singleExpoService.getExpoEditByID(expoID);
+        return ResponseEntity.status(HttpStatus.OK).body(expo);
+    }
+
+
+    @Operation(summary = "獲取展會資訊(展會入口)")
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "成功取得展會資訊(展會入口)",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = ExpoEntranceResponse.class)
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = "404",
+                    description = "找不到展會"
+            ),
+            @ApiResponse(
+                    responseCode = "500",
+                    description = "伺服器錯誤"
+            )
+    })
+    @GetMapping("/entrance/{expoID}")
+    public ResponseEntity<ExpoEntranceResponse> getExpoForEntranceByID(
+            @Parameter(description = "展會ID", required = true)
+            @PathVariable Integer expoID
+    ){
+        System.out.println("SingleExpoController: getExpoForEntranceByID >> "+expoID);
+
+        ExpoEntranceResponse expo = singleExpoService.getExpoForEntranceByID(expoID);
         return ResponseEntity.status(HttpStatus.OK).body(expo);
     }
 

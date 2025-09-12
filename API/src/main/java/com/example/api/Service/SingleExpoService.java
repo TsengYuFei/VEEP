@@ -80,6 +80,22 @@ public class SingleExpoService {
     }
 
 
+    public ExpoEntranceResponse getExpoForEntranceByID(Integer expoID) {
+        System.out.println("SingleExpoService: getExpoForEntranceByID >> "+expoID);
+        Expo expo = expoHelperService.getExpoByID(expoID);
+
+        ExpoEntranceResponse response = ExpoEntranceResponse.fromExpo(expo);
+        if(expo.getOpenMode().equals(OpenMode.AUTO)){
+            response.setOpenStart(expo.getOpenStart());
+            response.setOpenEnd(expo.getOpenEnd());
+        }
+        response.setIsOpening(isOpening(expoID));
+        if(expo.getAccessCode() != null) response.setNeedVerification(true);
+
+        return response;
+    }
+
+
     @Transactional
     public Integer createExpo(String userAccount, ExpoCreateRequest request) {
         System.out.println("SingleExpoService: createExpo >> "+ userAccount);
