@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="d6217132-086c-404a-9324-f4da35a42c98" name="Changes" comment="" />
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Class" />
+        <option value="Interface" />
+      </list>
+    </option>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="GitHubPullRequestSearchHistory">{
+  &quot;lastFilter&quot;: {
+    &quot;state&quot;: &quot;OPEN&quot;,
+    &quot;assignee&quot;: &quot;TsengYuFei&quot;
+  }
+}</component>
+  <component name="GithubPullRequestsUISettings">{
+  &quot;selectedUrlAndAccountId&quot;: {
+    &quot;url&quot;: &quot;https://github.com/TsengYuFei/VEEP.git&quot;,
+    &quot;accountId&quot;: &quot;7c52f926-9ea4-4468-a68e-a9716b83b59c&quot;
+  }
+}</component>
+  <component name="HighlightingSettingsPerFile">
+    <setting file="file://$PROJECT_DIR$/API/src/main/java/com/example/api/Repository/MessageRepository.java" root0="SKIP_INSPECTION" />
+  </component>
+  <component name="ProjectColorInfo">{
+  &quot;customColor&quot;: &quot;&quot;,
+  &quot;associatedIndex&quot;: 2
+}</component>
+  <component name="ProjectId" id="2y5bbqVLolN5ovjqUGNcpbwXqCb" />
+  <component name="ProjectLevelVcsManager">
+    <ConfirmationsSetting value="2" id="Add" />
+  </component>
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;RequestMappingsPanelOrder0&quot;: &quot;0&quot;,
+    &quot;RequestMappingsPanelOrder1&quot;: &quot;1&quot;,
+    &quot;RequestMappingsPanelWidth0&quot;: &quot;75&quot;,
+    &quot;RequestMappingsPanelWidth1&quot;: &quot;75&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;Spring Boot.ApiApplication.executor&quot;: &quot;Run&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;API&quot;,
+    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/Users/User/Documents/GitHub/VEEP&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.editor&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  },
+  &quot;keyToStringList&quot;: {
+    &quot;DatabaseDriversLRU&quot;: [
+      &quot;mysql_aurora&quot;
+    ]
+  }
+}</component>
+  <component name="RecentsManager">
+    <key name="CopyClassDialog.RECENTS_KEY">
+      <recent name="com.example.api.DTO.Response" />
+      <recent name="com.example.api.DTO.Request" />
+      <recent name="com.example.api.Repository" />
+      <recent name="com.example.api.Controller" />
+      <recent name="com.example.api.Service" />
+    </key>
+  </component>
+  <component name="RunManager">
+    <configuration name="ApiApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" nameIsGenerated="true">
+      <module name="API" />
+      <option name="SPRING_BOOT_MAIN_CLASS" value="com.example.api.ApiApplication" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+  </component>
+  <component name="SharedIndexes">
+    <attachedChunks>
+      <set>
+        <option value="bundled-jdk-9823dce3aa75-a94e463ab2e7-intellij.indexing.shared.core-IU-243.26053.27" />
+        <option value="bundled-js-predefined-d6986cc7102b-1632447f56bf-JavaScript-IU-243.26053.27" />
+      </set>
+    </attachedChunks>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="d6217132-086c-404a-9324-f4da35a42c98" name="Changes" comment="" />
+      <created>1749127465782</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1749127465782</updated>
+      <workItem from="1749127473953" duration="8038000" />
+      <workItem from="1749208620847" duration="9516000" />
+      <workItem from="1749265364393" duration="2774000" />
+      <workItem from="1749298310023" duration="5373000" />
+      <workItem from="1749516248477" duration="557000" />
+      <workItem from="1749602819153" duration="10692000" />
+      <workItem from="1750069504674" duration="7732000" />
+      <workItem from="1750121794190" duration="10921000" />
+      <workItem from="1750139337301" duration="14801000" />
+      <workItem from="1750210773955" duration="23778000" />
+      <workItem from="1750306424752" duration="22942000" />
+      <workItem from="1750421112280" duration="6841000" />
+      <workItem from="1750659933581" duration="18042000" />
+      <workItem from="1750768530522" duration="6082000" />
+      <workItem from="1751272324997" duration="3906000" />
+      <workItem from="1751717289839" duration="3877000" />
+      <workItem from="1751765456919" duration="11411000" />
+      <workItem from="1751856013794" duration="4425000" />
+      <workItem from="1752041121173" duration="13364000" />
+      <workItem from="1752062503496" duration="9039000" />
+      <workItem from="1752215573648" duration="12553000" />
+      <workItem from="1752233167862" duration="9056000" />
+      <workItem from="1752648902987" duration="7365000" />
+      <workItem from="1752711248791" duration="7082000" />
+      <workItem from="1752800689155" duration="3345000" />
+      <workItem from="1753077867352" duration="14950000" />
+      <workItem from="1753099691090" duration="6522000" />
+      <workItem from="1753668403795" duration="23353000" />
+      <workItem from="1753711512007" duration="3466000" />
+      <workItem from="1753837641109" duration="4358000" />
+      <workItem from="1754134375025" duration="16444000" />
+      <workItem from="1754278445682" duration="1977000" />
+      <workItem from="1754285069871" duration="15363000" />
+      <workItem from="1754307158857" duration="6357000" />
+      <workItem from="1754354368018" duration="14285000" />
+      <workItem from="1754442517240" duration="297000" />
+      <workItem from="1754444053184" duration="2317000" />
+      <workItem from="1754453343598" duration="840000" />
+      <workItem from="1754464782956" duration="11539000" />
+      <workItem from="1754477334590" duration="552000" />
+      <workItem from="1754491310750" duration="796000" />
+      <workItem from="1754493688670" duration="14000" />
+      <workItem from="1754545850161" duration="16874000" />
+      <workItem from="1754568273408" duration="9812000" />
+      <workItem from="1754618519535" duration="1047000" />
+      <workItem from="1754620727532" duration="594000" />
+      <workItem from="1754656057459" duration="8275000" />
+      <workItem from="1754725053320" duration="38000" />
+      <workItem from="1757661136426" duration="5601000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+  <component name="XSLT-Support.FileAssociations.UIState">
+    <expand />
+    <select />
+  </component>
+</project>
