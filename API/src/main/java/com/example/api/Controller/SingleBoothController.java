@@ -4,6 +4,7 @@ import com.example.api.DTO.Request.BoothCoordinateUpdateRequest;
 import com.example.api.DTO.Request.BoothCreateRequest;
 import com.example.api.DTO.Request.BoothUpdateRequest;
 import com.example.api.DTO.Response.BoothEditResponse;
+import com.example.api.DTO.Response.ContentResponse;
 import com.example.api.DTO.Response.UserListResponse;
 import com.example.api.Service.SingleBoothService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -229,6 +230,10 @@ public class SingleBoothController {
                     )
             ),
             @ApiResponse(
+                    responseCode = "404",
+                    description = "找不到攤位"
+            ),
+            @ApiResponse(
                     responseCode = "500",
                     description = "伺服器錯誤"
             )
@@ -258,6 +263,10 @@ public class SingleBoothController {
                                     schema = @Schema(implementation = UserListResponse.class)
                             )
                     )
+            ),
+            @ApiResponse(
+                    responseCode = "404",
+                    description = "找不到攤位"
             ),
             @ApiResponse(
                     responseCode = "500",
@@ -309,5 +318,39 @@ public class SingleBoothController {
 
         Boolean hasBooth = singleBoothService.hasBoothByExpoIDAndCoordinate(expoID, coordinateX, coordinateY);
         return ResponseEntity.status(HttpStatus.OK).body(hasBooth);
+    }
+
+
+    @Operation(
+            summary = "獲取所有攤位內容"
+    )
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "成功獲取所有攤位內容",
+                    content = @Content(
+                            mediaType = "application/json",
+                            array = @ArraySchema(
+                                    schema = @Schema(implementation = ContentResponse.class)
+                            )
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = "404",
+                    description = "找不到攤位"
+            ),
+            @ApiResponse(
+                    responseCode = "500",
+                    description = "伺服器錯誤"
+            )
+    })
+    @GetMapping("/content/{boothID}")
+    public ResponseEntity<List<ContentResponse>> getAllContent(
+            @Parameter(description = "攤位ID", required = true)
+            @PathVariable Integer boothID
+    ){
+        System.out.println("SingleBoothController: getAllContent >> "+boothID);
+        List<ContentResponse> content = singleBoothService.getAllContentList(boothID);
+        return ResponseEntity.status(HttpStatus.OK).body(content);
     }
 }

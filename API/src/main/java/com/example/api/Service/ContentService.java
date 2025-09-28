@@ -1,12 +1,13 @@
 package com.example.api.Service;
 
 import com.example.api.DTO.Request.ContentUpdateRequest;
-import com.example.api.DTO.Response.ContentEditResponse;
+import com.example.api.DTO.Response.ContentResponse;
 import com.example.api.Entity.*;
 import com.example.api.Exception.NotFoundException;
 import com.example.api.Repository.BoothRepository;
 import com.example.api.Repository.ContentRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -18,6 +19,11 @@ import static com.example.api.Other.UpdateTool.updateIfNotBlank;
 @Service
 @RequiredArgsConstructor
 public class ContentService {
+    @Value("${content.num.start}")
+    private Integer minNum;
+    @Value("${content.num.end}")
+    private Integer maxNum;
+
     private final ContentRepository contentRepository;
     private final BoothRepository boothRepository;
     private final ImageService imageService;
@@ -37,7 +43,7 @@ public class ContentService {
         System.out.println("ContentService: createDefaultContent");
 
         List<Content> contentList = new ArrayList<>();
-        for (int i = 1; i <= 6; i++) {
+        for (int i = minNum; i <= maxNum; i++) {
             Content content = new Content();
             content.setNumber(i);
             content.setBooth(booth);
@@ -47,10 +53,10 @@ public class ContentService {
     }
 
 
-    public ContentEditResponse getContentEditByBoothIDAndNumber(Integer boothID, Integer number){
+    public ContentResponse getContentEditByBoothIDAndNumber(Integer boothID, Integer number){
         System.out.println("ContentService: getContentEditByBoothIDAndNumber >> "+boothID+", "+number);
         Content content = getContentByBoothIDAndNumber(boothID, number);
-        return ContentEditResponse.fromContent(content);
+        return ContentResponse.fromContent(content);
     }
 
 

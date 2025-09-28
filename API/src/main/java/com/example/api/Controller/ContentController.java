@@ -1,7 +1,7 @@
 package com.example.api.Controller;
 
 import com.example.api.DTO.Request.ContentUpdateRequest;
-import com.example.api.DTO.Response.ContentEditResponse;
+import com.example.api.DTO.Response.ContentResponse;
 import com.example.api.Service.ContentService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -24,7 +24,6 @@ public class ContentController {
     private final ContentService contentService;
 
 
-
     @Operation(
             summary = "獲取攤位內容(編輯用)",
             description = "用於攤位內容編輯頁面"
@@ -35,7 +34,7 @@ public class ContentController {
                     description = "成功取得攤位內容(編輯用)",
                     content = @Content(
                             mediaType = "application/json",
-                            schema = @Schema(implementation = ContentEditResponse.class)
+                            schema = @Schema(implementation = ContentResponse.class)
                     )
             ),
             @ApiResponse(
@@ -52,14 +51,14 @@ public class ContentController {
             )
     })
     @GetMapping("/edit/{boothID}/{number}")
-    public ResponseEntity<ContentEditResponse> getContentEditByBoothIDAndNumber(
+    public ResponseEntity<ContentResponse> getContentEditByBoothIDAndNumber(
             @Parameter(description = "攤位ID", required = true)
             @PathVariable Integer boothID,
             @Parameter(description = "內容編號", required = true)
             @PathVariable Integer number
     ){
         System.out.println("ContentController: getContentEditByBoothIDAndNumber >> "+boothID+", "+number);
-        ContentEditResponse content = contentService.getContentEditByBoothIDAndNumber(boothID, number);
+        ContentResponse content = contentService.getContentEditByBoothIDAndNumber(boothID, number);
         return ResponseEntity.status(HttpStatus.OK).body(content);
     }
 
@@ -74,7 +73,7 @@ public class ContentController {
                     description = "成功更新攤位內容",
                     content = @Content(
                             mediaType = "application/json",
-                            schema = @Schema(implementation = ContentEditResponse.class)
+                            schema = @Schema(implementation = ContentResponse.class)
                     )
             ),
             @ApiResponse(
@@ -95,7 +94,7 @@ public class ContentController {
             )
     })
     @PutMapping("/{boothID}/{number}")
-    public ResponseEntity<ContentEditResponse> updateContentEditByBoothIDAndNumber(
+    public ResponseEntity<ContentResponse> updateContentEditByBoothIDAndNumber(
             @Parameter(description = "攤位ID", required = true)
             @PathVariable Integer boothID,
             @Parameter(description = "內容編號", required = true)
@@ -105,7 +104,7 @@ public class ContentController {
         System.out.println("ContentController: updateContentEditByBoothIDAndNumber >> "+boothID+", "+number);
 
         contentService.updateContentByBoothIDAndNumber(boothID, number, contentRequest);
-        ContentEditResponse content = contentService.getContentEditByBoothIDAndNumber(boothID, number);
+        ContentResponse content = contentService.getContentEditByBoothIDAndNumber(boothID, number);
         return ResponseEntity.status(HttpStatus.OK).body(content);
     }
 }

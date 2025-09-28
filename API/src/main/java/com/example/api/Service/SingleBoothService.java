@@ -5,6 +5,7 @@ import com.example.api.DTO.Request.BoothCoordinateUpdateRequest;
 import com.example.api.DTO.Request.BoothCreateRequest;
 import com.example.api.DTO.Request.BoothUpdateRequest;
 import com.example.api.DTO.Response.BoothEditResponse;
+import com.example.api.DTO.Response.ContentResponse;
 import com.example.api.DTO.Response.TagResponse;
 import com.example.api.DTO.Response.UserListResponse;
 import com.example.api.Entity.*;
@@ -284,5 +285,15 @@ public class SingleBoothService {
 
         Optional<Booth> booth = boothRepository.findBoothByExpo_ExpoIDAndCoordinateXAndCoordinateY(expoID, x, y);
         return booth.isPresent();
+    }
+
+
+    public List<ContentResponse> getAllContentList(Integer boothID){
+        System.out.println("SingleBoothService: getAllContentList >> "+boothID);
+        Booth booth = boothHelperService.getBoothByID(boothID);
+
+        return booth.getContentList().stream()
+                .map(ContentResponse::fromContent)
+                .toList();
     }
 }

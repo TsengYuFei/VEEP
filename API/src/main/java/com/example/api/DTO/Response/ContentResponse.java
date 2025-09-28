@@ -4,15 +4,15 @@ import com.example.api.Entity.Content;
 import lombok.Data;
 
 @Data
-public class ContentEditResponse {
+public class ContentResponse {
     private Integer boothID;
     private Integer number;
     private String title;
     private String content;
     private String image;
 
-    public static ContentEditResponse fromContent(Content content) {
-        ContentEditResponse response = new ContentEditResponse();
+    public static ContentResponse fromContent(Content content) {
+        ContentResponse response = new ContentResponse();
         response.setBoothID(content.getBooth().getBoothID());
         response.setNumber(content.getNumber());
         response.setTitle(content.getTitle());
