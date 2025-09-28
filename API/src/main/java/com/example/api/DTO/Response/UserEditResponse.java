@@ -15,8 +15,6 @@ public class UserEditResponse {
     private LocalDate birthday;
     private String bio;
     private String background;
-    private Boolean showFollowers;
-    private Boolean showFollowing;
     private Boolean showHistory;
     private Boolean showCurrentExpo;
     private Boolean showCurrentBooth;
@@ -33,8 +31,6 @@ public class UserEditResponse {
         response.birthday = user.getBirthday();
         response.bio = user.getBio();
         response.background = user.getBackground();
-        response.showFollowers = user.getShowFollowers();
-        response.showFollowing = user.getShowFollowing();
         response.showHistory = user.getShowHistory();
         response.showCurrentExpo = user.getShowCurrentExpo();
         response.showCurrentBooth = user.getShowCurrentBooth();

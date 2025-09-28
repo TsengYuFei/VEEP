@@ -144,8 +144,6 @@ public class SingleUserService {
         user.setBirthday(updateIfNotNull(user.getBirthday(), request.getBirthday()));
         user.setBio(updateIfNotBlank(user.getBio(), request.getBio()));
         user.setBackground(updateIfNotBlank(user.getBackground(), request.getBackground()));
-        user.setShowFollowers(updateIfNotNull(user.getShowFollowers(), request.getShowFollowers()));
-        user.setShowFollowing(updateIfNotNull(user.getShowFollowing(), request.getShowFollowers()));
         user.setShowHistory(updateIfNotNull(user.getShowHistory(), request.getShowHistory()));
         user.setShowCurrentExpo(updateIfNotNull(user.getShowCurrentExpo(), request.getShowCurrentExpo()));
         user.setShowCurrentBooth(updateIfNotNull(user.getShowCurrentBooth(), request.getShowCurrentBooth()));

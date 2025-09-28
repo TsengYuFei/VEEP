@@ -46,12 +46,6 @@ public class User{
     @Column(name = "background")
     private String background;
 
-    @Column(name = "showFollowers", nullable = false)
-    private Boolean showFollowers;
-
-    @Column(name = "showFollowing", nullable = false)
-    private Boolean showFollowing;
-
     @Column(name = "showHistory", nullable = false)
     private Boolean showHistory;
 
@@ -87,8 +81,6 @@ public class User{
 
     @PrePersist
     protected void onCreate() {
-        if(showFollowers == null) showFollowers = true;
-        if(showFollowing == null) showFollowing = true;
         if(showHistory == null) showHistory = false;
         if(showCurrentExpo == null) showCurrentExpo = true;
         if(showCurrentBooth == null) showCurrentBooth = true;

@@ -10,8 +10,6 @@ public class UserDetailResponse {
     private String avatar;
     private String bio;
     private String background;
-    private Boolean showFollowers;
-    private Boolean showFollowing;
     private Boolean showHistory;
     private Boolean showCurrentExpo;
     private Boolean showCurrentBooth;
@@ -25,8 +23,6 @@ public class UserDetailResponse {
         response.avatar = user.getAvatar();
         response.bio = user.getBio();
         response.background = user.getBackground();
-        response.showFollowers = user.getShowFollowers();
-        response.showFollowing = user.getShowFollowing();
         response.showHistory = user.getShowHistory();
         response.showCurrentExpo = user.getShowCurrentExpo();
         response.showCurrentBooth = user.getShowCurrentBooth();

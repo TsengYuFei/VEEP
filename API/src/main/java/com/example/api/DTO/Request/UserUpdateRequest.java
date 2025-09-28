@@ -29,10 +29,6 @@ public class UserUpdateRequest {
     @URL(message = "使用者背景圖片不是正確的圖片路徑")
     private String background;
 
-    private Boolean showFollowers;
-
-    private Boolean showFollowing;
-
     private Boolean showHistory;
 
     private Boolean showCurrentExpo;

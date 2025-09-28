@@ -34,12 +34,7 @@ public class SingleUserController {
 
 
 
-    @Operation(
-            summary = "獲取使用者資訊(詳細)",
-            description = "使用於個人檔案頁面。" +
-                    "取得 1.使用者名稱 2.使用者帳號 3.頭像 4.個人簡介 5.背景圖片" +
-                    " 7.顯示追蹤者 8.顯示追蹤中 9.顯示參與紀錄 10.顯示進行中的持有展會 11.顯示進行中的持有攤位 12.身分"
-    )
+    @Operation(summary = "獲取使用者資訊(詳細)")
     @ApiResponses(value = {
             @ApiResponse(
                     responseCode = "200",
@@ -71,8 +66,7 @@ public class SingleUserController {
 
     @Operation(
             summary = "獲取使用者資訊(概略)",
-            description = "使用於展會中。" +
-                    "取得 1.使用者名稱 2.使用者帳號 3.頭像 4.身分"
+            description = "使用於展會中"
     )
     @ApiResponses(value = {
             @ApiResponse(
