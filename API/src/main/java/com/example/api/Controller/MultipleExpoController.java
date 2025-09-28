@@ -53,6 +53,7 @@ public class MultipleExpoController {
         return ResponseEntity.status(HttpStatus.OK).body(expos);
     }
 
+
     @Operation(
             summary = "獲取所有展會(概略)-分頁版"
     )
@@ -169,8 +170,36 @@ public class MultipleExpoController {
     })
     @GetMapping("/overview/is_display")
     public ResponseEntity<List<ExpoOverviewResponse>> getDisplayExpoOverview(){
-        System.out.println("BatchExpoController: getDisplayExpoOverview");
+        System.out.println("MultipleExpoController: getDisplayExpoOverview");
         List<ExpoOverviewResponse> expos = multipleExpoService.getDisplayExpoOverview();
+        return ResponseEntity.status(HttpStatus.OK).body(expos);
+    }
+
+
+    @Operation(
+            summary = "獲取display為true且開放中的所有展會(概略)",
+            description = "display >>　是否顯示於推薦頁面"
+    )
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "成功display為true且開放中的所有展會(概略)",
+                    content = @Content(
+                            mediaType = "application/json",
+                            array = @ArraySchema(
+                                    schema = @Schema(implementation = ExpoOverviewResponse.class)
+                            )
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = "500",
+                    description = "伺服器錯誤"
+            )
+    })
+    @GetMapping("/overview/is_display/is_opening")
+    public ResponseEntity<List<ExpoOverviewResponse>> getDisplayAndOpeningExpoOverview(){
+        System.out.println("MultipleExpoController: getDisplayAndOpeningExpoOverview");
+        List<ExpoOverviewResponse> expos = multipleExpoService.getDisplayAndOpeningExpoOverview();
         return ResponseEntity.status(HttpStatus.OK).body(expos);
     }
 }

@@ -64,4 +64,14 @@ public class MultipleExpoService {
                 .map(expo -> ExpoOverviewResponse.fromExpo(expo, singleExpoService.isOpening(expo.getExpoID())))
                 .toList();
     }
+
+
+    public List<ExpoOverviewResponse> getDisplayAndOpeningExpoOverview(){
+        System.out.println("MultipleExpoService: getDisplayAndOpeningExpoOverview");
+        return expoRepository.findExposAreDisplay()
+                .stream()
+                .filter(expo -> singleExpoService.isOpening(expo.getExpoID()))
+                .map(expo -> ExpoOverviewResponse.fromExpo(expo, true))
+                .toList();
+    }
 }
