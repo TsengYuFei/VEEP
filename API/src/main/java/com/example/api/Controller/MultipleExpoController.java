@@ -1,5 +1,6 @@
 package com.example.api.Controller;
 
+import com.example.api.DTO.Response.ExpoHotResponse;
 import com.example.api.DTO.Response.ExpoOverviewResponse;
 import com.example.api.Service.MultipleExpoService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -200,6 +201,34 @@ public class MultipleExpoController {
     public ResponseEntity<List<ExpoOverviewResponse>> getDisplayAndOpeningExpoOverview(){
         System.out.println("MultipleExpoController: getDisplayAndOpeningExpoOverview");
         List<ExpoOverviewResponse> expos = multipleExpoService.getDisplayAndOpeningExpoOverview();
+        return ResponseEntity.status(HttpStatus.OK).body(expos);
+    }
+
+
+    @Operation(
+            summary = "獲取top 5熱門展會(依在線人數)",
+            description = "display == true"
+    )
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "成功取得top 5熱門展會",
+                    content = @Content(
+                            mediaType = "application/json",
+                            array = @ArraySchema(
+                                    schema = @Schema(implementation = ExpoHotResponse.class)
+                            )
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = "500",
+                    description = "伺服器錯誤"
+            )
+    })
+    @GetMapping("/overview/is_display/hottest/5")
+    public ResponseEntity<List<ExpoHotResponse>> getFiveHottestExpo(){
+        System.out.println("MultipleExpoController: getFiveHottestExpo");
+        List<ExpoHotResponse> expos = multipleExpoService.getFiveHottestExpo();
         return ResponseEntity.status(HttpStatus.OK).body(expos);
     }
 }

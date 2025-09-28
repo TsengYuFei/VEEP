@@ -1,5 +1,6 @@
 package com.example.api.Service;
 
+import com.example.api.DTO.Response.ExpoHotResponse;
 import com.example.api.DTO.Response.ExpoOverviewResponse;
 import com.example.api.Repository.ExpoRepository;
 import lombok.RequiredArgsConstructor;
@@ -9,6 +10,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 @Service
@@ -16,6 +18,7 @@ import java.util.List;
 public class MultipleExpoService {
     private final ExpoRepository expoRepository;
     private final SingleExpoService singleExpoService;
+    private final ExpoLogService expoLogService;
 
 
 
@@ -72,6 +75,22 @@ public class MultipleExpoService {
                 .stream()
                 .filter(expo -> singleExpoService.isOpening(expo.getExpoID()))
                 .map(expo -> ExpoOverviewResponse.fromExpo(expo, true))
+                .toList();
+    }
+
+
+    public List<ExpoHotResponse> getFiveHottestExpo(){
+        System.out.println("MultipleExpoService: getFiveHottestExpo");
+        return expoRepository.findExposAreDisplay()
+                .stream()
+                .map(expo -> {
+                    Integer onlineNumber = expoLogService.getOnlineNumberByExpoID(expo.getExpoID());
+                    Boolean isOpening = singleExpoService.isOpening(expo.getExpoID());
+                    return ExpoHotResponse.fromExpo(expo, isOpening, onlineNumber);
+                })
+//                .filter(e -> e.getOnlineParticipants() > 0)   //如果不想要回傳在線人數=0時加這行
+                .sorted(Comparator.comparingInt(ExpoHotResponse::getOnlineParticipants).reversed())
+                .limit(5)
                 .toList();
     }
 }
