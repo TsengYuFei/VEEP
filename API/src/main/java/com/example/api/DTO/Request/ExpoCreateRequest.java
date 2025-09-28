@@ -36,7 +36,7 @@ public class ExpoCreateRequest {
 
     private String accessCode;
 
-    @Min(value = 1, message = "The maximum number of participants at a expo at the same time is at least one person.")
+    @Min(value = 1, message = "The minimum number of participants at a expo at the same time is at least one person.")
     @Max(value = 1500, message = "The maximum number of participants at the expo at the same time is 500.")
     private Integer maxParticipants;
 

@@ -14,6 +14,8 @@ public class BoothEditResponse {
     private String name;
     private String avatar;
     private String introduction;
+    private Integer coordinateX;
+    private Integer coordinateY;
     private List<TagResponse> tags;
     private OpenMode openMode;
     private Boolean openStatus;
@@ -31,6 +33,8 @@ public class BoothEditResponse {
         response.setName(booth.getName());
         response.setAvatar(booth.getAvatar());
         response.setIntroduction(booth.getIntroduction());
+        response.setCoordinateX(booth.getCoordinateX());
+        response.setCoordinateY(booth.getCoordinateY());
         response.setOpenMode(booth.getOpenMode());
         response.setOpenStatus(booth.getOpenStatus());
         response.setOpenStart(booth.getOpenStart());

@@ -13,7 +13,7 @@ public class BoothHelperService {
 
 
 
-    Booth getBoothByID(Integer boothID) {
+    public Booth getBoothByID(Integer boothID) {
         System.out.println("BoothHelperService: getBoothByID >> "+boothID);
         return boothRepository.findById(boothID)
                 .orElseThrow(() -> new NotFoundException("找不到攤位ID為 < "+ boothID+" > 的攤位"));

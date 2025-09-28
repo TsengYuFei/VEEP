@@ -1,20 +1,22 @@
 package com.example.api.Service;
 
+import com.example.api.Config.CoordinateConfig;
+import com.example.api.DTO.Request.BoothCoordinateUpdateRequest;
+import com.example.api.DTO.Request.BoothCreateRequest;
 import com.example.api.DTO.Request.BoothUpdateRequest;
 import com.example.api.DTO.Response.BoothEditResponse;
 import com.example.api.DTO.Response.TagResponse;
 import com.example.api.DTO.Response.UserListResponse;
 import com.example.api.Entity.*;
+import com.example.api.Exception.BadRequestException;
 import com.example.api.Exception.ForibiddenException;
 import com.example.api.Repository.*;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 import static com.example.api.Other.UpdateTool.updateIfNotBlank;
 import static com.example.api.Other.UpdateTool.updateIfNotNull;
@@ -32,6 +34,7 @@ public class SingleBoothService {
     private final ImageService imageService;
     private final BoothHelperService boothHelperService;
     private final BoothLogService boothLogService;
+    private final CoordinateConfig coordinateConfig;
 
 
 
@@ -75,16 +78,21 @@ public class SingleBoothService {
 
 
     @Transactional
-    public Integer createBooth(String userAccount, Integer expoID, String ownerAccount) {
-        System.out.println("SingleBoothService: createBooth >> "+ userAccount+", "+expoID+", "+ownerAccount);
+    public Integer createBooth(String userAccount, Integer expoID, BoothCreateRequest request) {
+        System.out.println("SingleBoothService: createBooth >> "+ userAccount+", "+expoID);
 
         userHelperService.getUserByAccount(userAccount);
-        User owner = userHelperService.getUserByAccount(ownerAccount);
+        User owner = userHelperService.getUserByAccount(request.getOwnerAccount());
         Expo expo = expoHelperService.getExpoByID(expoID);
+        Integer x = request.getCoordinateX();
+        Integer y = request.getCoordinateY();
+        if(hasBoothByExpoIDAndCoordinate(expoID, x, y)) throw new BadRequestException("展會ID為 < "+expoID+" > 的展會中，座標("+x+","+y+")已經存在攤位");
 
         Booth booth = new Booth();
         booth.setExpo(expo);
         booth.setOwner(owner);
+        booth.setCoordinateX(x);
+        booth.setCoordinateY(y);
         booth.setCollaborator(new BoothCollaboratorList());
         booth.setStaff(new BoothStaffList());
         booth.setTags(new HashSet<>());
@@ -171,6 +179,24 @@ public class SingleBoothService {
 
 
     @Transactional
+    public void updateBoothCoordinateByID(Integer expoID, BoothCoordinateUpdateRequest request){
+        System.out.println("SingleBoothService: updateBoothCoordinateByID >> "+expoID);
+        Booth booth = boothHelperService.getBoothByID(request.getBoothID());
+        Expo expo = expoHelperService.getExpoByID(expoID);
+        Integer x = request.getCoordinateX();
+        Integer y = request.getCoordinateY();
+
+        if(booth.getExpo() != expo) throw new BadRequestException("The expo and the booth do not match.");
+        if(hasBoothByExpoIDAndCoordinate(expoID, x, y)) throw new BadRequestException("展會ID為 < "+expoID+" > 的展會中，座標("+x+","+y+")已經存在攤位");
+
+        booth.setCoordinateX(x);
+        booth.setCoordinateY(y);
+
+        boothRepository.save(booth);
+    }
+
+
+    @Transactional
     public void deleteBoothByID(Integer boothID, String account) {
         System.out.println("SingleBoothService: deleteBoothByID >> "+boothID+", "+account);
         User user = userHelperService.getUserByAccount(account);
@@ -248,5 +274,15 @@ public class SingleBoothService {
         }else response = new ArrayList<>();
 
         return response;
+    }
+
+
+    public Boolean hasBoothByExpoIDAndCoordinate(Integer expoID, Integer x, Integer y){
+        System.out.println("SingleBoothService: hasBoothOnCoordinate >> "+expoID+", "+x+", "+y);
+        expoHelperService.getExpoByID(expoID);
+        if(x<coordinateConfig.getX().getMin() || x>coordinateConfig.getX().getMax() || y<coordinateConfig.getY().getMin() || y>coordinateConfig.getY().getMax()) throw new BadRequestException("The input coordinates are invalid.");
+
+        Optional<Booth> booth = boothRepository.findBoothByExpo_ExpoIDAndCoordinateXAndCoordinateY(expoID, x, y);
+        return booth.isPresent();
     }
 }

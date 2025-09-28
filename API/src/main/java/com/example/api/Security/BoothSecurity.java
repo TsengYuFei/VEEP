@@ -1,6 +1,7 @@
 package com.example.api.Security;
 
 import com.example.api.DTO.Response.BoothEditResponse;
+import com.example.api.Service.BoothHelperService;
 import com.example.api.Service.SingleBoothService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
@@ -12,12 +13,14 @@ import java.util.List;
 @Component
 @RequiredArgsConstructor
 public class BoothSecurity {
+    private final BoothHelperService boothHelper;
     private final SingleBoothService singleBoothService;
 
 
 
     public boolean isOwner(Integer boothID) {
         System.out.println("BoothSecurity: isOwner >> " + boothID);
+        boothHelper.getBoothByID(boothID);
         try {
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
             if (authentication == null || !authentication.isAuthenticated()) {
@@ -38,6 +41,7 @@ public class BoothSecurity {
 
     public boolean isCollaborator(Integer boothID){
         System.out.println("BoothSecurity: isCollaborator >> "+boothID);
+        boothHelper.getBoothByID(boothID);
         try {
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
             if (authentication == null || !authentication.isAuthenticated()) {
@@ -58,6 +62,7 @@ public class BoothSecurity {
 
     public boolean isStaff(Integer boothID){
         System.out.println("BoothSecurity: isStaff >> "+boothID);
+        boothHelper.getBoothByID(boothID);
         try {
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
             if (authentication == null || !authentication.isAuthenticated()) {

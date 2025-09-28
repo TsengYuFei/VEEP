@@ -20,6 +20,10 @@ public class BoothUpdateRequest {
 
     private String introduction;
 
+    private Integer coordinateX;
+
+    private Integer coordinateY;
+
     private List<String> tags;
 
     private OpenMode openMode;

@@ -39,4 +39,7 @@ public interface BoothRepository extends JpaRepository<Booth, Integer> {
             "WHERE booth.display is true"
             , nativeQuery = true)
     List<Booth> findBoothsAreDisplay();
+
+
+    Optional<Booth> findBoothByExpo_ExpoIDAndCoordinateXAndCoordinateY(int expoID, double coordinateX, double coordinateY);
 }

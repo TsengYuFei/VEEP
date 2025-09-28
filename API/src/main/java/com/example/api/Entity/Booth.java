@@ -34,6 +34,12 @@ public class Booth {
     @Column(name = "introduction")
     private String introduction;
 
+    @Column(name = "coordinateX")
+    private Integer coordinateX;
+
+    @Column(name = "coordinateY")
+    private Integer coordinateY;
+
     @Enumerated(EnumType.STRING)
     @Column(name = "openMode", nullable = false)
     private OpenMode openMode;

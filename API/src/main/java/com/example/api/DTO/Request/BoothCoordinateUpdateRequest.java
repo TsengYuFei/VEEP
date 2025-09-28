@@ -4,9 +4,10 @@ import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import lombok.Data;
 
+
 @Data
-public class BoothCreateRequest {
-    private String ownerAccount;
+public class BoothCoordinateUpdateRequest {
+    private Integer boothID;
 
     @Min(value = 0, message = "The minimum X-coordinate value of booth is 0.")
     @Max(value = 4, message = "The maximum X-coordinate value of booth is 4.")

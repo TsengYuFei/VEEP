@@ -1,5 +1,7 @@
 package com.example.api.Controller;
 
+import com.example.api.DTO.Request.BoothCoordinateUpdateRequest;
+import com.example.api.DTO.Request.BoothCreateRequest;
 import com.example.api.DTO.Request.BoothUpdateRequest;
 import com.example.api.DTO.Response.BoothEditResponse;
 import com.example.api.DTO.Response.UserListResponse;
@@ -84,19 +86,18 @@ public class SingleBoothController {
             )
     })
     @PreAuthorize("hasRole('FOUNDER') and (@expoSecurity.isOwner(#expoID) or @expoSecurity.isCollaborator(#expoID))")
-    @PostMapping("/{expoID}/{userAccount}")
+    @PostMapping("/create/{expoID}")
     public ResponseEntity<BoothEditResponse> createBooth(
-            @Parameter(description = "攤位所屬展會的ID", required = true)
+            @Parameter(description = "展會ID", required = true)
             @PathVariable Integer expoID,
-            @Parameter(description = "攤位持有者的使用者帳號", required = true)
-            @PathVariable String userAccount
+            @Valid @RequestBody BoothCreateRequest boothRequest
     ){
         System.out.print("SingleBoothController: createBooth >> ");
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String currentAccount = authentication.getName();
         System.out.println(currentAccount);
 
-        Integer boothID = singleBoothService.createBooth(currentAccount, expoID, userAccount);
+        Integer boothID = singleBoothService.createBooth(currentAccount, expoID, boothRequest);
         BoothEditResponse booth = singleBoothService.getBoothEditByID(boothID);
         return ResponseEntity.status(HttpStatus.CREATED).body(booth);
     }
@@ -140,6 +141,42 @@ public class SingleBoothController {
         singleBoothService.updateBoothByID(boothID, boothRequest);
         BoothEditResponse booth = singleBoothService.getBoothEditByID(boothID);
         return ResponseEntity.status(HttpStatus.OK).body(booth);
+    }
+
+
+    @Operation(
+            summary = "更新攤位座標",
+            description = "只能由expo owner或collaborator更新"
+    )
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "成功更新攤位座標",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = BoothEditResponse.class)
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = "404",
+                    description = "找不到攤位"
+            ),
+            @ApiResponse(
+                    responseCode = "500",
+                    description = "伺服器錯誤"
+            )
+    })
+    @PreAuthorize("hasRole('FOUNDER') and (@expoSecurity.isOwner(#expoID) or @expoSecurity.isCollaborator(#expoID))")
+    @PostMapping("update/coordinate/{expoID}")
+    public ResponseEntity<BoothEditResponse> updateBoothCoordinateByID(
+            @Parameter(description = "展會ID", required = true)
+            @PathVariable Integer expoID,
+            @Valid @RequestBody BoothCoordinateUpdateRequest boothRequest
+    ){
+        System.out.println("SingleBoothController: updateBoothCoordinateByID >> "+expoID);
+
+        singleBoothService.updateBoothCoordinateByID(expoID, boothRequest);
+        return ResponseEntity.status(HttpStatus.OK).build();
     }
 
 
@@ -235,5 +272,42 @@ public class SingleBoothController {
         System.out.println("SingleBoothController: getAllStaff >> "+boothID);
         List<UserListResponse> staff = singleBoothService.getAllStaff(boothID);
         return ResponseEntity.status(HttpStatus.OK).body(staff);
+    }
+
+
+    @Operation(
+            summary = "用expoID和座標獲取是否存在攤位"
+    )
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "成功取得是否存在攤位",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = Boolean.class)
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = "404",
+                    description = "找不到展會"
+            ),
+            @ApiResponse(
+                    responseCode = "500",
+                    description = "伺服器錯誤"
+            )
+    })
+    @GetMapping("/has_booth_or_not/{expoID}/{coordinateX}/{coordinateY}")
+    public ResponseEntity<Boolean> hasBoothByExpoIDAndCoordinate(
+            @Parameter(description = "展會ID", required = true)
+            @PathVariable Integer expoID,
+            @Parameter(description = "X座標", required = true)
+            @PathVariable Integer coordinateX,
+            @Parameter(description = "Y座標", required = true)
+            @PathVariable Integer coordinateY
+    ){
+        System.out.println("SingleBoothController: hasBoothByExpoIDAndCoordinate >> "+expoID+", "+coordinateX+", "+coordinateY);
+
+        Boolean hasBooth = singleBoothService.hasBoothByExpoIDAndCoordinate(expoID, coordinateX, coordinateY);
+        return ResponseEntity.status(HttpStatus.OK).body(hasBooth);
     }
 }

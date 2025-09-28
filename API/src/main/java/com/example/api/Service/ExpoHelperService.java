@@ -13,7 +13,7 @@ public class ExpoHelperService {
 
 
 
-    Expo getExpoByID(Integer expoID){
+    public Expo getExpoByID(Integer expoID){
         System.out.println("ExpoHelperService: getExpoByID >> "+expoID);
         return expoRepository.findById(expoID)
                 .orElseThrow(() -> new NotFoundException("找不到展會ID為 < "+ expoID+" > 的展會"));
