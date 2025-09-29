@@ -207,4 +207,36 @@ public class MultipleBoothController {
         Page<BoothOverviewResponse> booths = multipleBoothService.getDisplayBoothOverviewPage(page, size);
         return ResponseEntity.status(HttpStatus.OK).body(booths);
     }
+
+
+    @Operation(
+            summary = "獲取所有攤位(概略)，照熱門排序-分頁版"
+    )
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "成功取得所有攤位(概略)，照熱門排序-分頁版",
+                    content = @Content(
+                            mediaType = "application/json",
+                            array = @ArraySchema(
+                                    schema = @Schema(implementation = BoothOverviewResponse.class)
+                            )
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = "500",
+                    description = "伺服器錯誤"
+            )
+    })
+    @GetMapping("/overview/is_display/hottest/page")
+    public ResponseEntity<Page<BoothOverviewResponse>> getHottestBoothOverviewPage(
+            @Parameter(description = "頁數(第幾頁)", required = true)
+            @RequestParam(defaultValue = "0") Integer page,
+            @Parameter(description = "數量(一頁幾筆資料)", required = true)
+            @RequestParam(defaultValue = "5") Integer size
+    ){
+        System.out.println("MultipleExpoController: getHottestBoothOverviewPage >> "+page+", "+size);
+        Page<BoothOverviewResponse> booths = multipleBoothService.getHottestBoothOverviewPage(page, size);
+        return ResponseEntity.status(HttpStatus.OK).body(booths);
+    }
 }

@@ -2,6 +2,7 @@ package com.example.api.Service;
 
 import com.example.api.DTO.Response.ExpoHotResponse;
 import com.example.api.DTO.Response.ExpoOverviewResponse;
+import com.example.api.Entity.Expo;
 import com.example.api.Repository.ExpoRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -13,6 +14,7 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
@@ -113,25 +115,29 @@ public class MultipleExpoService {
     }
 
 
-    public Page<ExpoHotResponse> getHottestExpoPage(Integer page, Integer size){
-        System.out.println("MultipleExpoService: getHottestExpoPage >> "+page+", "+size);
+    public Page<ExpoOverviewResponse> getHottestExpoOverviewPage(Integer page, Integer size){
+        System.out.println("MultipleExpoService: getHottestExpoOverviewPage >> "+page+", "+size);
         Pageable pageable = PageRequest.of(page, size);
 
-        List<ExpoHotResponse> expos = expoRepository.findExposAreDisplay()
+        List<Map.Entry<Expo, Integer>> expoWithOnline = expoRepository.findExposAreDisplay()
                 .stream()
-                .map(expo -> {
-                    Integer onlineNumber = expoLogService.getOnlineNumberByExpoID(expo.getExpoID());
-                    Boolean isOpening = singleExpoService.isOpening(expo.getExpoID());
-                    return ExpoHotResponse.fromExpo(expo, isOpening, onlineNumber);
-                })
-//                .filter(e -> e.getOnlineParticipants() > 0)   //如果不想要回傳在線人數=0時加這行
-                .sorted(Comparator.comparingInt(ExpoHotResponse::getOnlineParticipants).reversed())
+                .map(expo -> Map.entry(expo, expoLogService.getOnlineNumberByExpoID(expo.getExpoID())))
+                // .filter(entry -> entry.getValue() > 0)  // //如果不想要回傳在線人數=0時加這行
+                .sorted(Map.Entry.<Expo, Integer>comparingByValue().reversed())
                 .toList();
 
         int start = (int) pageable.getOffset();
-        int end = Math.min(start + pageable.getPageSize(), expos.size());
-        List<ExpoHotResponse> pageContent = expos.subList(start, end);
+        int end = Math.min(start + pageable.getPageSize(), expoWithOnline.size());
 
-        return new PageImpl<>(pageContent, pageable, expos.size());
+        List<ExpoOverviewResponse> pageContent = expoWithOnline.subList(start, end)
+                .stream()
+                .map(entry -> {
+                    Expo expo = entry.getKey();
+                    Boolean isOpening = singleExpoService.isOpening(expo.getExpoID());
+                    return ExpoOverviewResponse.fromExpo(expo, isOpening);
+                })
+                .toList();
+
+        return new PageImpl<>(pageContent, pageable, expoWithOnline.size());
     }
 }

@@ -265,34 +265,34 @@ public class MultipleExpoController {
     }
 
 
-//    @Operation(
-//            summary = "獲取熱門展會-分頁版"
-//    )
-//    @ApiResponses(value = {
-//            @ApiResponse(
-//                    responseCode = "200",
-//                    description = "成功取得熱門展會-分頁版",
-//                    content = @Content(
-//                            mediaType = "application/json",
-//                            array = @ArraySchema(
-//                                    schema = @Schema(implementation = ExpoHotResponse.class)
-//                            )
-//                    )
-//            ),
-//            @ApiResponse(
-//                    responseCode = "500",
-//                    description = "伺服器錯誤"
-//            )
-//    })
-//    @GetMapping("/is_display/hottest/page")
-//    public ResponseEntity<Page<ExpoHotResponse>> getHottestExpoPage(
-//            @Parameter(description = "頁數(第幾頁)", required = true)
-//            @RequestParam(defaultValue = "0") Integer page,
-//            @Parameter(description = "數量(一頁幾筆資料)", required = true)
-//            @RequestParam(defaultValue = "5") Integer size
-//    ){
-//        System.out.println("MultipleExpoController: getHottestExpoPage >> "+page+", "+size);
-//        Page<ExpoHotResponse> expos = multipleExpoService.getHottestExpoPage(page, size);
-//        return ResponseEntity.status(HttpStatus.OK).body(expos);
-//    }
+    @Operation(
+            summary = "獲取所有展會(概略)，照熱門排序-分頁版"
+    )
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "成功取得所有展會(概略)，照熱門排序-分頁版",
+                    content = @Content(
+                            mediaType = "application/json",
+                            array = @ArraySchema(
+                                    schema = @Schema(implementation = ExpoOverviewResponse.class)
+                            )
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = "500",
+                    description = "伺服器錯誤"
+            )
+    })
+    @GetMapping("/overview/is_display/hottest/page")
+    public ResponseEntity<Page<ExpoOverviewResponse>> getHottestExpoOverviewPage(
+            @Parameter(description = "頁數(第幾頁)", required = true)
+            @RequestParam(defaultValue = "0") Integer page,
+            @Parameter(description = "數量(一頁幾筆資料)", required = true)
+            @RequestParam(defaultValue = "5") Integer size
+    ){
+        System.out.println("MultipleExpoController: getHottestExpoOverviewPage >> "+page+", "+size);
+        Page<ExpoOverviewResponse> expos = multipleExpoService.getHottestExpoOverviewPage(page, size);
+        return ResponseEntity.status(HttpStatus.OK).body(expos);
+    }
 }
