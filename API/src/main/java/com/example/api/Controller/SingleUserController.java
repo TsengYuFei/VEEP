@@ -34,7 +34,10 @@ public class SingleUserController {
 
 
 
-    @Operation(summary = "獲取使用者資訊(詳細)")
+    @Operation(
+            summary = "獲取使用者資訊(詳細)",
+            description = "使用於個人頁面"
+    )
     @ApiResponses(value = {
             @ApiResponse(
                     responseCode = "200",

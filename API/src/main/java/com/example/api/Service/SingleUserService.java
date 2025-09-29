@@ -34,6 +34,7 @@ public class SingleUserService {
     private final UserHelperService userHelperService;
     private final SingleExpoService singleExpoService;
     private final SingleBoothService singleBoothService;
+    private final ExpoLogService expoLogService;
 
 
 
@@ -45,6 +46,33 @@ public class SingleUserService {
         UserRole userRole = userRoleService.getUserRoleByAccount(account);
         String roleName = userRole.getRole().getName();
         response.setRoleName(roleName);
+
+        // history
+        List<Integer> historyExpoIDs = expoLogService.getExpoLogResponseByUserAccount(account)
+                .stream()
+                .map(ExpoLogResponse::getExpoID)
+                .distinct()
+                .limit(10)
+                .toList();
+        response.setHistoryExpoID(historyExpoIDs);
+
+        // own display opening expo
+        List<Integer> currentExpoIDs = user.getExpoList()
+                .stream()
+                .filter(expo -> expo.getDisplay() && singleExpoService.isOpening(expo.getExpoID()))
+                .map(Expo::getExpoID)
+                .limit(10)
+                .toList();
+        response.setCurrentExpoID(currentExpoIDs);
+
+        // own display opening booth
+        List<Integer> currentBoothIDs = user.getBoothList()
+                .stream()
+                .filter(booth -> booth.getDisplay() && singleBoothService.isOpening(booth.getBoothID()))
+                .map(Booth::getBoothID)
+                .limit(10)
+                .toList();
+        response.setCurrentBoothID(currentBoothIDs);
 
         return response;
     }

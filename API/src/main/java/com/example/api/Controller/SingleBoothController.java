@@ -353,4 +353,37 @@ public class SingleBoothController {
         List<ContentResponse> content = singleBoothService.getAllContentList(boothID);
         return ResponseEntity.status(HttpStatus.OK).body(content);
     }
+
+
+    @Operation(
+            summary = "獲取攤位是否開放中"
+    )
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "成功取得攤位是否開放中",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = Boolean.class)
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = "404",
+                    description = "找不到攤位"
+            ),
+            @ApiResponse(
+                    responseCode = "500",
+                    description = "伺服器錯誤"
+            )
+    })
+    @GetMapping("/is_opening_or_not/{boothID}")
+    public ResponseEntity<Boolean> getOpeningOrNot(
+            @Parameter(description = "攤位ID", required = true)
+            @PathVariable Integer boothID
+    ){
+        System.out.println("SingleBoothController: getOpeningOrNot >> "+boothID);
+
+        Boolean isOpening = singleBoothService.isOpening(boothID);
+        return ResponseEntity.status(HttpStatus.OK).body(isOpening);
+    }
 }

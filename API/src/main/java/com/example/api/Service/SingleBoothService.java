@@ -17,6 +17,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.*;
 
 import static com.example.api.Other.UpdateTool.updateIfNotBlank;
@@ -295,5 +296,18 @@ public class SingleBoothService {
         return booth.getContentList().stream()
                 .map(ContentResponse::fromContent)
                 .toList();
+    }
+
+
+    public Boolean isOpening(Integer boothID){
+        System.out.println("SingleBoothService: isOpening >> "+boothID);
+        Booth booth = boothHelperService.getBoothByID(boothID);
+        OpenMode mode = booth.getOpenMode();
+
+        if(mode == OpenMode.MANUAL){
+            return booth.getOpenStatus();
+        }else{
+            return booth.getOpenStart().isBefore(LocalDateTime.now()) && booth.getOpenEnd().isAfter(LocalDateTime.now());
+        }
     }
 }
