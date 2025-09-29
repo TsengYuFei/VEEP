@@ -1,6 +1,7 @@
 package com.example.api.Controller;
 
 import com.example.api.DTO.Response.BoothOverviewResponse;
+import com.example.api.DTO.Response.ExpoOverviewResponse;
 import com.example.api.Service.MultipleBoothService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -172,6 +173,38 @@ public class MultipleBoothController {
     public ResponseEntity<List<BoothOverviewResponse>> getDisplayBoothOverview(){
         System.out.println("BatchBoothController: getDisplayBoothOverview");
         List<BoothOverviewResponse> booths = multipleBoothService.getDisplayBoothOverview();
+        return ResponseEntity.status(HttpStatus.OK).body(booths);
+    }
+
+
+    @Operation(
+            summary = "獲取display為true的所有攤位(概略)-分頁版"
+    )
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "成功取得display為true的所有攤位(概略)-分頁版",
+                    content = @Content(
+                            mediaType = "application/json",
+                            array = @ArraySchema(
+                                    schema = @Schema(implementation = BoothOverviewResponse.class)
+                            )
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = "500",
+                    description = "伺服器錯誤"
+            )
+    })
+    @GetMapping("/overview/is_display/page")
+    public ResponseEntity<Page<BoothOverviewResponse>> getDisplayBoothOverviewPage(
+            @Parameter(description = "頁數(第幾頁)", required = true)
+            @RequestParam(defaultValue = "0") Integer page,
+            @Parameter(description = "數量(一頁幾筆資料)", required = true)
+            @RequestParam(defaultValue = "5") Integer size
+    ){
+        System.out.println("MultipleBoothController: getDisplayBoothOverviewPage >> "+page+", "+size);
+        Page<BoothOverviewResponse> booths = multipleBoothService.getDisplayBoothOverviewPage(page, size);
         return ResponseEntity.status(HttpStatus.OK).body(booths);
     }
 }

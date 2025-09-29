@@ -5,6 +5,7 @@ import com.example.api.DTO.Response.ExpoOverviewResponse;
 import com.example.api.Repository.ExpoRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -69,6 +70,23 @@ public class MultipleExpoService {
     }
 
 
+    public Page<ExpoOverviewResponse> getDisplayExpoOverviewPage(Integer page, Integer size){
+        System.out.println("MultipleExpoService: getDisplayExpoOverviewPage");
+        Pageable pageable = PageRequest.of(page, size);
+
+        List<ExpoOverviewResponse> expos =  expoRepository.findExposAreDisplay()
+                .stream()
+                .map(expo -> ExpoOverviewResponse.fromExpo(expo, singleExpoService.isOpening(expo.getExpoID())))
+                .toList();
+
+        int start = (int) pageable.getOffset();
+        int end = Math.min(start + pageable.getPageSize(), expos.size());
+        List<ExpoOverviewResponse> pageContent = expos.subList(start, end);
+
+        return new PageImpl<>(pageContent, pageable, expos.size());
+    }
+
+
     public List<ExpoOverviewResponse> getDisplayAndOpeningExpoOverview(){
         System.out.println("MultipleExpoService: getDisplayAndOpeningExpoOverview");
         return expoRepository.findExposAreDisplay()
@@ -92,5 +110,28 @@ public class MultipleExpoService {
                 .sorted(Comparator.comparingInt(ExpoHotResponse::getOnlineParticipants).reversed())
                 .limit(5)
                 .toList();
+    }
+
+
+    public Page<ExpoHotResponse> getHottestExpoPage(Integer page, Integer size){
+        System.out.println("MultipleExpoService: getHottestExpoPage >> "+page+", "+size);
+        Pageable pageable = PageRequest.of(page, size);
+
+        List<ExpoHotResponse> expos = expoRepository.findExposAreDisplay()
+                .stream()
+                .map(expo -> {
+                    Integer onlineNumber = expoLogService.getOnlineNumberByExpoID(expo.getExpoID());
+                    Boolean isOpening = singleExpoService.isOpening(expo.getExpoID());
+                    return ExpoHotResponse.fromExpo(expo, isOpening, onlineNumber);
+                })
+//                .filter(e -> e.getOnlineParticipants() > 0)   //如果不想要回傳在線人數=0時加這行
+                .sorted(Comparator.comparingInt(ExpoHotResponse::getOnlineParticipants).reversed())
+                .toList();
+
+        int start = (int) pageable.getOffset();
+        int end = Math.min(start + pageable.getPageSize(), expos.size());
+        List<ExpoHotResponse> pageContent = expos.subList(start, end);
+
+        return new PageImpl<>(pageContent, pageable, expos.size());
     }
 }
