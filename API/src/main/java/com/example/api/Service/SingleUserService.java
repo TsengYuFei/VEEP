@@ -35,6 +35,8 @@ public class SingleUserService {
     private final SingleExpoService singleExpoService;
     private final SingleBoothService singleBoothService;
     private final ExpoLogService expoLogService;
+    private final ExpoHelperService expoHelperService;
+    private final BoothHelperService boothHelperService;
 
 
 
@@ -48,31 +50,45 @@ public class SingleUserService {
         response.setRoleName(roleName);
 
         // history
-        List<Integer> historyExpoIDs = expoLogService.getExpoLogResponseByUserAccount(account)
+        List<ExpoOverviewResponse> historyExpos = expoLogService.getExpoLogResponseByUserAccount(account)
                 .stream()
                 .map(ExpoLogResponse::getExpoID)
                 .distinct()
                 .limit(10)
+                .map(expoID -> {
+                    Expo expo = expoHelperService.getExpoByID(expoID);
+                    Boolean isOpening = singleExpoService.isOpening(expoID);
+                    return ExpoOverviewResponse.fromExpo(expo, isOpening);
+                })
                 .toList();
-        response.setHistoryExpoID(historyExpoIDs);
+        response.setHistoryExpoOverview(historyExpos);
 
         // own display opening expo
-        List<Integer> currentExpoIDs = user.getExpoList()
+        List<ExpoOverviewResponse> currentExpos = user.getExpoList()
                 .stream()
                 .filter(expo -> expo.getDisplay() && singleExpoService.isOpening(expo.getExpoID()))
                 .map(Expo::getExpoID)
                 .limit(10)
+                .map(expoID -> {
+                    Expo expo = expoHelperService.getExpoByID(expoID);
+                    Boolean isOpening = singleExpoService.isOpening(expoID);
+                    return ExpoOverviewResponse.fromExpo(expo, isOpening);
+                })
                 .toList();
-        response.setCurrentExpoID(currentExpoIDs);
+        response.setCurrentExpoOverview(currentExpos);
 
         // own display opening booth
-        List<Integer> currentBoothIDs = user.getBoothList()
+        List<BoothOverviewResponse> currentBooths = user.getBoothList()
                 .stream()
                 .filter(booth -> booth.getDisplay() && singleBoothService.isOpening(booth.getBoothID()))
                 .map(Booth::getBoothID)
                 .limit(10)
+                .map(boothID -> {
+                    Booth booth = boothHelperService.getBoothByID(boothID);
+                    return BoothOverviewResponse.fromBooth(booth);
+                })
                 .toList();
-        response.setCurrentBoothID(currentBoothIDs);
+        response.setCurrentBoothOverview(currentBooths);
 
         return response;
     }
