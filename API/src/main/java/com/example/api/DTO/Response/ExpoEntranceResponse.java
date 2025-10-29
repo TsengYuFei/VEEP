@@ -9,6 +9,7 @@ import java.util.List;
 
 @Data
 public class ExpoEntranceResponse {
+    private String ownerAccount;
     private String ownerName;
     private String ownerAvatar;
     private String name;
@@ -21,6 +22,7 @@ public class ExpoEntranceResponse {
 
     public static ExpoEntranceResponse fromExpo(Expo expo){
         ExpoEntranceResponse response = new ExpoEntranceResponse();
+        response.setOwnerAccount(expo.getOwner().getUserAccount());
         response.setOwnerName(expo.getOwner().getName());
         response.setOwnerAvatar(expo.getOwner().getAvatar());
         response.setName(expo.getName());
