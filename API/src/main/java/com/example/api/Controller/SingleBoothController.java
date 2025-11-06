@@ -168,7 +168,7 @@ public class SingleBoothController {
             )
     })
     @PreAuthorize("hasRole('FOUNDER') and (@expoSecurity.isOwner(#expoID) or @expoSecurity.isCollaborator(#expoID))")
-    @PostMapping("update/coordinate/{expoID}")
+    @PutMapping("update/coordinate/{expoID}")
     public ResponseEntity<BoothEditResponse> updateBoothCoordinateByID(
             @Parameter(description = "展會ID", required = true)
             @PathVariable Integer expoID,
