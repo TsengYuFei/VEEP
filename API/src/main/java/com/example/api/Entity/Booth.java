@@ -90,8 +90,6 @@ public class Booth {
     @JsonBackReference
     private Expo expo;
 
-    // 攤位的位置編號(搭配UI地圖用)要加在這裡
-
 
     @PrePersist
     protected void onCreate() {

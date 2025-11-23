@@ -13,7 +13,6 @@ import com.example.api.Exception.BadRequestException;
 import com.example.api.Exception.ForibiddenException;
 import com.example.api.Repository.*;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
