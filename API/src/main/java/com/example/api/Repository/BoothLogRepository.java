@@ -1,7 +1,10 @@
 package com.example.api.Repository;
 
 import com.example.api.Entity.BoothLog;
+import com.example.api.Entity.ExpoLog;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;
@@ -25,4 +28,18 @@ public interface BoothLogRepository extends JpaRepository<BoothLog, Integer> {
 
     void deleteByExpo_ExpoID(Integer expoExpoID);
     void deleteByBooth_BoothID(Integer boothBoothID);
+
+
+    @Query("""
+       SELECT b 
+       FROM BoothLog b 
+       WHERE b.expo.expoID = :expoID 
+       AND b.enterAt BETWEEN :start AND :end
+    """)
+    List<BoothLog> findByExpoIDAndEnterAtBetween(
+            @Param("expoID") Integer expoID,
+            @Param("start") LocalDateTime start,
+            @Param("end") LocalDateTime end);
+
+    Integer countDistinctByExpo_ExpoIDAndUser_UserAccount(Integer expoID, String account);
 }

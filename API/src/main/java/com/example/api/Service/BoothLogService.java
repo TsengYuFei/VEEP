@@ -11,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -214,5 +215,15 @@ public class BoothLogService {
         boothHelperService.getBoothByID(boothID);
         boothLogRepository.deleteByBooth_BoothID(boothID);
         contentLogService.deleteContentLogByBoothID(boothID);
+    }
+
+
+    public Integer getBoothNumberByExpoIDAndAccount(Integer expoID, String account){
+        System.out.println("BoothLogService: getBoothNumberByExpoIDAndAccount >> "+expoID+", "+account);
+        expoHelperService.getExpoByID(expoID);
+        userHelperService.getUserByAccount(account);
+
+        return boothLogRepository.countDistinctByExpo_ExpoIDAndUser_UserAccount(expoID, account);
+
     }
 }

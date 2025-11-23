@@ -214,6 +214,7 @@ public class SingleBoothService {
             if (image != null) imageService.deleteImageByName(image);
         }
 
+        expo.getBoothList().remove(booth);
         boothLogService.deleteBoothLogByBoothID(boothID);
         boothRepository.delete(booth);
 

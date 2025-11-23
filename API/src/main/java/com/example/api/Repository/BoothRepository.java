@@ -42,4 +42,5 @@ public interface BoothRepository extends JpaRepository<Booth, Integer> {
 
 
     Optional<Booth> findBoothByExpo_ExpoIDAndCoordinateXAndCoordinateY(int expoID, double coordinateX, double coordinateY);
+    Integer countByExpo_ExpoID(int expoID);
 }

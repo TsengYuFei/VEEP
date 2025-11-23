@@ -13,6 +13,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -183,4 +184,53 @@ public class ExpoLogService {
         expoHelperService.getExpoByID(expoID);
         expoLogRepository.deleteByExpo_ExpoID(expoID);
     }
+
+
+    public Integer getTotalNumberByExpoID(Integer expoID){
+        System.out.println("ExpoLogService: getTotalNumberByExpoID >> "+expoID);
+        expoHelperService.getExpoByID(expoID);
+
+        return expoLogRepository.countLogs(expoID);
+    }
+
+
+    public Integer getPeopleNumByExpoIDAndDate(Integer expoID, LocalDate date){
+        System.out.println("ExpoLogService: getPeopleNumByExpoIDAndDate >> "+expoID+", "+date);
+        expoHelperService.getExpoByID(expoID);
+
+        LocalDateTime start = date.atStartOfDay();
+        LocalDateTime end = date.plusDays(1).atStartOfDay().minusNanos(1);
+
+        return expoLogRepository.countDailyLogs(expoID, start, end);
+    }
+
+
+    public List<ExpoLog> getExpoLogByExpoIDAndDate(Integer expoID, LocalDate date){
+        System.out.println("ExpoLogService: getExpoLogByExpoIDAndDate >> "+expoID+", "+date);
+        expoHelperService.getExpoByID(expoID);
+
+        LocalDateTime start = date.atStartOfDay();
+        LocalDateTime end = date.plusDays(1).atStartOfDay().minusNanos(1);
+
+        return expoLogRepository.findByExpoIDAndEnterAtBetween(expoID, start, end);
+
+    }
+
+
+    public List<User> getUserByExpoIDAndAccountAndDate(Integer expoID, LocalDate date){
+        System.out.println("ExpoLogService: getUserByExpoIDAndAccountAndDate >> "+expoID+", "+date);
+        expoHelperService.getExpoByID(expoID);
+
+        LocalDateTime start = date.atStartOfDay();
+        LocalDateTime end = date.plusDays(1).atStartOfDay().minusNanos(1);
+
+        List<ExpoLog> expoLogs = expoLogRepository.findByExpoIDAndEnterAtBetween(expoID, start, end);
+        List<User> users = new ArrayList<>();
+        for(ExpoLog expoLog : expoLogs){
+            users.add(expoLog.getUser());
+        }
+
+        return users;
+    }
+
 }
