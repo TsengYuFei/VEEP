@@ -31,6 +31,7 @@ public interface ExpoLogRepository extends JpaRepository<ExpoLog, Integer> {
     """)
     Integer countLogs(@Param("expoID") Integer expoID);
 
+
     @Query("""
         SELECT COUNT(e)
         FROM ExpoLog e
@@ -41,6 +42,7 @@ public interface ExpoLogRepository extends JpaRepository<ExpoLog, Integer> {
             @Param("expoID") Integer expoID,
             @Param("start") LocalDateTime start,
             @Param("end") LocalDateTime end);
+
 
     @Query("""
        SELECT e 

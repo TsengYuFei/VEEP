@@ -60,4 +60,34 @@ public class DataController {
         DataResponse response = dataService.expoDataAnalysis(expoID);
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
+
+    @Operation(summary = "獲取booth數據分析")
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "成功取得booth數據分析",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = DataResponse.class)
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = "404",
+                    description = "找不到攤位"
+            ),
+            @ApiResponse(
+                    responseCode = "500",
+                    description = "伺服器錯誤"
+            )
+    })
+    @PreAuthorize("hasRole('FOUNDER') and (@boothSecurity.isOwner(#boothID) or @boothSecurity.isCollaborator(#boothID))")
+    @GetMapping("/booth/{boothID}")
+    public ResponseEntity<DataResponse> getBoothData(
+            @Parameter(description = "攤位ID", required = true)
+            @PathVariable Integer boothID
+    ){
+        System.out.println("DataController: getBoothData >> "+boothID);
+        DataResponse response = dataService.boothDataAnalysis(boothID);
+        return ResponseEntity.status(HttpStatus.OK).body(response);
+    }
 }

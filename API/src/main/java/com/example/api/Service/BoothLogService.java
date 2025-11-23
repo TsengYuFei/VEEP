@@ -13,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -218,12 +219,64 @@ public class BoothLogService {
     }
 
 
-    public Integer getBoothNumberByExpoIDAndAccount(Integer expoID, String account){
-        System.out.println("BoothLogService: getBoothNumberByExpoIDAndAccount >> "+expoID+", "+account);
+    public Integer getBoothNumberByExpoIDAndAccount(Integer expoID, String account, LocalDate date){
+        System.out.println("BoothLogService: getBoothNumberByExpoIDAndAccount >> "+expoID+", "+account+", "+date);
         expoHelperService.getExpoByID(expoID);
         userHelperService.getUserByAccount(account);
 
-        return boothLogRepository.countDistinctByExpo_ExpoIDAndUser_UserAccount(expoID, account);
+        LocalDateTime start = date.atStartOfDay();
+        LocalDateTime end = date.plusDays(1).atStartOfDay().minusNanos(1);
+
+        return boothLogRepository.countDailyByExpoAndUser(expoID, account, start, end);
+    }
+
+
+    public Integer getTotalNumberByBoothID(Integer boothID){
+        System.out.println("BoothLogService: getTotalNumberByBoothID >> "+boothID);
+        boothHelperService.getBoothByID(boothID);
+
+        return boothLogRepository.countLogs(boothID);
+    }
+
+
+    public Integer getPeopleNumByBoothIDAndDate(Integer boothID, LocalDate date){
+        System.out.println("BoothLogService: getPeopleNumByBoothIDAndDate >> "+boothID+", "+date);
+        boothHelperService.getBoothByID(boothID);
+
+        LocalDateTime start = date.atStartOfDay();
+        LocalDateTime end = date.plusDays(1).atStartOfDay().minusNanos(1);
+
+        return boothLogRepository.countDailyLogs(boothID, start, end);
+    }
+
+
+    public List<BoothLog> getBoothLogByBoothIDAndDate(Integer boothID, LocalDate date){
+        System.out.println("BoothLogService: getBoothLogByBoothIDAndDate >> "+boothID+", "+date);
+        boothHelperService.getBoothByID(boothID);
+
+        LocalDateTime start = date.atStartOfDay();
+        LocalDateTime end = date.plusDays(1).atStartOfDay().minusNanos(1);
+
+        return boothLogRepository.findByBoothIDAndEnterAtBetween(boothID, start, end);
 
     }
+
+
+    public List<User> getUserByBoothIDAndAccountAndDate(Integer boothID, LocalDate date){
+        System.out.println("BoothLogService: getUserByBoothIDAndAccountAndDate >> "+boothID+", "+date);
+        boothHelperService.getBoothByID(boothID);
+
+        LocalDateTime start = date.atStartOfDay();
+        LocalDateTime end = date.plusDays(1).atStartOfDay().minusNanos(1);
+
+        List<BoothLog> boothLogs = boothLogRepository.findByBoothIDAndEnterAtBetween(boothID, start, end);
+        List<User> users = new ArrayList<>();
+        for(BoothLog boothLog : boothLogs){
+            users.add(boothLog.getUser());
+        }
+
+        return users;
+    }
+
+
 }

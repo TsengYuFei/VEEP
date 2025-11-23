@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -139,5 +140,17 @@ public class ContentLogService {
         System.out.println("ContentLogService: deleteContentLogByBoothIDAndNumber>> "+boothID+", "+number);
         contentService.getContentByBoothIDAndNumber(boothID, number);
         contentLogRepository.deleteByBooth_BoothIDAndContent_Number(boothID, number);
+    }
+
+
+    public Integer getContentNumberByBoothIDAndAccount(Integer boothID, String account, LocalDate date){
+        System.out.println("ContentLogService: getContentNumberByBoothIDAndAccount >> "+boothID+", "+account+", "+date);
+        boothHelperService.getBoothByID(boothID);
+        userHelperService.getUserByAccount(account);
+
+        LocalDateTime start = date.atStartOfDay();
+        LocalDateTime end = date.plusDays(1).atStartOfDay().minusNanos(1);
+
+        return contentLogRepository.countDailyByBoothAndUser(boothID, account, start, end);
     }
 }
