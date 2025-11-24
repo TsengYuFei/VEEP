@@ -64,7 +64,6 @@ public class DataService {
 
             for(ExpoLog log : logs){
                 long seconds = calculateDurationSeconds(log.getEnterAt(), log.getExitAt());
-                dailyPeople++;
                 dailyTime+=seconds;
 
                 if(log.getHasUsedAi()) usedAI++;
@@ -94,8 +93,13 @@ public class DataService {
         else {
             totalAvg = totalTime/totalPeople;
 
-            double pr = Math.round(((double) totalBooth / totalPeople / 7 / boothNumber) * 10.0) / 10.0;
-            double ar = Math.round(((double) usedAI / 7 / totalPeople) * 10.0) / 10.0;
+            double averageBoothVisitPerPerson = (double) totalBooth / totalPeople;
+            double pr = averageBoothVisitPerPerson / boothNumber;
+            pr = Math.round(pr * 10.0) / 10.0;
+
+            double ar = (double) usedAI / totalPeople;
+            ar = Math.round(ar * 10.0) / 10.0;
+
             rate.setParticipationRate(pr);
             rate.setAiUsageRate(ar);
         }
@@ -142,7 +146,6 @@ public class DataService {
 
             for(BoothLog log : logs){
                 long seconds = calculateDurationSeconds(log.getEnterAt(), log.getExitAt());
-                dailyPeople++;
                 dailyTime+=seconds;
 
                 if(log.getHasUsedAi()) usedAI++;
