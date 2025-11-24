@@ -42,11 +42,11 @@ public interface BoothLogRepository extends JpaRepository<BoothLog, Integer> {
             @Param("end") LocalDateTime end);
 
     @Query("""
-        SELECT COUNT(DISTINCT e.id)
-        FROM ExpoLog e
-        WHERE e.expo.expoID = :expoID
-          AND e.user.userAccount = :account
-          AND e.enterAt BETWEEN :start AND :end
+        SELECT COUNT(DISTINCT b.booth.boothID)
+        FROM BoothLog b
+        WHERE b.expo.expoID = :expoID
+          AND b.user.userAccount = :account
+          AND b.enterAt BETWEEN :start AND :end
     """)
     Integer countDailyByExpoAndUser(
             @Param("expoID") Integer expoID,

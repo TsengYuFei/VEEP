@@ -27,11 +27,11 @@ public interface ContentLogRepository extends JpaRepository<ContentLog, Integer>
 
 
     @Query("""
-        SELECT COUNT(DISTINCT b.id)
-        FROM BoothLog b
-        WHERE b.booth.boothID = :boothID
-          AND b.user.userAccount = :account
-          AND b.enterAt BETWEEN :start AND :end
+        SELECT COUNT(DISTINCT c.content.id)
+        FROM ContentLog c
+        WHERE c.booth.boothID = :boothID
+          AND c.user.userAccount = :account
+          AND c.clickAt BETWEEN :start AND :end
     """)
     Integer countDailyByBoothAndUser(
             @Param("boothID") Integer boothID,

@@ -79,7 +79,7 @@ public class DataService {
 
 
             List<User> users = expoLogService.getUserByExpoIDAndAccountAndDate(expoID, date);
-            for(User user : users) totalBooth += boothLogService.getBoothNumberByExpoIDAndAccount(expoID, user.getUserAccount(), date);
+            for(User user : users) totalBooth += boothLogService.getBoothNumberByExpoIDAndAccountAndDate(expoID, user.getUserAccount(), date);
 
         }
         overview.setNewVisitorsLast7Days(totalPeople);
@@ -89,7 +89,7 @@ public class DataService {
         if(totalPeople == 0){
             rate.setParticipationRate(0.0);
             rate.setAiUsageRate(0.0);
-        }else if(totalBooth == 0) rate.setParticipationRate(0.0);
+        }else if(boothNumber == 0) rate.setParticipationRate(0.0);
         else {
             totalAvg = totalTime/totalPeople;
 
@@ -162,7 +162,7 @@ public class DataService {
 
 
             List<User> users = boothLogService.getUserByBoothIDAndAccountAndDate(boothID, date);
-            for(User user : users) totalContent += contentLogService.getContentNumberByBoothIDAndAccount(boothID, user.getUserAccount(), date);
+            for(User user : users) totalContent += contentLogService.getContentNumberByBoothIDAndAccountAndDate(boothID, user.getUserAccount(), date);
 
         }
         overview.setNewVisitorsLast7Days(totalPeople);

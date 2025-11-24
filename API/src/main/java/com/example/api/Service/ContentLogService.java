@@ -143,8 +143,8 @@ public class ContentLogService {
     }
 
 
-    public Integer getContentNumberByBoothIDAndAccount(Integer boothID, String account, LocalDate date){
-        System.out.println("ContentLogService: getContentNumberByBoothIDAndAccount >> "+boothID+", "+account+", "+date);
+    public Integer getContentNumberByBoothIDAndAccountAndDate(Integer boothID, String account, LocalDate date){
+        System.out.println("ContentLogService: getContentNumberByBoothIDAndAccountAndDate >> "+boothID+", "+account+", "+date);
         boothHelperService.getBoothByID(boothID);
         userHelperService.getUserByAccount(account);
 

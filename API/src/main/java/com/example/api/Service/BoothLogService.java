@@ -219,8 +219,8 @@ public class BoothLogService {
     }
 
 
-    public Integer getBoothNumberByExpoIDAndAccount(Integer expoID, String account, LocalDate date){
-        System.out.println("BoothLogService: getBoothNumberByExpoIDAndAccount >> "+expoID+", "+account+", "+date);
+    public Integer getBoothNumberByExpoIDAndAccountAndDate(Integer expoID, String account, LocalDate date){
+        System.out.println("BoothLogService: getBoothNumberByExpoIDAndAccountAndDate >> "+expoID+", "+account+", "+date);
         expoHelperService.getExpoByID(expoID);
         userHelperService.getUserByAccount(account);
 
